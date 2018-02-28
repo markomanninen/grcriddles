@@ -40,8 +40,11 @@ But then there are couple of other riddles very special in nature. They contain 
 
 I'll take these three riddles under the closer investigation in this study:
 
-### Riddle 1
+Riddle 1
+~~~~~~~~
 
 #### Sibyl Book 1 lines 137 - 146:
+
+.. epigraph::
 
     137 
