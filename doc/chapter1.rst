@@ -1,7 +1,7 @@
 Processing Greek corpora for the isopsehical riddle solver
 ==========================================================
 
-.. figure:: sibylline.png
+.. figure:: delphic_sibyl.png
    :scale: 50 %
    :alt: Delphic Sibyl
 

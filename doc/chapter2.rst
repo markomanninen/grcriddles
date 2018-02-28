@@ -1,9 +1,7 @@
 Isopsephical riddles in Greek Pseudo Sibylline hexameter poetry
 ===============================================================
 
-![Sibylline](https://github.com/markomanninen/grcriddles/blob/master/sibyl.jpg?raw=true)
-
-.. figure:: sibyl.jpg
+.. figure:: cumaean_sibyl.jpg
    :scale: 50 %
    :alt: Cumaean Sibyl
 
