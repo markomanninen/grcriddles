@@ -4,6 +4,7 @@ Processing Greek corpora for the isopsehical riddle solver
 .. figure:: delphic_sibyl.png
    :scale: 75 %
    :alt: Delphic Sibyl
+   :align: center
 
    Michelangelo's Delphic Sibyl, Sistine Chapel
 

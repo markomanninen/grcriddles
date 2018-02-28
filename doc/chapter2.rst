@@ -2,8 +2,9 @@ Isopsephical riddles in Greek Pseudo Sibylline hexameter poetry
 ===============================================================
 
 .. figure:: cumaean_sibyl.jpg
-   :scale: 50 %
+   :scale: 75 %
    :alt: Cumaean Sibyl
+   :align: center
 
    Domenichino's Cumaean Sibyl, Musei Capitolini
 
