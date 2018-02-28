@@ -1,8 +1,7 @@
 Processing Greek corpora for the isopsehical riddle solver
 ==========================================================
 
-
-![sibylline](https://github.com/markomanninen/grcriddles/blob/master/sibylline.png?raw=true)
+.. image:: sibylline.png
 
 This is an interactive Jupyter notebook document used to preprocess ancient Greek corpora for solving some enigmatic alpha numerical riddles in the [Pseudo Sibylline](https://en.wikipedia.org/wiki/Sibylline_Oracles) oracles.
 
