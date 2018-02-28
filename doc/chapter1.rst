@@ -1,7 +1,11 @@
 Processing Greek corpora for the isopsehical riddle solver
 ==========================================================
 
-.. image:: sibylline.png
+.. figure:: sibylline.png
+   :scale: 50 %
+   :alt: Delphic Sibyl
+
+   Michelangelo's Delphic Sibyl, Sistine Chapel
 
 This is an interactive Jupyter notebook document used to preprocess ancient Greek corpora for solving some enigmatic alpha numerical riddles in the [Pseudo Sibylline](https://en.wikipedia.org/wiki/Sibylline_Oracles) oracles.
 
