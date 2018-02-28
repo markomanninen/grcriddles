@@ -3,6 +3,12 @@ Isopsephical riddles in Greek Pseudo Sibylline hexameter poetry
 
 ![Sibylline](https://github.com/markomanninen/grcriddles/blob/master/sibyl.jpg?raw=true)
 
+.. figure:: sibyl.jpg
+   :scale: 50 %
+   :alt: Cumaean Sibyl
+
+   Domenichino's Cumaean Sibyl, Musei Capitolini
+
 ## Introduction
 
 There are dozens of alpha-numerical riddles in the Pseudo Sibylline books. Major part of them are simple, only referring to the first letter of the person, and the number of that letter. For Greeks, letters happened to have a [numerical value](https://en.wikipedia.org/wiki/Greek_numerals) also. I'm calling this letter value substitution system with a name _isopsephy_ simply because it was a name known for the Ancient Greeks. Nowadays, this literary device is maybe a bit too much mystified and known mostly by its Hebrew counterpart _gematria_. Although isopsephy was used for divination also, one should also consider it as a device used by poets and experts in different literary genres. Those people wanted to excel in the art they practiced. Isopsephy, along with the dactylic hexameter, affected to the outer structure of the text. Both were concrete devices in the toolbox of the masters of the written text and rhetorics.
