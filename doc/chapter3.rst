@@ -6,3 +6,7 @@ Study of the results of the isopsephical riddle solver
    :alt: Erithrean Sibyl
 
    Michelangelo's Erithrean Sibyl, Sistine Chapel
+
+
+
+   .. |Output:| replace:: [output]
