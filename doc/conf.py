@@ -260,7 +260,9 @@ latex_elements = {
 
      # Additional stuff for the LaTeX preamble.
      #
-     # 'preamble': '',
+     # 'preamble': '''
+\usepackage[utf8]{inputenc}
+    ''',
 
      # Latex figure (float) alignment
      #
@@ -306,9 +308,6 @@ latex_documents = [
 # If false, no module index is generated.
 #
 # latex_domain_indices = True
-
-# xelatex, lualatex, latex, pdflatex
-latex_engine = 'xelatex'
 
 # -- Options for manual page output ---------------------------------------
 
