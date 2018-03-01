@@ -307,6 +307,8 @@ latex_documents = [
 #
 # latex_domain_indices = True
 
+# xelatex, lualatex, latex, pdflatex
+latex_engine = 'xelatex'
 
 # -- Options for manual page output ---------------------------------------
 
