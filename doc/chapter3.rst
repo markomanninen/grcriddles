@@ -1,8 +1,8 @@
-Study of the results of the isopsephical riddle solver
-======================================================
+Study of the results of the riddle solver
+=========================================
 
 .. figure:: erithrean_sibyl.jpg
-   :scale: 75 %
+   :scale: 100 %
    :alt: Erithrean Sibyl
    :align: center
 
@@ -10,4 +10,4 @@ Study of the results of the isopsephical riddle solver
 
 
 
-   .. |Output:| replace:: [output]
+.. |Output:| replace:: [output]

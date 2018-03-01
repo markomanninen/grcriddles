@@ -1,10 +1,19 @@
 
-Welcome to GRCRiddles documentation!
-====================================
+Alphanumeric Riddles of Ancient Greeks
+======================================
 
-This is a set of chapters guiding thru the process of solving some enigmatic alpha numerical riddles in the `Pseudo Sibylline <https://en.wikipedia.org/wiki/Sibylline_Oracles>`__ oracles.
+In the following chapters, I'm guiding through the process of solving some
+enigmatic alphanumeric riddles in the Greek `Pseudo Sibylline
+<https://en.wikipedia.org/wiki/Sibylline_Oracles>`__ oracles.
 
-See also the `GitHub project <https://github.com/markomanninen/grcriddles>`__ to download all material and code for the interactive self study.
+In the first chapter, I will download and preprocess freely available open
+source Greek corpora. In the second chapter, I will use the processed unique
+word database for solving some riddles in the Sibylline oracles. The third
+chapter is reserved more for the speculative analysis of the results.
+
+The reader may download all material and code for the interactive exploration
+from the GitHub project: `https://github.com/markomanninen/grcriddles
+<https://github.com/markomanninen/grcriddles>`__
 
 Contents:
 
