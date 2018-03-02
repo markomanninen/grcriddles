@@ -8,15 +8,16 @@ Processing Greek corpora for the riddle solver
 
    Michelangelo's Delphic Sibyl, Sistine Chapel
 
-Pseudo-Sibylline oracles contain hexametric poems written in Ancient Greek.
-These *oracula* were mainly composed in 150BC - 200AD to twelve different extant
-books. They were circulating and quite famous among the Judaeo-Christian
-community at that time. They shouldn't, however, be too much confused with the
-earlier `Sibylline books <https://en.wikipedia.org/wiki/Sibylline_Books>`__.
-Sibylline books contained religious ceremonial advices that were consulted by
-the selected priests and curators in the Roman empire, when it was in deep
-political trouble. The collection of the original Sibylline books were destroyed
-by different accidental events and deliberate actions in history.
+`Pseudo-Sibylline <https://en.wikipedia.org/wiki/Sibylline_Oracles>`__ [#]_
+oracles contain hexametric poems written in Ancient Greek. These *oracula* were
+mainly composed in 150BC - 200AD to twelve different extant books. They were
+circulating and quite famous among the Judaeo-Christian community at that time.
+They shouldn't, however, be too much confused with the earlier `Sibylline books
+<https://en.wikipedia.org/wiki/Sibylline_Books>`__ [#]_. Sibylline books
+contained religious ceremonial advices that were consulted by the selected
+priests and curators in the Roman empire, when it was in deep political trouble.
+The collection of the original Sibylline books were destroyed by different
+accidental events and deliberate actions in history.
 
 Pseudo-Sibylline oracles, on the other hand, contain Jewish narrative of the
 human history contrasted to the Greek mythology and to the chronology of the
@@ -37,52 +38,46 @@ better proposals. Better yet, few of these open riddles are specific enough so
 that one may try to solve them by modern programmable tools.
 
 Natural language processing
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 Programmatical approach to solve the riddles requires huge Greek text corpora.
 Bigger it is, the better. I will download and preprocess available open source
 Greek corpora, which is a quite daunting task for many reasons. I have left the
 most of the details of this part for the enthusiasts to read straight from the
-commented code:
-https://github.com/markomanninen/grcriddles/blob/master/functions.py.
-In the end, I'll have a word database containing hundreds of thousands of unique
-Greek words extracted from the naturally written language corpora. Then words
-can be further used in the riddle solver.
+commented code in `functions.py <https://git.io/vAS2Z>`__ [#]_. In the end,
+I'll have a word database containing hundreds of thousands of unique Greek
+words extracted from the naturally written language corpora. Then words can be
+further used in the riddle solver.
 
 .. note::
 
-	Note that rather than just reading, this, and the following chapters can
-	also be run interactively in your local `Jupyter <https://jupyter.org/>`__
-	notebook installation if you prefer. That means that you may verify the
-	procedure or alter parameters and try solving the riddles with your own
-	parameters.
+  	Note that rather than just reading, this, and the following chapters can
+  	also be run interactively in your local `Jupyter notebook
+    <https://jupyter.org/>`__ [#]_ installation if you prefer. That means that
+    you may verify the procedure or alter parameters and try solving the riddles
+    with your own parameters.
 
-	Your can download these independent Jupyter notebooks from:
+  	Your can download these independent Jupyter notebooks for `processing
+    corpora <https://git.io/vASwM>`__ [#]_ and `riddle solver
+    <https://git.io/vASrY>`__ [#]_.
 
-	-  Processing Greek corpora:
-	   `https://github.com/markomanninen/grcriddles/blob/master/processing.ipynb
-	   <https://github.com/markomanninen/grcriddles/blob/master/processing.ipynb>`__
-	-  Riddle solver:
-	   `https://github.com/markomanninen/grcriddles/blob/master/solver.ipynb
-	   <https://github.com/markomanninen/grcriddles/blob/master/solver.ipynb>`__
-
-Collecting Greek Corpora
-~~~~~~~~~~~~~~~~~~~~~~~~
+Required components
+~~~~~~~~~~~~~~~~~~~
 
 The first task is to get a big raw ancient Greek text to operate with.
-`CLTK <https://github.com/cltk/cltk>`__ library provides an importer to the
-`Perseus <http://www.perseus.tufts.edu/hopper/opensource/download>`__ and the
-`First1KGreek <http://opengreekandlatin.github.io/First1KGreek/>`__ open source
+`CLTK <https://github.com/cltk/cltk>`__ [#]_ library provides an importer to the
+`Perseus <http://www.perseus.tufts.edu/hopper/opensource/download>`__ [#]_ and the
+`First1KGreek <http://opengreekandlatin.github.io/First1KGreek/>`__ [#]_ open source
 data sources.
 
-I'm using my own `Abnum <https://github.com/markomanninen/abnum3>`__ library to
+I'm using my own `Abnum <https://github.com/markomanninen/abnum3>`__ [#]_ library to
 strip accents of the Greek words, remove non-alphabetical characters, as well as
-calculating the isopsephical value of the words.`Greek_accentuation
-<https://github.com/jtauber/greek-accentuation>`__ library is used to split
+calculating the isopsephical value of the words. `Greek_accentuation
+<https://github.com/jtauber/greek-accentuation>`__ [#]_ library is used to split
 words into syllables. This is required because few of the riddles contain
 specific information about syllables of the word. `Pandas
-<http://pandas.pydata.org/>`__ library is used as an API to the collected
-database. `Plotly <https://plot.ly/>`__ library and online infographic service
+<http://pandas.pydata.org/>`__ [#]_ library is used as an API to the collected
+database. `Plotly <https://plot.ly/>`__ [#]_ library and online infographic service
 are used for the visual presentation of the statistics.
 
 You can install these libraries by uncommenting and running the next install
@@ -119,7 +114,7 @@ Let's see what corpora are available for download:
 
   	from cltk.corpus.utils.importer import CorpusImporter
   	corpus_importer = CorpusImporter('greek')
-  	', '.join(corpus_importer.list_corpora)
+  	print(', '.join(corpus_importer.list_corpora))
 
 Output:
 
@@ -182,6 +177,7 @@ Output:
 .. code-block:: txt
 
     C:\Users\marko\cltk_data\greek\text\greek_text_tlg already exists, lets roll on!
+    C:\Users\marko\cltk_data\greek\text\greek_text_prs already exists, lets roll on!
 
 Perseus corpora are pretty good as they are. However, Perseus Greek source text
 is written as a `betacode <https://en.wikipedia.org/wiki/Beta_Code>`__, so I
@@ -190,7 +186,7 @@ need a converter script for it. I found a suitable one from Python `hexameter
 make a small fix to it, so I'm using my own version of the `betacode.py
 <https://github.com/markomanninen/grcriddles/blob/master/betacode.py>`__ script.
 
-Processing files
+Collecting files
 ~~~~~~~~~~~~~~~~
 
 Next step is to find out Greek text nodes from the provided XML source files. I
@@ -205,9 +201,6 @@ contains only plain uppercase words separated by spaces. Pretty much in a format
 written by the ancient Greeks btw. Noteworth is that stored words are not stems,
 or word roots but contain words in all possible prefixes and affixes,
 i.e. inflected forms.
-
-Collecting text files
-~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -225,8 +218,8 @@ Output:
 
     1272 files found
 
-Process text files
-~~~~~~~~~~~~~~~~~~
+Processing files
+~~~~~~~~~~~~~~~~
 
 This will take several minutes depending on if you have already run it once and
 have temporary directories available. Old processed corpora files are removed
@@ -342,30 +335,30 @@ and the third column is the percentage of the letter contra all letters.
 ----------------------------- ----------------------------- -----------------------------
  Letter    Count     Percent   Letter    Count     Percent   Letter    Count     Percent
 ========= ========= ========= ========= ========= ========= ========= ========= =========
- Α         4182002   10.96
- Ε         3678672   9.64
- Ο         3664034   9.61
- Ι         3613662   9.47
- Ν         3410850   8.94
- Τ         2903418   7.61
- Σ         2830967   7.42
- Υ         1776871   4.66
- Ρ         1440852   3.78
- Η         1392909   3.65
- Π         1326596   3.48
- Κ         1261673   3.31
- Ω         1179566   3.09
- Λ         1147548   3.01
- Μ         1139510   2.99
- Δ         932823    2.45
- Γ         584668    1.53
- Θ         501512    1.31
- Χ         352579    0.92
- Φ         325210    0.85
- Β         220267    0.58
- Ξ         152971    0.40
- Ζ         75946     0.20
- Ψ         51405     0.13
+ Α         4182002   10.96     Α         4182002   10.96     Α         4182002   10.96
+ Ε         3678672   9.64      Ε         3678672   9.64      Ε         3678672   9.64
+ Ο         3664034   9.61      Ο         3664034   9.61      Ο         3664034   9.61
+ Ι         3613662   9.47      Ι         3613662   9.47      Ι         3613662   9.47
+ Ν         3410850   8.94      Ν         3410850   8.94      Ν         3410850   8.94
+ Τ         2903418   7.61      Τ         2903418   7.61      Τ         2903418   7.61
+ Σ         2830967   7.42      Σ         2830967   7.42      Σ         2830967   7.42
+ Υ         1776871   4.66      Υ         1776871   4.66      Υ         1776871   4.66
+ Ρ         1440852   3.78      Ρ         1440852   3.78      Ρ         1440852   3.78
+ Η         1392909   3.65      Η         1392909   3.65      Η         1392909   3.65
+ Π         1326596   3.48      Π         1326596   3.48      Π         1326596   3.48
+ Κ         1261673   3.31      Κ         1261673   3.31      Κ         1261673   3.31
+ Ω         1179566   3.09      Ω         1179566   3.09      Ω         1179566   3.09
+ Λ         1147548   3.01      Λ         1147548   3.01      Λ         1147548   3.01
+ Μ         1139510   2.99      Μ         1139510   2.99      Μ         1139510   2.99
+ Δ         932823    2.45      Δ         932823    2.45      Δ         932823    2.45
+ Γ         584668    1.53      Γ         584668    1.53      Γ         584668    1.53
+ Θ         501512    1.31      Θ         501512    1.31      Θ         501512    1.31
+ Χ         352579    0.92      Χ         352579    0.92      Χ         352579    0.92
+ Φ         325210    0.85      Φ         325210    0.85      Φ         325210    0.85
+ Β         220267    0.58      Β         220267    0.58      Β         220267    0.58
+ Ξ         152971    0.40      Ξ         152971    0.40      Ξ         152971    0.40
+ Ζ         75946     0.20      Ζ         75946     0.20      Ζ         75946     0.20
+ Ψ         51405     0.13      Ψ         51405     0.13      Ψ         51405     0.13
  Ϛ         0         0.00      Ϛ         8430      0.00      Ϛ         8430      0.00
  Ϡ         0         0.00      Ϡ         364       0.00      Ϡ         364       0.00
  Ϟ         0         0.00      Ϟ         204       0.00      Ϟ         204       0.00
@@ -502,9 +495,9 @@ specialties of the word statistics. This will take a minute or two:
     # add length of the syllables column
     df[6] = df[5].apply(lambda x: len(x))
     # count vowels in the word
-    df[7] = df.apply(lambda x: sum(list(x[0].count(c) for c in vowels)))
+    df[7] = df[0].apply(lambda x: sum(list(x.count(c) for c in vowels)))
     # count consonants in the word
-    df[8] = df.apply(lambda x: len(x[0])-x[7])
+    df[8] = df[0].apply(lambda x: len(x)-sum(list(x.count(c) for c in vowels)))
 
 Save unique words database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -582,30 +575,30 @@ How about finding out, which words has the biggest isopsephical values?
 
     HTML(df.sort_values(4, ascending=False).head(n=20).to_html(index=False))
 
-========================================================================================== ============= ======== ===========
- Word   Occurrences   Length   Isopsephy
-========================================================================================== ============= ======== ===========
- ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ                 1             33        5186
- ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ                                 3             26        5056
- ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ          4             36        4553
- ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ                                                             1             14        4550
- ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ          3              36       4486
- ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ        3             37        4466
- ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ                                                           1             15        4370
- ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ                                                    4             18       4370
- ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ 3             40       4280
- ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ                                                      2              17       4235
- ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ            2              35       4220
- ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ                                       2             24       4211
- ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ                                                            3             14        4193
- ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ                              1            28        4187
- ΨΥΧΑΓΩΓΟΥΝΤΩΝ                                                               1             13       4177
- ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ                                                    4            18        4166
- ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ                                                    3             18       4128
- ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ                                    3             25       4120
- ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ                           3             29        4102
- ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ                                                 8             19       4102
-========================================================================================== ============= ======== ===========
+========================================== ============= ======== ===========
+ Word                                       Occurrences   Length   Isopsephy
+========================================== ============= ======== ===========
+ ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ          1             33       5186
+ ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ                 3             26       5056
+ ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ       4             36       4553
+ ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ                             1             14       4550
+ ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ       3             36       4486
+ ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ      3             37       4466
+ ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ                            1             15       4370
+ ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ                         4             18       4370
+ ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ   3             40       4280
+ ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ                          2             17       4235
+ ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ        2             35       4220
+ ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ                   2             24       4211
+ ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ                             3             14       4193
+ ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ               1             28       4187
+ ΨΥΧΑΓΩΓΟΥΝΤΩΝ                              1             13       4177
+ ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ                         4             18       4166
+ ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ                         3             18       4128
+ ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ                  3             25       4120
+ ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ              3             29       4102
+ ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ                        8             19       4102
+========================================== ============= ======== ===========
 
 How many percent of the whole word base, the least repeated words take:
 
@@ -715,3 +708,18 @@ further investigate the basic stats, categorize and compare individual texts as
 well.
 
 .. |Output:| replace:: [output]
+
+.. [#] https://en.wikipedia.org/wiki/Sibylline_Oracles
+.. [#] https://en.wikipedia.org/wiki/Sibylline_Books
+.. [#] https://github.com/markomanninen/grcriddles/blob/master/functions.py
+.. [#] https://jupyter.org
+.. [#] https://github.com/markomanninen/grcriddles/blob/master/Processing%20Greek%20corpora%20for%20the%20isopsehical%20riddle%20solver.ipynb
+.. [#] https://github.com/markomanninen/grcriddles/blob/master/Isopsephical%20riddles%20in%20the%20Greek%20Pseudo%20Sibylline%20hexameter%20poetry.ipynb
+.. [#] https://github.com/cltk/cltk
+.. [#] http://www.perseus.tufts.edu/hopper/opensource/download
+.. [#] http://opengreekandlatin.github.io/First1KGreek/
+.. [#] https://github.com/markomanninen/abnum3
+.. [#] https://github.com/jtauber/greek-accentuation
+.. [#] http://pandas.pydata.org
+.. [#] https://plot.ly
+.. [#] https://plot.ly
