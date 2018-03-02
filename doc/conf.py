@@ -260,7 +260,9 @@ latex_elements = {
 
      # Additional stuff for the LaTeX preamble.
      #
-     'preamble': '\usepackage{unicode}',
+     'preamble': '''
+ \usepackage{unixode}
+ ''',
 
      # Latex figure (float) alignment
      #
