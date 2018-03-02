@@ -474,13 +474,13 @@ specialties of the word statistics. This will take a minute or two:
 
 .. code-block:: python
 
-    from functions import syllabify, Abnum, greek
+    from functions import syllabify, Abnum, greek, vowels
 
     # greek abnum object for calculating isopsephical value
     g = Abnum(greek)
 
     # lets count unique words statistic from the parsed greek corpora rather than the plain text file
-    # it would be pretty dauntful to find out occurence of the all 800000+ unique words from the text
+    # it would be pretty hefty work to find out occurence of the all 800000+ unique words from the text
     # file that is over 600 MB big!
     unique_word_stats = {}
     for item in greek_corpora:
@@ -501,6 +501,10 @@ specialties of the word statistics. This will take a minute or two:
     df[5] = df[0].apply(lambda x: syllabify(x))
     # add length of the syllables column
     df[6] = df[5].apply(lambda x: len(x))
+    # count vowels in the word
+    df[7] = df.apply(lambda x: sum(list(x[0].count(c) for c in vowels)))
+    # count consonants in the word
+    df[8] = df.apply(lambda x: len(x[0])-x[7])
 
 Save unique words database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -578,30 +582,30 @@ How about finding out, which words has the biggest isopsephical values?
 
     HTML(df.sort_values(4, ascending=False).head(n=20).to_html(index=False))
 
-====== ============= ======== ===========
+========================================================================================== ============= ======== ===========
  Word   Occurrences   Length   Isopsephy
-====== ============= ======== ===========
- ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ 1 33 5186
- ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ 3 26 5056
- ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ 4 36 4553
- ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ 1 14 4550
- ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ 3 36 4486
- ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ 3 37 4466
- ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ 1 15 4370
- ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ 4 18 4370
- ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ 3 40 4280
- ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ 2 17 4235
- ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ 2 35 4220
- ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ 2 24 4211
- ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ 3 14 4193
- ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ 1 28 4187
- ΨΥΧΑΓΩΓΟΥΝΤΩΝ 1 13 4177
- ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ 4 18 4166
- ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ 3 18 4128
- ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ 3 25 4120
- ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ 3 29 4102
- ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ 8 19 4102
-====== ============= ======== ===========
+========================================================================================== ============= ======== ===========
+ ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ                 1             33        5186
+ ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ                                 3             26        5056
+ ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ          4             36        4553
+ ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ                                                             1             14        4550
+ ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ          3              36       4486
+ ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ        3             37        4466
+ ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ                                                           1             15        4370
+ ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ                                                    4             18       4370
+ ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ 3             40       4280
+ ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ                                                      2              17       4235
+ ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ            2              35       4220
+ ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ                                       2             24       4211
+ ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ                                                            3             14        4193
+ ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ                              1            28        4187
+ ΨΥΧΑΓΩΓΟΥΝΤΩΝ                                                               1             13       4177
+ ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ                                                    4            18        4166
+ ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ                                                    3             18       4128
+ ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ                                    3             25       4120
+ ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ                           3             29        4102
+ ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ                                                 8             19       4102
+========================================================================================== ============= ======== ===========
 
 How many percent of the whole word base, the least repeated words take:
 
