@@ -268,7 +268,7 @@ latex_elements = {
 % import packages for greek letters
 \PassOptionsToPackage{polutonikogreek,greek,english}{babel}
 \usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
+\usepackage[utf8x]{inputenc}
 \usepackage{newunicodechar}
 % archaic greek letters
 \newunicodechar{Ϛ}{\Stigma}
