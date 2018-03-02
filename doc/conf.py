@@ -263,6 +263,7 @@ latex_elements = {
      'preamble': '''
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage[greek,english]{babel}
 ''',
 
      # Latex figure (float) alignment
