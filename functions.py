@@ -64,6 +64,20 @@ def copy(src, dest):
         else:
             print('Directory not copied. Error: %s' % e)
 
+def copy_corpora(src, dst):
+    # copy all suitable greek text files from the source dir to the destination work dir
+    if not path.isdir(path.join(dirt, dst)):
+        source = joinpaths(dirt, [src, "data" if src == "greek_text_first1kgreek" else ""])
+        destination = joinpaths(dirt, [dst])
+        print("Copying %s -> %s" % (source, destination))
+        try:
+            copy(source, destination)
+            pass
+        except Exception as e:
+            print(e)
+    else:
+        print(path.join(dirt, dst), "already exists, lets roll on!")
+
 # read file and return content
 def get_content(fl):
     with open(fl, 'r', encoding="utf-8") as f:
