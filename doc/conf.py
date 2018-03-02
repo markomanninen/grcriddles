@@ -261,9 +261,19 @@ latex_elements = {
      # Additional stuff for the LaTeX preamble.
      #
      'preamble': '''
+% import packages for greek letters
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[greek,english]{babel}
+\usepackage[polutonikogreek,greek,english,british]{babel}
+\usepackage{newunicodechar}
+% archaic greek letters
+\newunicodechar{Ϛ}{\Stigma}
+\newunicodechar{Ϡ}{\Sampi}
+\newunicodechar{Ϙ}{\Qoppa}
+\newunicodechar{ϛ}{\stigma}
+\newunicodechar{ϡ}{\sampi}
+\newunicodechar{ϙ}{\qoppa}
+\newunicodechar{Ϟ}{\koppa}
 ''',
 
      # Latex figure (float) alignment
