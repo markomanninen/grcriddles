@@ -13,7 +13,7 @@ These *oracula* were mainly composed in 150BC - 200AD to twelve different extant
 books. They were circulating and quite famous among the Judaeo-Christian
 community at that time. They shouldn't, however, be too much confused with the
 earlier `Sibylline books <https://en.wikipedia.org/wiki/Sibylline_Books>`__.
-Sibylline books contained religious ceremonical advices that were consulted by
+Sibylline books contained religious ceremonial advices that were consulted by
 the selected priests and curators in the Roman empire, when it was in deep
 political trouble. The collection of the original Sibylline books were destroyed
 by different accidental events and deliberate actions in history.
@@ -31,10 +31,10 @@ These secretive references are often very general in nature, pointing only to
 the first letter of the subject and its numerical value. Solving them requires
 a proper knowledge of the context, not only inner textual but historical context.
 
-Most of the alphanumeric riddles in the oracles have been solved by researchers
-already. Some of the riddles are still problematic and open for better proposals.
-Better yet, few of these open riddles are specific enough so that one may try
-to solve them by modern programmable tools.
+Most of the alphanumeric riddles in the oracles have already been solved by
+various researchers. Some of the riddles are still problematic and open for
+better proposals. Better yet, few of these open riddles are specific enough so
+that one may try to solve them by modern programmable tools.
 
 Natural language processing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,26 +43,28 @@ Programmatical approach to solve the riddles requires huge Greek text corpora.
 Bigger it is, the better. I will download and preprocess available open source
 Greek corpora, which is a quite daunting task for many reasons. I have left the
 most of the details of this part for the enthusiasts to read straight from the
-code and its comments:
+commented code:
 https://github.com/markomanninen/grcriddles/blob/master/functions.py.
 In the end, I'll have a word database containing hundreds of thousands of unique
 Greek words extracted from the naturally written language corpora. Then words
 can be further used in the riddle solver.
 
-Note that rather than just reading, this, and the following chapters can
-also be run interactively in your local `Jupyter <https://jupyter.org/>`__
-notebook installation if you prefer. That means that you may verify the
-procedure or alter parameters and try solving the riddles with your own
-parameters.
+.. note::
 
-Your can download these independent Jupyter notebooks from:
+	Note that rather than just reading, this, and the following chapters can
+	also be run interactively in your local `Jupyter <https://jupyter.org/>`__
+	notebook installation if you prefer. That means that you may verify the
+	procedure or alter parameters and try solving the riddles with your own
+	parameters.
 
--  Processing Greek corpora:
-   `https://github.com/markomanninen/grcriddles/blob/master/processing.ipynb
-   <https://github.com/markomanninen/grcriddles/blob/master/processing.ipynb>`__
--  Riddle solver:
-   `https://github.com/markomanninen/grcriddles/blob/master/solver.ipynb
-   <https://github.com/markomanninen/grcriddles/blob/master/solver.ipynb>`__
+	Your can download these independent Jupyter notebooks from:
+
+	-  Processing Greek corpora:
+	   `https://github.com/markomanninen/grcriddles/blob/master/processing.ipynb
+	   <https://github.com/markomanninen/grcriddles/blob/master/processing.ipynb>`__
+	-  Riddle solver:
+	   `https://github.com/markomanninen/grcriddles/blob/master/solver.ipynb
+	   <https://github.com/markomanninen/grcriddles/blob/master/solver.ipynb>`__
 
 Collecting Greek Corpora
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,15 +75,15 @@ The first task is to get a big raw ancient Greek text to operate with.
 `First1KGreek <http://opengreekandlatin.github.io/First1KGreek/>`__ open source
 data sources.
 
-I'm using `Abnum <https://github.com/markomanninen/abnum3>`__ library to strip
-accents of the Greek words, remove non-alphabetical characters, as well as
-calculating the isopsephical value of the words.
-`Greek_accentuation <https://github.com/jtauber/greek-accentuation>`__ library
-is used to split words into syllables. This is required because few of the
-riddles contain specific information about syllables of the word.
-`Pandas <http://pandas.pydata.org/>`__ library is used as an API to the
-collected database. `Plotly <https://plot.ly/>`__ library and online infographic
-service are used for the visual presentation of the statistics.
+I'm using my own `Abnum <https://github.com/markomanninen/abnum3>`__ library to
+strip accents of the Greek words, remove non-alphabetical characters, as well as
+calculating the isopsephical value of the words.`Greek_accentuation
+<https://github.com/jtauber/greek-accentuation>`__ library is used to split
+words into syllables. This is required because few of the riddles contain
+specific information about syllables of the word. `Pandas
+<http://pandas.pydata.org/>`__ library is used as an API to the collected
+database. `Plotly <https://plot.ly/>`__ library and online infographic service
+are used for the visual presentation of the statistics.
 
 You can install these libraries by uncommenting and running the next install
 lines:
@@ -104,8 +106,7 @@ Output:
 
 .. code-block:: txt
 
-    Python 3.6.1 | Anaconda 4.4.0 (64-bit)| (default, May 11 2017, 13:25:24)
-    [MSC v.1900 64 bit (AMD64)]
+    Python 3.6.1 | Anaconda 4.4.0 (64-bit)| (default, May 11 2017, 13:25:24) [MSC v.1900 64 bit (AMD64)]
 
 Note that `Python 3.4+` is required for all examples to work properly.
 
@@ -124,7 +125,7 @@ Output:
 
 .. code-block:: txt
 
-  greek_software_tlgu, greek_text_perseus, phi7, tlg, greek_proper_names_cltk,
+	greek_software_tlgu, greek_text_perseus, phi7, tlg, greek_proper_names_cltk,
 	greek_models_cltk, greek_treebank_perseus, greek_lexica_perseus,
 	greek_training_set_sentence_cltk, greek_word2vec_cltk,
 	greek_text_lacus_curtius, greek_text_first1kgreek
@@ -150,10 +151,11 @@ local computer for quicker access:
 Next, I will copy only suitable greek text files from `greek_text_first1kgreek`
 to the working directory `greek_text_tlg`.
 
-Note that you can download and extract `greek_text_first1kgreek` directly from
-https://github.com/OpenGreekAndLatin/First1KGreek/zipball/master. It may have
-the most recent and complete set of files. If you wish to use it, extract
-package directly to `~\cltk_data\greek\text\greek_text_first1kgreek`.
+.. note::
+	You can download and extract `greek_text_first1kgreek` directly from
+	https://github.com/OpenGreekAndLatin/First1KGreek/zipball/master. It may
+	have the most recent and complete set of files. If you wish to use it,
+	extract package directly to `~\cltk_data\greek\text\greek_text_first1kgreek`.
 
 I have collected the large part of the used procedures to the `functions.py
 <https://github.com/markomanninen/grcriddles/blob/master/functions.py>`__ script
@@ -179,8 +181,7 @@ Output:
 
 .. code-block:: txt
 
-    C:\Users\marko\cltk_data\greek\text\greek_text_tlg already exists, lets
-    roll on!
+    C:\Users\marko\cltk_data\greek\text\greek_text_tlg already exists, lets roll on!
 
 Perseus corpora are pretty good as they are. However, Perseus Greek source text
 is written as a `betacode <https://en.wikipedia.org/wiki/Beta_Code>`__, so I
@@ -310,19 +311,19 @@ This will take some time to process too:
 
 .. code-block:: python
 
-    from functions import Counter, DataFrame
-  	# perseus dataframe
-  	df = DataFrame([[k, v] for k, v in Counter(ccontent1).items()])
-  	df[2] = df[1].apply(lambda x: round(x*100/chars1, 2))
-  	a = df.sort_values(1, ascending=False)
-  	# first1k dataframe
-  	df = DataFrame([[k, v] for k, v in Counter(ccontent2).items()])
-  	df[2] = df[1].apply(lambda x: round(x*100/chars2, 2))
-  	b = df.sort_values(1, ascending=False)
-  	# perseus + first1k dataframe
-  	df = DataFrame([[k, v] for k, v in Counter(ccontent3).items()])
-  	df[2] = df[1].apply(lambda x: round(x*100/chars3, 2))
-  	c = df.sort_values(1, ascending=False)
+	from functions import Counter, DataFrame
+	# perseus dataframe
+	df = DataFrame([[k, v] for k, v in Counter(ccontent1).items()])
+	df[2] = df[1].apply(lambda x: round(x*100/chars1, 2))
+	a = df.sort_values(1, ascending=False)
+	# first1k dataframe
+	df = DataFrame([[k, v] for k, v in Counter(ccontent2).items()])
+	df[2] = df[1].apply(lambda x: round(x*100/chars2, 2))
+	b = df.sort_values(1, ascending=False)
+	# perseus + first1k dataframe
+	df = DataFrame([[k, v] for k, v in Counter(ccontent3).items()])
+	df[2] = df[1].apply(lambda x: round(x*100/chars3, 2))
+	c = df.sort_values(1, ascending=False)
 
 Show letter statistics
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -332,15 +333,15 @@ and the third column is the percentage of the letter contra all letters.
 
 .. code-block:: python
 
-  	from functions import display_side_by_side
+    from functions import display_side_by_side
     # show tables side by side to save some vertical space
-  	display_side_by_side(Perseus=a, First1K=b, Perseus_First1K=c)
+    display_side_by_side(Perseus=a, First1K=b, Perseus_First1K=c)
 
-========= ========= =========
-           Perseus
------------------------------
- Letter    Count     Percent
-========= ========= =========
+========= ========= ========= ========= ========= ========= ========= ========= =========
+  Perseus                      FirstK1                       Both
+----------------------------- ----------------------------- -----------------------------
+ Letter    Count     Percent   Letter    Count     Percent   Letter    Count     Percent
+========= ========= ========= ========= ========= ========= ========= ========= =========
  Α         4182002   10.96
  Ε         3678672   9.64
  Ο         3664034   9.61
@@ -365,7 +366,10 @@ and the third column is the percentage of the letter contra all letters.
  Ξ         152971    0.40
  Ζ         75946     0.20
  Ψ         51405     0.13
-========= ========= =========
+ Ϛ         0         0.00      Ϛ         8430      0.00      Ϛ         8430      0.00
+ Ϡ         0         0.00      Ϡ         364       0.00      Ϡ         364       0.00
+ Ϟ         0         0.00      Ϟ         204       0.00      Ϟ         204       0.00
+========= ========= ========= ========= ========= ========= ========= ========= =========
 
 **First1K**
 
@@ -545,26 +549,26 @@ For curiosity, let's also see the longest words in the database:
 
 | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 | --- | --- | --- | --- | --- | --- | --- |
-| ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ | 3 | 0.0 | 40 | 4280 | [ΑΛ, ΛΗ, ΣΤΗ, ΣΑ, ΝΩ, ΘΕΝ, ΘΕΡΜ, ΤΗ, ΤΟ, ΣΑΤ, ... | 16 |
-| ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ | 3 | 0.0 | 37 | 4466 | [ΔΥ, ΝΑ, ΤΟΝ, ΔΕ, ΤΟ, ΑΙ, ΤΑΙ, ΗΣ, ΓΕΝ, ΣΕ, Ω,... | 15 |
-| ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ | 2 | 0.0 | 36 | 1454 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΚΑ, Ε, ΤΗ, ΡΙ, ΕΝ, ΝΕ, Α,... | 18 |
-| ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ | 4 | 0.0 | 36 | 4553 | [ΣΙ, Α, ΛΟΙ, Ο, ΡΑ, ΧΙΝ, ΤΕ, ΘΑ, ΛΥΙ, Α, ΝΑ, Λ... | 16 |
-| ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ | 3 | 0.0 | 36 | 4486 | [Ε, ΜΟΥΙ, ΑΠ, ΦΕΥ, ΓΑ, ΧΕΙ, ΡΑΣ, ΛΥΠ, ΣΑ, ΣΜΕ,... | 13 |
-| ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ | 2 | 0.0 | 35 | 4220 | [ΚΑΙ, Ο, ΣΑ, ΑΛ, ΛΑ, ΤΩΝ, ΤΟΙ, ΟΥ, ΤΩΝ, ΠΡΟΣ, ... | 15 |
-| ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ | 1 | 0.0 | 35 | 1796 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΕΙ, ΚΟ, ΣΙ, ΚΑΙ, Ε, ΠΤΑ, ΚΟ, ... | 17 |
-| ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ | 1 | 0.0 | 33 | 5186 | [ΟΡ, ΘΡΟ, ΦΟΙ, ΤΟ, ΣΥ, ΚΟ, ΦΑΝ, ΤΟ, ΔΙ, ΚΟ, ΤΑ... | 14 |
-| ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ | 1 | 0.0 | 32 | 3485 | [ΤΕΤ, ΤΑ, ΡΑ, ΚΟΝ, ΤΑ, ΚΑΙ, ΠΕΝ, ΤΑ, ΚΙ, ΣΧΙ, ... | 13 |
-| ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ | 3 | 0.0 | 32 | 3179 | [ΚΑΙ, Ι, ΚΛΗ, ΧΡΥ, ΣΗ, Α, ΦΡΟΔ, ΤΗ, ΚΑΙ, ΟΙ, Σ... | 13 |
-| ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ | 2 | 0.0 | 31 | 3730 | [Ο, ΤΙ, ΤΟΥ, ΜΗ, ΔΙ, Α, ΠΡΟ, ΤΡΩ, ΝΟΡ, ΖΕ, ΣΘΑ... | 12 |
-| ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ | 3 | 0.0 | 31 | 2163 | [ΑΥ, ΤΟ, ΜΑ, ΤΟΙ, ΔΕ, ΟΙ, ΘΕ, ΟΙ, Α, ΠΑΛ, ΛΑΣ,... | 14 |
-| ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ | 1 | 0.0 | 31 | 2705 | [ΣΠΕΡ, ΜΑ, ΓΟ, ΡΑΙ, Ο, ΛΕ, ΚΙ, ΘΟ, ΛΑ, ΧΑ, ΝΟ,... | 14 |
-| ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ | 2 | 0.0 | 30 | 1381 | [Η, ΔΙ, ΚΗ, ΜΝΟΝ, ΔΕ, Α, ΠΕΡ, ΡΙΜ, ΜΝΟΝ, ΠΕ, Ρ... | 13 |
-| ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ | 3 | 0.0 | 29 | 4102 | [ΠΑ, ΡΥ, ΦΙ, ΣΤΑ, ΜΕ, ΝΟΥ, ΠΡΑΓ, ΜΑ, ΤΟ, ΣΚΟΙ,... | 11 |
-| ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ | 2 | 0.0 | 29 | 2766 | [ΧΙ, ΛΙ, Ο, ΚΤΑ, ΚΟ, ΣΙ, ΟΥ, ΔΟ, Η, ΚΟΝ, ΤΑ, Π... | 14 |
-| ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ | 2 | 0.0 | 29 | 1590 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΚΑ, Ε... | 14 |
-| ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ | 3 | 0.0 | 29 | 1789 | [Ε, ΚΑ, ΤΟΝ, ΤΑ, ΚΑΙ, Ε, ΒΔΟ, ΜΗ, ΚΟΝ, ΤΑ, ΠΛΑ... | 13 |
-| ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ | 1 | 0.0 | 29 | 3174 | [ΣΚΟ, ΡΟ, ΔΟ, ΠΑΝ, ΔΟ, ΚΕΥ, ΤΡΙ, ΑΡ, ΤΟ, ΠΩ, Λ... | 12 |
-| ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ | 1 | 0.0 | 28 | 3657 | [ΣΙΛ, ΦΙ, Ο, ΤΥ, ΡΟ, ΜΕ, ΛΙ, ΤΟ, ΚΑ, ΤΑ, ΚΕ, Χ... | 14 |
+| ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ | 3 40 | 4280 | [ΑΛ, ΛΗ, ΣΤΗ, ΣΑ, ΝΩ, ΘΕΝ, ΘΕΡΜ, ΤΗ, ΤΟ, ΣΑΤ, ... | 16 |
+| ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ | 3 37 | 4466 | [ΔΥ, ΝΑ, ΤΟΝ, ΔΕ, ΤΟ, ΑΙ, ΤΑΙ, ΗΣ, ΓΕΝ, ΣΕ, Ω,... | 15 |
+| ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ | 2 36 | 1454 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΚΑ, Ε, ΤΗ, ΡΙ, ΕΝ, ΝΕ, Α,... | 18 |
+| ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ | 4 36 | 4553 | [ΣΙ, Α, ΛΟΙ, Ο, ΡΑ, ΧΙΝ, ΤΕ, ΘΑ, ΛΥΙ, Α, ΝΑ, Λ... | 16 |
+| ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ | 3 36 | 4486 | [Ε, ΜΟΥΙ, ΑΠ, ΦΕΥ, ΓΑ, ΧΕΙ, ΡΑΣ, ΛΥΠ, ΣΑ, ΣΜΕ,... | 13 |
+| ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ | 2 35 | 4220 | [ΚΑΙ, Ο, ΣΑ, ΑΛ, ΛΑ, ΤΩΝ, ΤΟΙ, ΟΥ, ΤΩΝ, ΠΡΟΣ, ... | 15 |
+| ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ | 1 35 | 1796 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΕΙ, ΚΟ, ΣΙ, ΚΑΙ, Ε, ΠΤΑ, ΚΟ, ... | 17 |
+| ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ | 1 33 | 5186 | [ΟΡ, ΘΡΟ, ΦΟΙ, ΤΟ, ΣΥ, ΚΟ, ΦΑΝ, ΤΟ, ΔΙ, ΚΟ, ΤΑ... | 14 |
+| ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ | 1 32 | 3485 | [ΤΕΤ, ΤΑ, ΡΑ, ΚΟΝ, ΤΑ, ΚΑΙ, ΠΕΝ, ΤΑ, ΚΙ, ΣΧΙ, ... | 13 |
+| ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ | 3 32 | 3179 | [ΚΑΙ, Ι, ΚΛΗ, ΧΡΥ, ΣΗ, Α, ΦΡΟΔ, ΤΗ, ΚΑΙ, ΟΙ, Σ... | 13 |
+| ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ | 2 31 | 3730 | [Ο, ΤΙ, ΤΟΥ, ΜΗ, ΔΙ, Α, ΠΡΟ, ΤΡΩ, ΝΟΡ, ΖΕ, ΣΘΑ... | 12 |
+| ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ | 3 31 | 2163 | [ΑΥ, ΤΟ, ΜΑ, ΤΟΙ, ΔΕ, ΟΙ, ΘΕ, ΟΙ, Α, ΠΑΛ, ΛΑΣ,... | 14 |
+| ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ | 1 31 | 2705 | [ΣΠΕΡ, ΜΑ, ΓΟ, ΡΑΙ, Ο, ΛΕ, ΚΙ, ΘΟ, ΛΑ, ΧΑ, ΝΟ,... | 14 |
+| ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ | 2 30 | 1381 | [Η, ΔΙ, ΚΗ, ΜΝΟΝ, ΔΕ, Α, ΠΕΡ, ΡΙΜ, ΜΝΟΝ, ΠΕ, Ρ... | 13 |
+| ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ | 3 29 | 4102 | [ΠΑ, ΡΥ, ΦΙ, ΣΤΑ, ΜΕ, ΝΟΥ, ΠΡΑΓ, ΜΑ, ΤΟ, ΣΚΟΙ,... | 11 |
+| ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ | 2 29 | 2766 | [ΧΙ, ΛΙ, Ο, ΚΤΑ, ΚΟ, ΣΙ, ΟΥ, ΔΟ, Η, ΚΟΝ, ΤΑ, Π... | 14 |
+| ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ | 2 29 | 1590 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΚΑ, Ε... | 14 |
+| ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ | 3 29 | 1789 | [Ε, ΚΑ, ΤΟΝ, ΤΑ, ΚΑΙ, Ε, ΒΔΟ, ΜΗ, ΚΟΝ, ΤΑ, ΠΛΑ... | 13 |
+| ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ | 1 29 | 3174 | [ΣΚΟ, ΡΟ, ΔΟ, ΠΑΝ, ΔΟ, ΚΕΥ, ΤΡΙ, ΑΡ, ΤΟ, ΠΩ, Λ... | 12 |
+| ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ | 1 28 | 3657 | [ΣΙΛ, ΦΙ, Ο, ΤΥ, ΡΟ, ΜΕ, ΛΙ, ΤΟ, ΚΑ, ΤΑ, ΚΕ, Χ... | 14 |
 
 
 
@@ -574,30 +578,30 @@ How about finding out, which words has the biggest isopsephical values?
 
     HTML(df.sort_values(4, ascending=False).head(n=20).to_html(index=False))
 
-
-| 0 | 1 | 2 | 3 | 4 | 5 | 6 |
-| --- | --- | --- | --- | --- | --- | --- |
-| ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ | 1 | 0.0 | 33 | 5186 | [ΟΡ, ΘΡΟ, ΦΟΙ, ΤΟ, ΣΥ, ΚΟ, ΦΑΝ, ΤΟ, ΔΙ, ΚΟ, ΤΑ... | 14 |
-| ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ | 3 | 0.0 | 26 | 5056 | [ΓΛΩΣ, ΣΟ, ΤΟ, ΜΗ, ΘΕΝ, ΤΩΝ, ΧΡΙ, ΣΤΙ, Α, ΝΩΝ] | 10 |
-| ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ | 4 | 0.0 | 36 | 4553 | [ΣΙ, Α, ΛΟΙ, Ο, ΡΑ, ΧΙΝ, ΤΕ, ΘΑ, ΛΥΙ, Α, ΝΑ, Λ... | 16 |
-| ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ | 1 | 0.0 | 14 | 4550 | [ΤΟΙ, ΧΩ, ΡΥ, ΧΟΥΝ, ΤΩΝ] | 5 |
-| ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ | 3 | 0.0 | 36 | 4486 | [Ε, ΜΟΥΙ, ΑΠ, ΦΕΥ, ΓΑ, ΧΕΙ, ΡΑΣ, ΛΥΠ, ΣΑ, ΣΜΕ,... | 13 |
-| ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ | 3 | 0.0 | 37 | 4466 | [ΔΥ, ΝΑ, ΤΟΝ, ΔΕ, ΤΟ, ΑΙ, ΤΑΙ, ΗΣ, ΓΕΝ, ΣΕ, Ω,... | 15 |
-| ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ | 1 | 0.0 | 15 | 4370 | [ΣΥ, ΝΥ, ΠΟ, ΧΩ, ΡΟΥΝ, ΤΩΝ] | 6 |
-| ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ | 4 | 0.0 | 18 | 4370 | [ΤΩ, ΟΡ, ΘΩ, Ε, ΚΑ, ΣΤΑ, ΘΕ, Ω, ΡΩΝ] | 9 |
-| ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ | 3 | 0.0 | 40 | 4280 | [ΑΛ, ΛΗ, ΣΤΗ, ΣΑ, ΝΩ, ΘΕΝ, ΘΕΡΜ, ΤΗ, ΤΟ, ΣΑΤ, ... | 16 |
-| ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ | 2 | 0.0 | 17 | 4235 | [Ω, ΡΙ, ΣΜΕ, ΝΩΝ, ΠΡΟ, ΣΩ, ΠΩΝ] | 7 |
-| ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ | 2 | 0.0 | 35 | 4220 | [ΚΑΙ, Ο, ΣΑ, ΑΛ, ΛΑ, ΤΩΝ, ΤΟΙ, ΟΥ, ΤΩΝ, ΠΡΟΣ, ... | 15 |
-| ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ | 2 | 0.0 | 24 | 4211 | [ΤΟΥ, ΤΟΥΣ, ΛΕ, ΓΟΝ, ΤΕ, ΣΩ, ΣΠΡΟ, ΣΤΗΝ] | 8 |
-| ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ | 3 | 0.0 | 14 | 4193 | [ΨΥ, ΧΟ, ΓΟ, ΝΙ, ΜΩΤ, ΤΩΝ] | 6 |
-| ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ | 1 | 0.0 | 28 | 4187 | [ΚΙ, ΧΛΕ, ΠΙ, ΚΟΣ, ΣΥ, ΦΟ, ΦΑΤ, ΤΟ, ΠΕ, ΡΙ, ΣΤ... | 12 |
-| ΨΥΧΑΓΩΓΟΥΝΤΩΝ | 1 | 0.0 | 13 | 4177 | [ΨΥ, ΧΑ, ΓΩ, ΓΟΥΝ, ΤΩΝ] | 5 |
-| ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ | 4 | 0.0 | 18 | 4166 | [ΦΙ, ΛΟ, ΞΕ, ΝΩ, ΤΑ, ΤΟ, ΣΟΥ, ΤΩΣ] | 8 |
-| ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ | 3 | 0.0 | 18 | 4128 | [Υ, ΠΟ, ΧΩ, ΡΗ, ΤΙ, ΚΩΤ, ΤΟΙ, ΣΙΝ] | 8 |
-| ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ | 3 | 0.0 | 25 | 4120 | [ΚΩΝ, ΣΤΑΝ, ΤΙ, ΝΟΥ, ΤΕ, ΛΕΥ, ΤΗ, ΣΑΝ, ΤΟΣ] | 9 |
-| ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ | 3 | 0.0 | 29 | 4102 | [ΠΑ, ΡΥ, ΦΙ, ΣΤΑ, ΜΕ, ΝΟΥ, ΠΡΑΓ, ΜΑ, ΤΟ, ΣΚΟΙ,... | 11 |
-| ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ | 8 | 0.0 | 19 | 4102 | [ΕΜ, ΨΥ, ΧΟ, ΝΑΝ, ΘΡΩ, ΠΟΣ, ΖΩ, ΟΝ] | 8 |
-
+====== ============= ======== ===========
+ Word   Occurrences   Length   Isopsephy
+====== ============= ======== ===========
+ ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ 1 33 5186
+ ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ 3 26 5056
+ ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ 4 36 4553
+ ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ 1 14 4550
+ ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ 3 36 4486
+ ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ 3 37 4466
+ ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ 1 15 4370
+ ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ 4 18 4370
+ ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ 3 40 4280
+ ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ 2 17 4235
+ ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ 2 35 4220
+ ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ 2 24 4211
+ ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ 3 14 4193
+ ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ 1 28 4187
+ ΨΥΧΑΓΩΓΟΥΝΤΩΝ 1 13 4177
+ ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ 4 18 4166
+ ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ 3 18 4128
+ ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ 3 25 4120
+ ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ 3 29 4102
+ ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ 8 19 4102
+====== ============= ======== ===========
 
 How many percent of the whole word base, the least repeated words take:
 
