@@ -88,17 +88,17 @@ lines:
 
 .. code-block:: python
 
-	import sys
+  	import sys
 
-	#!{sys.executable} -m pip install cltk abnum
-	#!{sys.executable} -m pip install pandas plotly
-	#!{sys.executable} -m pip install greek_accentuation
+  	#!{sys.executable} -m pip install cltk abnum
+  	#!{sys.executable} -m pip install pandas plotly
+  	#!{sys.executable} -m pip install greek_accentuation
 
 For your convenience, my environment is the following:
 
 .. code-block:: python
 
-	print("Python %s" % sys.version)
+  	print("Python %s" % sys.version)
 
 Output:
 
@@ -116,9 +116,9 @@ Let's see what corpora are available for download:
 
 .. code-block:: python
 
-	from cltk.corpus.utils.importer import CorpusImporter
-	corpus_importer = CorpusImporter('greek')
-	', '.join(corpus_importer.list_corpora)
+  	from cltk.corpus.utils.importer import CorpusImporter
+  	corpus_importer = CorpusImporter('greek')
+  	', '.join(corpus_importer.list_corpora)
 
 Output:
 
@@ -141,11 +141,11 @@ local computer for quicker access:
 
 .. code-block:: python
 
-	for corpus in ["greek_text_perseus", "greek_text_first1kgreek"]:
-	    try:
-	        corpus_importer.import_corpus(corpus)
-	    except Exception as e:
-	        print(e)
+  	for corpus in ["greek_text_perseus", "greek_text_first1kgreek"]:
+  	    try:
+  	        corpus_importer.import_corpus(corpus)
+  	    except Exception as e:
+  	        print(e)
 
 Next, I will copy only suitable greek text files from `greek_text_first1kgreek`
 to the working directory `greek_text_tlg`.
@@ -161,19 +161,19 @@ to maintain this document more concise.
 
 .. code-block:: python
 
-	from functions import path, joinpaths, copy, dirt
+  	from functions import path, joinpaths, copy, dirt
 
-	# copy all suitable greek text files from the source dir to the destination work dir
-	if not path.isdir(path.join(dirt, "greek_text_tlg")):
-	    source = joinpaths(dirt, ["greek_text_first1kgreek", "data"])
-	    destination = joinpaths(dirt, ["greek_text_tlg"])
-	    print("Copying %s -> %s" % (source, destination))
-	    try:
-	        copy(source, destination)
-	    except Exception as e:
-	        print(e)
-	else:
-	    print(path.join(dirt, "greek_text_tlg"), "already exists, lets roll on!")
+  	# copy all suitable greek text files from the source dir to the destination work dir
+  	if not path.isdir(path.join(dirt, "greek_text_tlg")):
+  	    source = joinpaths(dirt, ["greek_text_first1kgreek", "data"])
+  	    destination = joinpaths(dirt, ["greek_text_tlg"])
+  	    print("Copying %s -> %s" % (source, destination))
+  	    try:
+  	        copy(source, destination)
+  	    except Exception as e:
+  	        print(e)
+  	else:
+  	    print(path.join(dirt, "greek_text_tlg"), "already exists, lets roll on!")
 
 Output:
 
@@ -210,13 +210,13 @@ Collecting text files
 
 .. code-block:: python
 
-	from functions import init_corpora
+  	from functions import init_corpora
 
-	# init corpora list
-	corpora = ["greek_text_perseus", "greek_text_tlg"]
+  	# init corpora list
+  	corpora = ["greek_text_perseus", "greek_text_tlg"]
 
-	greek_corpora_x = init_corpora(corpora)
-	print("%s files found" % len(greek_corpora_x))
+  	greek_corpora_x = init_corpora(corpora)
+  	print("%s files found" % len(greek_corpora_x))
 
 Output:
 
@@ -233,15 +233,15 @@ first, then they are recreated by calling `process_greek_corpora` function.
 
 .. code-block:: python
 
-	from functions import remove, all_greek_text_file, perseus_greek_text_file, first1k_greek_text_file, process_greek_corpora
+  	from functions import remove, all_greek_text_file, perseus_greek_text_file, first1k_greek_text_file, process_greek_corpora
 
-	# remove old processed temporary files
-	try:
-	    remove(all_greek_text_file)
-	    remove(perseus_greek_text_file)
-	    remove(first1k_greek_text_file)
-	except OSError:
-	    pass
+  	# remove old processed temporary files
+  	try:
+  	    remove(all_greek_text_file)
+  	    remove(perseus_greek_text_file)
+  	    remove(first1k_greek_text_file)
+  	except OSError:
+  	    pass
 
 	# collect greek corpora data
 	greek_corpora = process_greek_corpora(greek_corpora_x)
@@ -253,11 +253,11 @@ When files are downloaded and preprocessed, I can get the size of the text files
 
 .. code-block:: python
 
-	from functions import get_file_size
+  	from functions import get_file_size
 
-	print("Size of the all raw text: %s MB" % get_file_size(all_greek_text_file))
-	print("Size of the perseus raw text: %s MB" % get_file_size(perseus_greek_text_file))
-	print("Size of the first1k raw text: %s MB" % get_file_size(first1k_greek_text_file))
+  	print("Size of the all raw text: %s MB" % get_file_size(all_greek_text_file))
+  	print("Size of the perseus raw text: %s MB" % get_file_size(perseus_greek_text_file))
+  	print("Size of the first1k raw text: %s MB" % get_file_size(first1k_greek_text_file))
 
 Output:
 
@@ -272,11 +272,11 @@ content:
 
 .. code-block:: python
 
-	from functions import get_stats
+  	from functions import get_stats
 
-	ccontent1, chars1, lwords1 = get_stats(perseus_greek_text_file)
-	ccontent2, chars2, lwords2 = get_stats(first1k_greek_text_file)
-	ccontent3, chars3, lwords3 = get_stats(all_greek_text_file)
+  	ccontent1, chars1, lwords1 = get_stats(perseus_greek_text_file)
+  	ccontent2, chars2, lwords2 = get_stats(first1k_greek_text_file)
+  	ccontent3, chars3, lwords3 = get_stats(all_greek_text_file)
 
 Output:
 
@@ -310,19 +310,19 @@ This will take some time to process too:
 
 .. code-block:: python
 
-  from functions import Counter, DataFrame
-	# perseus dataframe
-	df = DataFrame([[k, v] for k, v in Counter(ccontent1).items()])
-	df[2] = df[1].apply(lambda x: round(x*100/chars1, 2))
-	a = df.sort_values(1, ascending=False)
-	# first1k dataframe
-	df = DataFrame([[k, v] for k, v in Counter(ccontent2).items()])
-	df[2] = df[1].apply(lambda x: round(x*100/chars2, 2))
-	b = df.sort_values(1, ascending=False)
-	# perseus + first1k dataframe
-	df = DataFrame([[k, v] for k, v in Counter(ccontent3).items()])
-	df[2] = df[1].apply(lambda x: round(x*100/chars3, 2))
-	c = df.sort_values(1, ascending=False)
+    from functions import Counter, DataFrame
+  	# perseus dataframe
+  	df = DataFrame([[k, v] for k, v in Counter(ccontent1).items()])
+  	df[2] = df[1].apply(lambda x: round(x*100/chars1, 2))
+  	a = df.sort_values(1, ascending=False)
+  	# first1k dataframe
+  	df = DataFrame([[k, v] for k, v in Counter(ccontent2).items()])
+  	df[2] = df[1].apply(lambda x: round(x*100/chars2, 2))
+  	b = df.sort_values(1, ascending=False)
+  	# perseus + first1k dataframe
+  	df = DataFrame([[k, v] for k, v in Counter(ccontent3).items()])
+  	df[2] = df[1].apply(lambda x: round(x*100/chars3, 2))
+  	c = df.sort_values(1, ascending=False)
 
 Show letter statistics
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -332,39 +332,40 @@ and the third column is the percentage of the letter contra all letters.
 
 .. code-block:: python
 
-	from functions import display_side_by_side
-  # show tables side by side to save some vertical space
-	display_side_by_side(Perseus=a, First1K=b, Perseus_First1K=c)
+  	from functions import display_side_by_side
+    # show tables side by side to save some vertical space
+  	display_side_by_side(Perseus=a, First1K=b, Perseus_First1K=c)
 
-**Perseus**
-
-| Letter | Count | Percent |
-| --- | --- | --- |
-| Α | 4182002 | 10.96 |
-| Ε | 3678672 | 9.64 |
-| Ο | 3664034 | 9.61 |
-| Ι | 3613662 | 9.47 |
-| Ν | 3410850 | 8.94 |
-| Τ | 2903418 | 7.61 |
-| Σ | 2830967 | 7.42 |
-| Υ | 1776871 | 4.66 |
-| Ρ | 1440852 | 3.78 |
-| Η | 1392909 | 3.65 |
-| Π | 1326596 | 3.48 |
-| Κ | 1261673 | 3.31 |
-| Ω | 1179566 | 3.09 |
-| Λ | 1147548 | 3.01 |
-| Μ | 1139510 | 2.99 |
-| Δ | 932823 | 2.45 |
-| Γ | 584668 | 1.53 |
-| Θ | 501512 | 1.31 |
-| Χ | 352579 | 0.92 |
-| Φ | 325210 | 0.85 |
-| Β | 220267 | 0.58 |
-| Ξ | 152971 | 0.40 |
-| Ζ | 75946 | 0.20 |
-| Ψ | 51405 | 0.13 |
-
+========= ========= =========
+           Perseus
+-----------------------------
+ Letter    Count     Percent
+========= ========= =========
+ Α         4182002   10.96
+ Ε         3678672   9.64
+ Ο         3664034   9.61
+ Ι         3613662   9.47
+ Ν         3410850   8.94
+ Τ         2903418   7.61
+ Σ         2830967   7.42
+ Υ         1776871   4.66
+ Ρ         1440852   3.78
+ Η         1392909   3.65
+ Π         1326596   3.48
+ Κ         1261673   3.31
+ Ω         1179566   3.09
+ Λ         1147548   3.01
+ Μ         1139510   2.99
+ Δ         932823    2.45
+ Γ         584668    1.53
+ Θ         501512    1.31
+ Χ         352579    0.92
+ Φ         325210    0.85
+ Β         220267    0.58
+ Ξ         152971    0.40
+ Ζ         75946     0.20
+ Ψ         51405     0.13
+========= ========= =========
 
 **First1K**
 
@@ -451,17 +452,17 @@ Uncomment next part to output a new fresh graph from Plotly:
 
 .. code-block:: python
 
-  #from plotly.offline import init_notebook_mode
-  #init_notebook_mode(connected=False)
+    #from plotly.offline import init_notebook_mode
+    #init_notebook_mode(connected=False)
 
-  # for the fist time set plotly service credentials, then you can comment the next line
-  #import plotly
-  #plotly.tools.set_credentials_file(username='MarkoManninen', api_key='xyz')
+    # for the fist time set plotly service credentials, then you can comment the next line
+    #import plotly
+    #plotly.tools.set_credentials_file(username='MarkoManninen', api_key='xyz')
 
-  # use tables and graphs...
-  #import plotly.tools as tls
-  # embed plotly graphs
-  #tls.embed("https://plot.ly/~MarkoManninen/8/")
+    # use tables and graphs...
+    #import plotly.tools as tls
+    # embed plotly graphs
+    #tls.embed("https://plot.ly/~MarkoManninen/8/")
 
 Then it is time to store unique Greek words to the database and show some
 specialties of the word statistics. This will take a minute or two:
@@ -469,33 +470,33 @@ specialties of the word statistics. This will take a minute or two:
 
 .. code-block:: python
 
-  from functions import syllabify, Abnum, greek
+    from functions import syllabify, Abnum, greek
 
-  # greek abnum object for calculating isopsephical value
-  g = Abnum(greek)
+    # greek abnum object for calculating isopsephical value
+    g = Abnum(greek)
 
-  # lets count unique words statistic from the parsed greek corpora rather than the plain text file
-  # it would be pretty dauntful to find out occurence of the all 800000+ unique words from the text
-  # file that is over 600 MB big!
-  unique_word_stats = {}
-  for item in greek_corpora:
-      for word, cnt in item['uwords'].items():
-          if word not in unique_word_stats:
-              unique_word_stats[word] = 0
-          unique_word_stats[word] += cnt
+    # lets count unique words statistic from the parsed greek corpora rather than the plain text file
+    # it would be pretty dauntful to find out occurence of the all 800000+ unique words from the text
+    # file that is over 600 MB big!
+    unique_word_stats = {}
+    for item in greek_corpora:
+        for word, cnt in item['uwords'].items():
+            if word not in unique_word_stats:
+                unique_word_stats[word] = 0
+            unique_word_stats[word] += cnt
 
-  # init dataframe
-  df = DataFrame([[k, v] for k, v in unique_word_stats.items()])
-  # add column for the occurrence percentage of the word
-  df[2] = df[1].apply(lambda x: round(x*100/lwords1, 2))
-  # add column for the length of the word
-  df[3] = df[0].apply(lambda x: len(x))
-  # add isopsephy column
-  df[4] = df[0].apply(lambda x: g.value(x))
-  # add syllabified column
-  df[5] = df[0].apply(lambda x: syllabify(x))
-  # add length of the syllables column
-  df[6] = df[5].apply(lambda x: len(x))
+    # init dataframe
+    df = DataFrame([[k, v] for k, v in unique_word_stats.items()])
+    # add column for the occurrence percentage of the word
+    df[2] = df[1].apply(lambda x: round(x*100/lwords1, 2))
+    # add column for the length of the word
+    df[3] = df[0].apply(lambda x: len(x))
+    # add isopsephy column
+    df[4] = df[0].apply(lambda x: g.value(x))
+    # add syllabified column
+    df[5] = df[0].apply(lambda x: syllabify(x))
+    # add length of the syllables column
+    df[6] = df[5].apply(lambda x: len(x))
 
 Save unique words database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -509,16 +510,16 @@ Jupyter notebook document in interactive mode if you prefer.
 
 .. code-block:: python
 
-  from functions import csv_file_name, syllabify, Abnum, greek
-  df.to_csv(csv_file_name, header=False, index=False, encoding='utf-8')
+    from functions import csv_file_name, syllabify, Abnum, greek
+    df.to_csv(csv_file_name, header=False, index=False, encoding='utf-8')
 
 For confirmation, I will show five of the most repeated words in the database:
 
 .. code-block:: python
 
-  from functions import display_html
-  # use to_html and index=False to hide index column
-  display_html(df.sort_values(1, ascending=False).head(n=5).to_html(index=False), raw=True)
+    from functions import display_html
+    # use to_html and index=False to hide index column
+    display_html(df.sort_values(1, ascending=False).head(n=5).to_html(index=False), raw=True)
 
 
 =====  =========  =========
@@ -537,9 +538,9 @@ For curiosity, let's also see the longest words in the database:
 
 .. code-block:: python
 
-  from functions import HTML
-  l = df.sort_values(3, ascending=False).head(n=20)
-  HTML(l.to_html(index=False))
+    from functions import HTML
+    l = df.sort_values(3, ascending=False).head(n=20)
+    HTML(l.to_html(index=False))
 
 
 | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
@@ -571,7 +572,7 @@ How about finding out, which words has the biggest isopsephical values?
 
 .. code-block:: python
 
-  HTML(df.sort_values(4, ascending=False).head(n=20).to_html(index=False))
+    HTML(df.sort_values(4, ascending=False).head(n=20).to_html(index=False))
 
 
 | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
@@ -602,9 +603,9 @@ How many percent of the whole word base, the least repeated words take:
 
 .. code-block:: python
 
-  le = len(df)
-  for x, y in df.groupby([1, 2]).count()[:10].T.items():
-      print("words repeating %s time(s): " % x[0], round(100*y[0]/le, 2), "%")
+    le = len(df)
+    for x, y in df.groupby([1, 2]).count()[:10].T.items():
+        print("words repeating %s time(s): " % x[0], round(100*y[0]/le, 2), "%")
 
 Output:
 
@@ -630,34 +631,34 @@ which texts the longest words occur:
 
 .. code-block:: python
 
-  from functions import listdir, get_content
-  # using already instantiated l variable I'm collecting the plain text words
-  words = list(y[0] for x, y in l.T.items())
+    from functions import listdir, get_content
+    # using already instantiated l variable I'm collecting the plain text words
+    words = list(y[0] for x, y in l.T.items())
 
-  def has_words(data):
-      a = {}
-      for x in words:
-          # partial match is fine here. data should be split to words for exact match
-          # but it will take more processing time. for shorter words it might be more useful however
-          if x in data:
-              a[x] = data.count(x)
-      return a
+    def has_words(data):
+        a = {}
+        for x in words:
+            # partial match is fine here. data should be split to words for exact match
+            # but it will take more processing time. for shorter words it might be more useful however
+            if x in data:
+                a[x] = data.count(x)
+        return a
 
-  def has_content(f):
-      content = get_content(f)
-      a = has_words(content)
-      if a:
-          print(f, a)
+    def has_content(f):
+        content = get_content(f)
+        a = has_words(content)
+        if a:
+            print(f, a)
 
-  # iterate all corporas and see if selected words occur in the text
-  for corp in corporas:
-      for a in listdir(corp):
-          b = path.join(corp, a)
-          if path.isdir(b):
-              for c in listdir(b):
-                  d = path.join(b, c)
-                  if path.isfile(d):
-                      has_content(d)
+    # iterate all corporas and see if selected words occur in the text
+    for corp in corporas:
+        for a in listdir(corp):
+            b = path.join(corp, a)
+            if path.isdir(b):
+                for c in listdir(b):
+                    d = path.join(b, c)
+                    if path.isfile(d):
+                        has_content(d)
 
 Output:
 
