@@ -244,7 +244,7 @@ def get_title_and_author(xmldoc, corpus):
         author = "Unnamed"
     if author == "":
         author = "Unnamed"
-    return author, title
+    return author, title.replace("MachineReadableText", "")
 
 def process_greek_corpora(greek_corpora):
     #print(greek_corpora)
