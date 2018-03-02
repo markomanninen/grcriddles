@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import re
 import shutil, errno
 from bs4 import BeautifulSoup
@@ -51,7 +53,9 @@ csv_file_name = "greek_words_corpora.csv"
 # copy files utility
 def copy(src, dest):
     try:
-        ignore = shutil.ignore_patterns('*.csv*', '*lat.xml', '*lat1.xml', '*cop1.xml', '*eng1.xml', '__cts__.xml')
+        ignore = shutil.ignore_patterns('*.csv*', '*lat.xml', '*lat1.xml', '*cop1.xml', \
+		                                '*eng1.xml', '__cts__.xml', '*.json', '*_eng*', \
+										'*_lat*', '*_cop*', '*english.xml', '*higg.xml')
         shutil.copytree(src, dest, ignore=ignore)
     except OSError as e:
         # error was caused because the source wasn't a directory
@@ -68,7 +72,7 @@ def get_content(fl):
 # remove tags from the content
 def remove_tags(x, corpus):
     x = re.sub('<[^<]+?>', '', x)
-    if corpus == "greek_text_perseus":
+    if corpus == "greek_text_prs":
         # with perseus data decode betacode to unicode
         x = betacode_to_unicode(x)
     return x
@@ -85,7 +89,7 @@ def line_for_corpora(node, tag, corpus):
         line = node.toxml().strip()
         if line:
             line = soupit(line, tag)
-            if corpus == "greek_text_perseus":
+            if corpus == "greek_text_prs":
                 line = betacode_to_unicode(line)
             line = " ".join(filter(lambda x: x.strip() != "", line.split()))
             if line:
@@ -128,6 +132,7 @@ tags = {
     "Galen": ["p", []],
     "Herodotus": ["p", []],
     "Hippocrates": ["p", []],
+	"Homer": ["body", ["l", "lemma"]],
     "Hyperides": ["p", []],
     "JebbOrators": ["p", ["lemma", "foreign", "l"]],
     "Josephus": ["p", []],
@@ -200,7 +205,7 @@ def init_corpora(corporas):
         # prepare corpora data
         for file in files:
             # defaul xml parse path
-            if corpus == "greek_text_perseus":
+            if corpus == "greek_text_prs":
                 tg = ["l", []]
             else:
                 tg = ["div", ["head", "p"]]
@@ -251,7 +256,7 @@ def process_greek_corpora(greek_corpora):
 
         try:
             s = get_content(f)
-            if corp == "greek_text_perseus":
+            if corp == "greek_text_prs":
                 # replace html entities with empty char and replace double empties with single ones
                 s = re.sub("&(?:[a-z\d]+|#\d+|#x[a-f\d]+);", " ", s).replace("  ", " ")
             xmldoc = minidom.parseString(s)
@@ -291,6 +296,12 @@ def process_greek_corpora(greek_corpora):
                                         corpus['content'].append(line_for_corpora(item2, "foreign", corp))
                                     elif item2.hasAttribute("xml:lang") and item2.getAttribute("xml:lang") == "greek":
                                         corpus['content'].append(line_for_corpora(item2, "foreign", corp))
+                            elif tag == "lemma":
+                                for item2 in item.getElementsByTagName("lemma"):
+                                    if item2.hasAttribute("lang") and item2.getAttribute("lang") == "greek":
+                                        corpus['content'].append(line_for_corpora(item2, "lemma", corp))
+                                    elif item2.hasAttribute("xml:lang") and item2.getAttribute("xml:lang") == "greek":
+                                        corpus['content'].append(line_for_corpora(item2, "lemma", corp))
                             else:
                                 for item2 in item.getElementsByTagName(tag):
                                     corpus['content'].append(line_for_corpora(item2, tag, corp))
@@ -316,7 +327,7 @@ def process_greek_corpora(greek_corpora):
 
         # append to different text files for statistical purposes
         append_to_file(all_greek_text_file, corpus['simplified'] + "\n")
-        if corp == "greek_text_perseus":
+        if corp == "greek_text_prs":
             append_to_file(perseus_greek_text_file, corpus['simplified'] + "\n")
         else:
             append_to_file(first1k_greek_text_file, corpus['simplified'] + "\n")
@@ -395,3 +406,13 @@ def has_roman_letters(data):
         if x in data:
             a[x] = data.count(x)
     return a
+
+vowels = "ϒΩΗΥΕΙΟΑ"
+
+def nvowels(x, n):
+    word, tot = x[0], 0
+    for c in vowels:
+        tot += word.count(c)
+        if tot > n:
+            return False
+    return tot == n
