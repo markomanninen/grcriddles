@@ -51,13 +51,13 @@ further used in the riddle solver.
 
 .. note::
 
-  	Note that rather than just reading, this, and the following chapters can
-  	also be run interactively in your local `Jupyter notebook
+    Note that rather than just reading, this, and the following chapters can
+    also be run interactively in your local `Jupyter notebook
     <https://jupyter.org/>`__ [#]_ installation if you prefer. That means that
     you may verify the procedure or alter parameters and try solving the riddles
     with your own parameters.
 
-  	Your can download these independent Jupyter notebooks for `processing
+    Your can download these independent Jupyter notebooks for `processing
     corpora <https://git.io/vASwM>`__ [#]_ and `riddle solver
     <https://git.io/vASrY>`__ [#]_.
 
@@ -132,7 +132,7 @@ database.
 Downloading corpora
 ~~~~~~~~~~~~~~~~~~~
 
-The next code snippet will download hundreds of megabytes of Greek text to your
+The next code snippet will download hundreds of megabytes of Greek text to a
 local computer for quicker access:
 
 .. code-block:: python
@@ -144,47 +144,48 @@ local computer for quicker access:
   	        print(e)
 
 Next, I will copy only suitable greek text files from `greek_text_first1kgreek`
-to the working directory `greek_text_tlg`.
+to the temporary work directory `greek_text_tlg`.
 
 .. note::
-	You can download and extract `greek_text_first1kgreek` directly from
-	https://github.com/OpenGreekAndLatin/First1KGreek/zipball/master. It may
-	have the most recent and complete set of files. If you wish to use it,
-	extract package directly to `~\cltk_data\greek\text\greek_text_first1kgreek`.
 
-I have collected the large part of the used procedures to the `functions.py
-<https://github.com/markomanninen/grcriddles/blob/master/functions.py>`__ script
-to maintain this document more concise.
+    You can download `greek_text_first1kgreek` corpora directly from their
+    `project page
+    <https://github.com/OpenGreekAndLatin/First1KGreek/zipball/master>`__ [#]_.
+    It may have the most recent and complete set of files. If you wish to use
+    it, extract package directly to
+    `~\\cltk_data\\greek\\text\\greek_text_first1kgreek`.
+
+I have collected the large part of the used procedures to the `functions.py`
+script to maintain this document more concise. Thus I will use the custom
+`copy_corpora` function to do the copying task:
 
 .. code-block:: python
 
-  	from functions import path, joinpaths, copy, dirt
+    from functions import copy_corpora
 
-  	# copy all suitable greek text files from the source dir to the destination work dir
-  	if not path.isdir(path.join(dirt, "greek_text_tlg")):
-  	    source = joinpaths(dirt, ["greek_text_first1kgreek", "data"])
-  	    destination = joinpaths(dirt, ["greek_text_tlg"])
-  	    print("Copying %s -> %s" % (source, destination))
-  	    try:
-  	        copy(source, destination)
-  	    except Exception as e:
-  	        print(e)
-  	else:
-  	    print(path.join(dirt, "greek_text_tlg"), "already exists, lets roll on!")
+    for item in [["greek_text_first1kgreek", "greek_text_tlg"],
+                 ["greek_text_perseus", "greek_text_prs"]]:
+        copy_corpora(*item)
 
 Output:
 
 .. code-block:: txt
 
     C:\Users\marko\cltk_data\greek\text\greek_text_tlg already exists, lets roll on!
-    C:\Users\marko\cltk_data\greek\text\greek_text_prs already exists, lets roll on!
+    Copying C:\Users\marko\cltk_data\greek\text\greek_text_perseus\ ->
+    C:\Users\marko\cltk_data\greek\text\greek_text_prs
 
-Perseus corpora are pretty good as they are. However, Perseus Greek source text
-is written as a `betacode <https://en.wikipedia.org/wiki/Beta_Code>`__, so I
-need a converter script for it. I found a suitable one from Python `hexameter
-<https://github.com/epilanthanomai/hexameter>`__ GitHub repository but had to
-make a small fix to it, so I'm using my own version of the `betacode.py
-<https://github.com/markomanninen/grcriddles/blob/master/betacode.py>`__ script.
+Similarly, appropriate `greek_text_perseus` files are copied to the temporary
+`greek_text_prs` work directory.
+
+Perseus Greek source text is written as a `betacode
+<https://en.wikipedia.org/wiki/Beta_Code>`__ [#]_, so I also needed a converter
+script for it. I found a suitable one from Python hexameter [#]_ GitHub
+repository maintained by `@epilanthanomai <https://github.com/epilanthanomai>`__
+but I had to make a small fix to it, so I'm using my own version of the
+`betacode.py
+<https://github.com/markomanninen/grcriddles/blob/master/betacode.py>`__ [#]_
+script.
 
 Collecting files
 ~~~~~~~~~~~~~~~~
@@ -207,7 +208,7 @@ i.e. inflected forms.
   	from functions import init_corpora
 
   	# init corpora list
-  	corpora = ["greek_text_perseus", "greek_text_tlg"]
+  	corpora = ["greek_text_prs", "greek_text_tlg"]
 
   	greek_corpora_x = init_corpora(corpora)
   	print("%s files found" % len(greek_corpora_x))
@@ -216,7 +217,7 @@ Output:
 
 .. code-block:: text
 
-    1272 files found
+    1311 files found
 
 Processing files
 ~~~~~~~~~~~~~~~~
@@ -237,7 +238,7 @@ first, then they are recreated by calling `process_greek_corpora` function.
   	except OSError:
   	    pass
 
-	# collect greek corpora data
+	# process and get greek corpora data
 	greek_corpora = process_greek_corpora(greek_corpora_x)
 
 Statistics
@@ -294,9 +295,9 @@ Output:
 Letter statistics
 ~~~~~~~~~~~~~~~~~
 
-I'm using `DataFrame` object from `Pandas` library to handle tabular data and
+I'm using `DataFrame` class from `Pandas` library to handle tabular data and
 show basic letter statistics for each corpora and combination of them. Native
-`Counter` object in Python is used to count unique elements in the given
+`Counter` class in Python is used to count unique elements in the given
 sequence. Sequence in this case is the raw Greek text stripped from all special
 characters and spaces, and elements are the letters of the Greek alphabet.
 
@@ -318,9 +319,6 @@ This will take some time to process too:
 	df[2] = df[1].apply(lambda x: round(x*100/chars3, 2))
 	c = df.sort_values(1, ascending=False)
 
-Show letter statistics
-~~~~~~~~~~~~~~~~~~~~~~
-
 The first column is the letter, the second column is the count of the letter,
 and the third column is the percentage of the letter contra all letters.
 
@@ -335,66 +333,34 @@ and the third column is the percentage of the letter contra all letters.
 ----------------------------- ----------------------------- -----------------------------
  Letter    Count     Percent   Letter    Count     Percent   Letter    Count     Percent
 ========= ========= ========= ========= ========= ========= ========= ========= =========
- Α         4182002   10.96     Α         4182002   10.96     Α         4182002   10.96
- Ε         3678672   9.64      Ε         3678672   9.64      Ε         3678672   9.64
- Ο         3664034   9.61      Ο         3664034   9.61      Ο         3664034   9.61
- Ι         3613662   9.47      Ι         3613662   9.47      Ι         3613662   9.47
- Ν         3410850   8.94      Ν         3410850   8.94      Ν         3410850   8.94
- Τ         2903418   7.61      Τ         2903418   7.61      Τ         2903418   7.61
- Σ         2830967   7.42      Σ         2830967   7.42      Σ         2830967   7.42
- Υ         1776871   4.66      Υ         1776871   4.66      Υ         1776871   4.66
- Ρ         1440852   3.78      Ρ         1440852   3.78      Ρ         1440852   3.78
- Η         1392909   3.65      Η         1392909   3.65      Η         1392909   3.65
- Π         1326596   3.48      Π         1326596   3.48      Π         1326596   3.48
- Κ         1261673   3.31      Κ         1261673   3.31      Κ         1261673   3.31
- Ω         1179566   3.09      Ω         1179566   3.09      Ω         1179566   3.09
- Λ         1147548   3.01      Λ         1147548   3.01      Λ         1147548   3.01
- Μ         1139510   2.99      Μ         1139510   2.99      Μ         1139510   2.99
- Δ         932823    2.45      Δ         932823    2.45      Δ         932823    2.45
- Γ         584668    1.53      Γ         584668    1.53      Γ         584668    1.53
- Θ         501512    1.31      Θ         501512    1.31      Θ         501512    1.31
- Χ         352579    0.92      Χ         352579    0.92      Χ         352579    0.92
- Φ         325210    0.85      Φ         325210    0.85      Φ         325210    0.85
- Β         220267    0.58      Β         220267    0.58      Β         220267    0.58
- Ξ         152971    0.40      Ξ         152971    0.40      Ξ         152971    0.40
- Ζ         75946     0.20      Ζ         75946     0.20      Ζ         75946     0.20
- Ψ         51405     0.13      Ψ         51405     0.13      Ψ         51405     0.13
+ Α         4182002   10.96     Α         26817705  10.76     Α         4182002   10.96
+ Ε         3678672   9.64      Ο         23687669  9.50      Ε         3678672   9.64
+ Ο         3664034   9.61      Ι         22665483  9.09      Ο         3664034   9.61
+ Ι         3613662   9.47      Ν         22498413  9.03      Ι         3613662   9.47
+ Ν         3410850   8.94      Ε         22121458  8.88      Ν         3410850   8.94
+ Τ         2903418   7.61      Τ         21698265  8.71      Τ         2903418   7.61
+ Σ         2830967   7.42      Σ         18738234  7.52      Σ         2830967   7.42
+ Υ         1776871   4.66      Υ         11384921  4.57      Υ         1776871   4.66
+ Ρ         1440852   3.78      Ρ         9776411   3.92      Ρ         1440852   3.78
+ Η         1392909   3.65      Η         9268111   3.72      Η         1392909   3.65
+ Π         1326596   3.48      Κ         8982955   3.60      Π         1326596   3.48
+ Κ         1261673   3.31      Π         8290364   3.33      Κ         1261673   3.31
+ Ω         1179566   3.09      Ω         7874161   3.16      Ω         1179566   3.09
+ Λ         1147548   3.01      Μ         7498489   3.01      Λ         1147548   3.01
+ Μ         1139510   2.99      Λ         6929170   2.78      Μ         1139510   2.99
+ Δ         932823    2.45      Δ         5757782   2.31      Δ         932823    2.45
+ Γ         584668    1.53      Γ         4197053   1.68      Γ         584668    1.53
+ Θ         501512    1.31      Θ         3440599   1.38      Θ         501512    1.31
+ Χ         352579    0.92      Χ         2294905   0.92      Χ         352579    0.92
+ Φ         325210    0.85      Φ         2115768   0.85      Φ         325210    0.85
+ Β         220267    0.58      Β         1322737   0.53      Β         220267    0.58
+ Ξ         152971    0.40      Ξ         951076    0.38      Ξ         152971    0.40
+ Ζ         75946     0.20      Ζ         559728    0.22      Ζ         75946     0.20
+ Ψ         51405     0.13      Ψ         375266    0.15      Ψ         51405     0.13
  Ϛ         0         0.00      Ϛ         8430      0.00      Ϛ         8430      0.00
  Ϡ         0         0.00      Ϡ         364       0.00      Ϡ         364       0.00
  Ϟ         0         0.00      Ϟ         204       0.00      Ϟ         204       0.00
 ========= ========= ========= ========= ========= ========= ========= ========= =========
-
-**First1K**
-
-| Letter | Count | Percent |
-| --- | --- | --- |
-| Α | 26817705 | 10.76 |
-| Ο | 23687669 | 9.50 |
-| Ι | 22665483 | 9.09 |
-| Ν | 22498413 | 9.03 |
-| Ε | 22121458 | 8.88 |
-| Τ | 21698265 | 8.71 |
-| Σ | 18738234 | 7.52 |
-| Υ | 11384921 | 4.57 |
-| Ρ | 9776411 | 3.92 |
-| Η | 9268111 | 3.72 |
-| Κ | 8982955 | 3.60 |
-| Π | 8290364 | 3.33 |
-| Ω | 7874161 | 3.16 |
-| Μ | 7498489 | 3.01 |
-| Λ | 6929170 | 2.78 |
-| Δ | 5757782 | 2.31 |
-| Γ | 4197053 | 1.68 |
-| Θ | 3440599 | 1.38 |
-| Χ | 2294905 | 0.92 |
-| Φ | 2115768 | 0.85 |
-| Β | 1322737 | 0.53 |
-| Ξ | 951076 | 0.38 |
-| Ζ | 559728 | 0.22 |
-| Ψ | 375266 | 0.15 |
-| Ϛ | 8430 | 0.00 |
-| Ϡ | 364 | 0.00 |
-| Ϟ | 204 | 0.00 |
 
 **Both**
 
@@ -472,9 +438,10 @@ specialties of the word statistics. This will take a minute or two:
     # greek abnum object for calculating isopsephical value
     g = Abnum(greek)
 
-    # lets count unique words statistic from the parsed greek corpora rather than the plain text file
-    # it would be pretty hefty work to find out occurence of the all 800000+ unique words from the text
-    # file that is over 600 MB big!
+    # lets count unique words statistic from the parsed greek corpora
+    # rather than the plain text file it would be pretty hefty work to find
+    # out occurence of the all 800000+ unique words from the text  file that
+    # is over 600 MB big!
     unique_word_stats = {}
     for item in greek_corpora:
         for word, cnt in item['uwords'].items():
@@ -485,7 +452,7 @@ specialties of the word statistics. This will take a minute or two:
     # init dataframe
     df = DataFrame([[k, v] for k, v in unique_word_stats.items()])
     # add column for the occurrence percentage of the word
-    df[2] = df[1].apply(lambda x: round(x*100/lwords1, 2))
+    df[2] = df[1].apply(lambda x: round(x*100/lwords3, 2))
     # add column for the length of the word
     df[3] = df[0].apply(lambda x: len(x))
     # add isopsephy column
@@ -505,8 +472,8 @@ Save unique words database
 This is the single most important part of the document. I'm saving all
 simplified unique words as a csv file that can be used as a database for the
 riddle solver. After this you may proceed to the `riddle solver
-<Isopsephical riddles in the Greek Pseudo Sibylline hexameter poetry.ipynb>`__
-Jupyter notebook document in interactive mode if you prefer.
+<https://git.io/vASrY>`__ Jupyter notebook document in interactive mode if
+you prefer.
 
 
 .. code-block:: python
@@ -540,32 +507,35 @@ For curiosity, let's also see the longest words in the database:
 .. code-block:: python
 
     from functions import HTML
+    # load result to the temporary variable for later usage
     l = df.sort_values(3, ascending=False).head(n=20)
     HTML(l.to_html(index=False))
 
 
-| 0 | 1 | 2 | 3 | 4 | 5 | 6 |
-| --- | --- | --- | --- | --- | --- | --- |
-| ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ | 3 40 | 4280 | [ΑΛ, ΛΗ, ΣΤΗ, ΣΑ, ΝΩ, ΘΕΝ, ΘΕΡΜ, ΤΗ, ΤΟ, ΣΑΤ, ... | 16 |
-| ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ | 3 37 | 4466 | [ΔΥ, ΝΑ, ΤΟΝ, ΔΕ, ΤΟ, ΑΙ, ΤΑΙ, ΗΣ, ΓΕΝ, ΣΕ, Ω,... | 15 |
-| ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ | 2 36 | 1454 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΚΑ, Ε, ΤΗ, ΡΙ, ΕΝ, ΝΕ, Α,... | 18 |
-| ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ | 4 36 | 4553 | [ΣΙ, Α, ΛΟΙ, Ο, ΡΑ, ΧΙΝ, ΤΕ, ΘΑ, ΛΥΙ, Α, ΝΑ, Λ... | 16 |
-| ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ | 3 36 | 4486 | [Ε, ΜΟΥΙ, ΑΠ, ΦΕΥ, ΓΑ, ΧΕΙ, ΡΑΣ, ΛΥΠ, ΣΑ, ΣΜΕ,... | 13 |
-| ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ | 2 35 | 4220 | [ΚΑΙ, Ο, ΣΑ, ΑΛ, ΛΑ, ΤΩΝ, ΤΟΙ, ΟΥ, ΤΩΝ, ΠΡΟΣ, ... | 15 |
-| ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ | 1 35 | 1796 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΕΙ, ΚΟ, ΣΙ, ΚΑΙ, Ε, ΠΤΑ, ΚΟ, ... | 17 |
-| ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ | 1 33 | 5186 | [ΟΡ, ΘΡΟ, ΦΟΙ, ΤΟ, ΣΥ, ΚΟ, ΦΑΝ, ΤΟ, ΔΙ, ΚΟ, ΤΑ... | 14 |
-| ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ | 1 32 | 3485 | [ΤΕΤ, ΤΑ, ΡΑ, ΚΟΝ, ΤΑ, ΚΑΙ, ΠΕΝ, ΤΑ, ΚΙ, ΣΧΙ, ... | 13 |
-| ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ | 3 32 | 3179 | [ΚΑΙ, Ι, ΚΛΗ, ΧΡΥ, ΣΗ, Α, ΦΡΟΔ, ΤΗ, ΚΑΙ, ΟΙ, Σ... | 13 |
-| ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ | 2 31 | 3730 | [Ο, ΤΙ, ΤΟΥ, ΜΗ, ΔΙ, Α, ΠΡΟ, ΤΡΩ, ΝΟΡ, ΖΕ, ΣΘΑ... | 12 |
-| ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ | 3 31 | 2163 | [ΑΥ, ΤΟ, ΜΑ, ΤΟΙ, ΔΕ, ΟΙ, ΘΕ, ΟΙ, Α, ΠΑΛ, ΛΑΣ,... | 14 |
-| ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ | 1 31 | 2705 | [ΣΠΕΡ, ΜΑ, ΓΟ, ΡΑΙ, Ο, ΛΕ, ΚΙ, ΘΟ, ΛΑ, ΧΑ, ΝΟ,... | 14 |
-| ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ | 2 30 | 1381 | [Η, ΔΙ, ΚΗ, ΜΝΟΝ, ΔΕ, Α, ΠΕΡ, ΡΙΜ, ΜΝΟΝ, ΠΕ, Ρ... | 13 |
-| ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ | 3 29 | 4102 | [ΠΑ, ΡΥ, ΦΙ, ΣΤΑ, ΜΕ, ΝΟΥ, ΠΡΑΓ, ΜΑ, ΤΟ, ΣΚΟΙ,... | 11 |
-| ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ | 2 29 | 2766 | [ΧΙ, ΛΙ, Ο, ΚΤΑ, ΚΟ, ΣΙ, ΟΥ, ΔΟ, Η, ΚΟΝ, ΤΑ, Π... | 14 |
-| ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ | 2 29 | 1590 | [ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΕΝ, ΝΕ, Α, ΚΑΙ, ΔΕ, ΚΑ, Ε... | 14 |
-| ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ | 3 29 | 1789 | [Ε, ΚΑ, ΤΟΝ, ΤΑ, ΚΑΙ, Ε, ΒΔΟ, ΜΗ, ΚΟΝ, ΤΑ, ΠΛΑ... | 13 |
-| ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ | 1 29 | 3174 | [ΣΚΟ, ΡΟ, ΔΟ, ΠΑΝ, ΔΟ, ΚΕΥ, ΤΡΙ, ΑΡ, ΤΟ, ΠΩ, Λ... | 12 |
-| ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ | 1 28 | 3657 | [ΣΙΛ, ΦΙ, Ο, ΤΥ, ΡΟ, ΜΕ, ΛΙ, ΤΟ, ΚΑ, ΤΑ, ΚΕ, Χ... | 14 |
+========================================== ============= ========
+ Word                                       Occurrences   Length
+========================================== ============= ========
+ ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ   3             40
+ ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ      3             37
+ ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ       2             36
+ ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ       4             36
+ ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ       3             36
+ ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ        2             35
+ ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ        1             35
+ ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ          1             33
+ ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ           1             32
+ ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ           3             32
+ ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ            2             31
+ ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ            3             31
+ ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ            1             31
+ ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ             2             30
+ ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ              3             29
+ ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ              2             29
+ ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ              2             29
+ ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ              3             29
+ ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ              1             29
+ ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ               1             28
+========================================== ============= ========
 
 
 
@@ -635,7 +605,7 @@ which texts the longest words occur:
     from functions import listdir, get_content
     # using already instantiated l variable I'm collecting the plain text words
     words = list(y[0] for x, y in l.T.items())
-
+    # find how many times word occurs in text
     def has_words(data):
         a = {}
         for x in words:
@@ -644,59 +614,54 @@ which texts the longest words occur:
             if x in data:
                 a[x] = data.count(x)
         return a
-
+    # output occurences of the words if there are any
     def has_content(f):
         content = get_content(f)
         a = has_words(content)
         if a:
-            print(f, a)
-
+            print(" - %s => \r\n   %s" % (f, ', '.join(list("%s: %s" % (k, v) for k, v in a.items()))))
     # iterate all corporas and see if selected words occur in the text
     for corp in corporas:
-        for a in listdir(corp):
-            b = path.join(corp, a)
-            if path.isdir(b):
-                for c in listdir(b):
-                    d = path.join(b, c)
-                    if path.isfile(d):
-                        has_content(d)
+        for b in filter(path.isdir, map(lambda x: path.join(corp, x), listdir(corp))):
+            for c in filter(path.isfile, map(lambda x: path.join(b, x), listdir(b))):
+                has_content(c)
 
 Output:
 
 .. code-block:: txt
 
-    greek_text_perseus\Aristophanes\Simplified_Ecclesiazusae.txt
-    {'ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ': 1}
-    greek_text_perseus\Aristophanes\Simplified_Lysistrata.txt
-    {'ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ': 1, 'ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ': 1}
-    greek_text_perseus\Aristophanes\Simplified_Wasps.txt
-    {'ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ': 1}
-    greek_text_perseus\Plato\Simplified_LawsMachineReadableText.txt
-    {'ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ': 1}
-    greek_text_perseus\Plato\Simplified_RepublicMachineReadableText.txt
-    {'ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ': 1}
-    greek_text_tlg\AlexanderOfAphrodisias\Simplified_InAristotelisTopicorumLibrosOctoCommentaria.txt
-    {'ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ': 2}
-    greek_text_tlg\Ammonius\Simplified_InAristotelisLibrumDeInterpretationeCommentarius.txt
-    {'ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ': 2}
-    greek_text_tlg\ApolloniusDyscolus\Simplified_DeConstructione.txt
-    {'ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ': 3}
-    greek_text_tlg\Artemidorus\Simplified_Onirocriticon.txt
-    {'ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ': 3}
-    greek_text_tlg\ChroniconPaschale\Simplified_ChroniconPaschale.txt
-    {'ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ': 2, 'ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ': 2}
-    greek_text_tlg\ClaudiusPtolemaeus\Simplified_SyntaxisMathematica.txt
-    {'ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ': 3}
-    greek_text_tlg\JoannesPhiloponus\Simplified_InAristotetelisMeteorologicorumLibrumPrimumCommentarium.txt
-    {'ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ': 3, 'ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ': 3}
-    greek_text_tlg\Libanius\Simplified_Epistulae1-839.txt
-    {'ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ': 3, 'ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ': 3}
-    greek_text_tlg\Libanius\Simplified_OratioI.txt
-    {'ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ': 2}
-    greek_text_tlg\ScholiaInHomerum\Simplified_ScholiaInIliadum.txt
-    {'ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ': 4}
-    greek_text_tlg\TheonSmyrnaeus\Simplified_DeUtilitateMathematicae.txt
-    {'ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ': 2}
+    greek_text_perseus\Aristophanes\Simplified_Ecclesiazusae.txt =>
+    ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ: 1
+    greek_text_perseus\Aristophanes\Simplified_Lysistrata.txt =>
+    ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ: 1, ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ: 1
+    greek_text_perseus\Aristophanes\Simplified_Wasps.txt =>
+    ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ: 1
+    greek_text_perseus\Plato\Simplified_LawsMachineReadableText.txt =>
+    ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ: 1
+    greek_text_perseus\Plato\Simplified_RepublicMachineReadableText.txt =>
+    ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ: 1
+    greek_text_tlg\AlexanderOfAphrodisias\Simplified_InAristotelisTopicorumLibrosOctoCommentaria.txt =>
+    ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ: 2
+    greek_text_tlg\Ammonius\Simplified_InAristotelisLibrumDeInterpretationeCommentarius.txt =>
+    ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ: 2
+    greek_text_tlg\ApolloniusDyscolus\Simplified_DeConstructione.txt =>
+    ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ: 3
+    greek_text_tlg\Artemidorus\Simplified_Onirocriticon.txt =>
+    ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ: 3
+    greek_text_tlg\ChroniconPaschale\Simplified_ChroniconPaschale.txt =>
+    ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ: 2, ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ: 2
+    greek_text_tlg\ClaudiusPtolemaeus\Simplified_SyntaxisMathematica.txt =>
+    ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ: 3
+    greek_text_tlg\JoannesPhiloponus\Simplified_InAristotetelisMeteorologicorumLibrumPrimumCommentarium.txt =>
+    ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ: 3, ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ: 3
+    greek_text_tlg\Libanius\Simplified_Epistulae1-839.txt =>
+    ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ: 3, ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ: 3
+    greek_text_tlg\Libanius\Simplified_OratioI.txt =>
+    ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ: 2
+    greek_text_tlg\ScholiaInHomerum\Simplified_ScholiaInIliadum.txt =>
+    ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ: 4
+    greek_text_tlg\TheonSmyrnaeus\Simplified_DeUtilitateMathematicae.txt =>
+    ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ: 2
 
 For a small explanation: `Aristophanes
 <https://en.wikipedia.org/wiki/Aristophanes>`__ was a Greek comic playwright
@@ -722,4 +687,7 @@ well.
 .. [#] https://github.com/jtauber/greek-accentuation
 .. [#] http://pandas.pydata.org
 .. [#] https://plot.ly
-.. [#] https://plot.ly
+.. [#] https://github.com/OpenGreekAndLatin/First1KGreek/zipball/master
+.. [#] https://en.wikipedia.org/wiki/Beta_Code
+.. [#] https://github.com/epilanthanomai/hexameter
+.. [#] https://github.com/markomanninen/grcriddles/blob/master/betacode.py
