@@ -44,10 +44,10 @@ Programmatical approach to solve the riddles requires huge Greek text corpora.
 Bigger it is, the better. I will download and preprocess available open source
 Greek corpora, which is a quite daunting task for many reasons. I have left the
 most of the details of this part for the enthusiasts to read straight from the
-commented code in `functions.py <https://git.io/vAS2Z>`__ [#]_. In the end,
-I'll have a word database containing hundreds of thousands of unique Greek
-words extracted from the naturally written language corpora. Then words can be
-further used in the riddle solver.
+commented code in `functions.py <https://git.io/vAS2Z>`__ [#]_. In the end of
+the task, I'll have a word database containing hundreds of thousands of unique
+Greek words extracted from the naturally written language corpora. Then words
+can be further used in the riddle solver.
 
 .. note::
 
@@ -58,27 +58,27 @@ further used in the riddle solver.
     with your own parameters.
 
     Your can download these independent Jupyter notebooks for `processing
-    corpora <https://git.io/vASwM>`__ [#]_ and `riddle solver
-    <https://git.io/vASrY>`__ [#]_.
+    corpora <https://git.io/vASwM>`__ [#]_, `riddle solver
+    <https://git.io/vASrY>`__ [#]_, and `result analysis <>`__ [#]_.
 
 Required components
 ~~~~~~~~~~~~~~~~~~~
 
 The first task is to get a big raw ancient Greek text to operate with.
 `CLTK <https://github.com/cltk/cltk>`__ [#]_ library provides an importer to the
-`Perseus <http://www.perseus.tufts.edu/hopper/opensource/download>`__ [#]_ and the
-`First1KGreek <http://opengreekandlatin.github.io/First1KGreek/>`__ [#]_ open source
-data sources.
+`Perseus <http://www.perseus.tufts.edu/hopper/opensource/download>`__ [#]_ and
+the `First1KGreek <http://opengreekandlatin.github.io/First1KGreek/>`__ [#]_
+open source data sources.
 
-I'm using my own `Abnum <https://github.com/markomanninen/abnum3>`__ [#]_ library to
-strip accents of the Greek words, remove non-alphabetical characters, as well as
-calculating the isopsephical value of the words. `Greek_accentuation
+I'm using my own `Abnum <https://github.com/markomanninen/abnum3>`__ [#]_ library
+to strip accents of the Greek words, remove non-alphabetical characters, as well
+as calculating the isopsephical value of the words. `Greek accentuation
 <https://github.com/jtauber/greek-accentuation>`__ [#]_ library is used to split
 words into syllables. This is required because few of the riddles contain
 specific information about syllables of the word. `Pandas
 <http://pandas.pydata.org/>`__ [#]_ library is used as an API to the collected
-database. `Plotly <https://plot.ly/>`__ [#]_ library and online infographic service
-are used for the visual presentation of the statistics.
+database. `Plotly <https://plot.ly/>`__ [#]_ library and online infographic
+service are used for the visual presentation of the statistics.
 
 You can install these libraries by uncommenting and running the next install
 lines:
@@ -157,7 +157,7 @@ to the temporary work directory `greek_text_tlg`.
 
 I have collected the large part of the used procedures to the `functions.py`
 script to maintain this document more concise. Thus I will use the custom
-`copy_corpora` function to do the copying task:
+`copy_corpora` function to do the copy task:
 
 .. code-block:: python
 
@@ -180,7 +180,8 @@ Similarly, appropriate `greek_text_perseus` files are copied to the temporary
 
 Perseus Greek source text is written as a `betacode
 <https://en.wikipedia.org/wiki/Beta_Code>`__ [#]_, so I also needed a converter
-script for it. I found a suitable one from Python hexameter [#]_ GitHub
+script for it. I found a suitable one from Python `hexameter
+<https://github.com/epilanthanomai/hexameter>`__ [#]_ GitHub
 repository maintained by `@epilanthanomai <https://github.com/epilanthanomai>`__
 but I had to make a small fix to it, so I'm using my own version of the
 `betacode.py
@@ -196,12 +197,12 @@ that only Greek texts are processed. XML files have a lot of meta information
 and text blocks written for example in English and Latin that needs to be
 stripped out.
 
-Extracted content is saved to the author/work based work directories. Simplified
-uncial conversion is also made at the same time so that the final output file
-contains only plain uppercase words separated by spaces. Pretty much in a format
-written by the ancient Greeks btw. Noteworth is that stored words are not stems,
-or word roots but contain words in all possible prefixes and affixes,
-i.e. inflected forms.
+Extracted content is saved to the author/work based temporary directories.
+Simplified uncial conversion is also made at the same time so that the final
+output file contains only plain uppercase words separated by spaces. Pretty
+much in a format written by the ancient Greeks btw. Noteworth is that stored
+words are not stems, or word roots but contain words in all possible prefixes
+and affixes, i.e. inflected forms.
 
 .. code-block:: python
 
@@ -427,9 +428,11 @@ Uncomment next part to output a new fresh graph from Plotly:
     # embed plotly graphs
     #tls.embed("https://plot.ly/~MarkoManninen/8/")
 
-Then it is time to store unique Greek words to the database and show some
-specialties of the word statistics. This will take a minute or two:
+Unique words database
+---------------------
 
+Then it is time to collect unique Greek words to the database and show some
+specialties of the word statistics. This will take a minute or two:
 
 .. code-block:: python
 
@@ -466,8 +469,8 @@ specialties of the word statistics. This will take a minute or two:
     # count consonants in the word
     df[8] = df[0].apply(lambda x: len(x)-sum(list(x.count(c) for c in vowels)))
 
-Save unique words database
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Store database
+~~~~~~~~~~~~~~
 
 This is the single most important part of the document. I'm saving all
 simplified unique words as a csv file that can be used as a database for the
@@ -475,11 +478,13 @@ riddle solver. After this you may proceed to the `riddle solver
 <https://git.io/vASrY>`__ Jupyter notebook document in interactive mode if
 you prefer.
 
-
 .. code-block:: python
 
-    from functions import csv_file_name, syllabify, Abnum, greek
+    from functions import csv_file_name
     df.to_csv(csv_file_name, header=False, index=False, encoding='utf-8')
+
+Most repeated words
+~~~~~~~~~~~~~~~~~~~
 
 For confirmation, I will show five of the most repeated words in the database:
 
@@ -489,18 +494,20 @@ For confirmation, I will show five of the most repeated words in the database:
     # use to_html and index=False to hide index column
     display_html(df.sort_values(1, ascending=False).head(n=5).to_html(index=False), raw=True)
 
-
 =====  =========  =========
  Word   Count      Percent
 =====  =========  =========
- ΚΑΙ    3332509    45.51
- ΔΕ     1355091    18.51
- ΤΟ     1297764    17.72
- ΤΟΥ    933432     12.75
- ΤΩΝ    918946     12.55
+ ΚΑΙ    3489609    5.60
+ ΔΕ     1430133    2.29
+ ΤΟ     1355647    2.17
+ ΤΟΥ    989407     1.59
+ ΤΩΝ    958932     1.54
 =====  =========  =========
 
 KAI...
+
+Longest words
+~~~~~~~~~~~~~
 
 For curiosity, let's also see the longest words in the database:
 
@@ -510,7 +517,6 @@ For curiosity, let's also see the longest words in the database:
     # load result to the temporary variable for later usage
     l = df.sort_values(3, ascending=False).head(n=20)
     HTML(l.to_html(index=False))
-
 
 ========================================== ============= ========
  Word                                       Occurrences   Length
@@ -537,7 +543,8 @@ For curiosity, let's also see the longest words in the database:
  ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ               1             28
 ========================================== ============= ========
 
-
+Biggest isopsephy
+~~~~~~~~~~~~~~~~~
 
 How about finding out, which words has the biggest isopsephical values?
 
@@ -570,6 +577,9 @@ How about finding out, which words has the biggest isopsephical values?
  ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ                        8             19       4102
 ========================================== ============= ======== ===========
 
+Word frequency
+~~~~~~~~~~~~~~
+
 How many percent of the whole word base, the least repeated words take:
 
 .. code-block:: python
@@ -593,16 +603,18 @@ Output:
     words repeating 9 time(s):  2.17 %
     words repeating 10 time(s):  1.7 %
 
-
 Words that repeat 1-4 times fills the 60% of the whole text. Words repeating
 three times takes 16.5% of the words being the greatest repeatance factor.
+
+Detect source texts for longest words
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Finally, for cross checking the data processing algorithm, I want to know in
 which texts the longest words occur:
 
 .. code-block:: python
 
-    from functions import listdir, get_content
+    from functions import listdir, get_content, path
     # using already instantiated l variable I'm collecting the plain text words
     words = list(y[0] for x, y in l.T.items())
     # find how many times word occurs in text
@@ -619,7 +631,7 @@ which texts the longest words occur:
         content = get_content(f)
         a = has_words(content)
         if a:
-            print(" - %s => \r\n   %s" % (f, ', '.join(list("%s: %s" % (k, v) for k, v in a.items()))))
+            print(" - %s => \r\n   %s\r\n" % (f, ', '.join(list("%s: %s" % (k, v) for k, v in a.items()))))
     # iterate all corporas and see if selected words occur in the text
     for corp in corporas:
         for b in filter(path.isdir, map(lambda x: path.join(corp, x), listdir(corp))):
