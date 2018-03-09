@@ -10,26 +10,26 @@ Processing Greek corpora for the riddle solver
 
 `Pseudo-Sibylline <https://en.wikipedia.org/wiki/Sibylline_Oracles>`__ [#]_
 oracles contain hexametric poems written in Ancient Greek. These *oracula* were
-mainly composed in 150BC - 200AD to twelve different extant books. They were
+mainly composed in 150BC - 200AD to twelve distinct extant books. They were
 circulating and quite famous among the Judaeo-Christian community at that time.
 They shouldn't, however, be too much confused with the earlier `Sibylline books
 <https://en.wikipedia.org/wiki/Sibylline_Books>`__ [#]_. Sibylline books
 contained religious ceremonial advices that were consulted by the selected
-priests and curators in the Roman empire, when it was in deep political trouble.
+priests and curators in the Roman state, when it was in deep political trouble.
 The collection of the original Sibylline books were destroyed by different
 accidental events and deliberate actions in history.
 
 Pseudo-Sibylline oracles, on the other hand, contain Jewish narrative of the
 human history contrasted to the Greek mythology and to the chronology of the
-great ancient empires. Other intention of the material is to support Christian
-doctrine and interpretation of the prophesies. Prophesies were mostly grounded
-on Jewish literature, but surprisingly some pagan events also came to be
-interpreted as signs of the coming Messiah.
+other great ancient empires. Other intention of the material is to support
+evolving Christian doctrine and interpretation of the prophesies. Prophesies
+were mostly grounded on Jewish literature, but surprisingly some pagan world
+events also came to be interpreted as signs of the coming Messiah.
 
 Some of the material in the Pseudo-Sibylline oracles contain cryptic puzzles,
-often referring to persons, cities, countries, and epithets of God for example.
-These secretive references are often very general in nature, pointing only to
-the first letter of the subject and its numerical value. Solving them requires
+referring to persons, cities, countries, and epithets of God for example. These
+secretive references are often very general in nature, pointing only to the
+first letter of the subject and its numerical value. Solving them requires
 a proper knowledge of the context, not only inner textual but historical context.
 
 Most of the alphanumeric riddles in the oracles have already been solved by
@@ -42,43 +42,50 @@ Natural language processing
 
 Programmatical approach to solve the riddles requires huge Greek text corpora.
 Bigger it is, the better. I will download and preprocess available open source
-Greek corpora, which is a quite daunting task for many reasons. I have left the
+Greek corpora, which is a quite daunting task for many reasons. Programming
+language of my choice is [Python](http://python.org). I have left the
 most of the details of this part for the enthusiasts to read straight from the
-commented code in `functions.py <https://git.io/vAS2Z>`__ [#]_. In the end of
-the task, I'll have a word database containing hundreds of thousands of unique
-Greek words extracted from the naturally written language corpora. Then words
-can be further used in the riddle solver.
+commented code in `functions.py <https://git.io/vAS2Z>`__ [#]_ script. By
+collecting the large part of the used procedures to the separate script
+maintains this document more concise too.
+
+In the end of the task of the first chapter, I'll have a word database
+containing hundreds of thousands of unique Greek words extracted from the
+naturally written language corpora. Then words can be further used in the
+riddle solver.
 
 .. note::
 
     Note that rather than just reading, this, and the following chapters can
     also be run interactively in your local `Jupyter notebook
     <https://jupyter.org/>`__ [#]_ installation if you prefer. That means that
-    you may verify the procedure or alter parameters and try solving the riddles
-    with your own parameters.
+    you may test and verify the procedure or alter parameters and try solving
+    the riddles with your own parameters.
 
     Your can download these independent Jupyter notebooks for `processing
-    corpora <https://git.io/vASwM>`__ [#]_, `riddle solver
-    <https://git.io/vASrY>`__ [#]_, and `result analysis <>`__ [#]_.
+    corpora <https://git.io/vASwM>`__ [#]_, `solving riddles
+    <https://git.io/vASrY>`__ [#]_, and `analysing results <>`__ [#]_.
 
 Required components
 ~~~~~~~~~~~~~~~~~~~
 
-The first task is to get a big raw ancient Greek text to operate with.
-`CLTK <https://github.com/cltk/cltk>`__ [#]_ library provides an importer to the
-`Perseus <http://www.perseus.tufts.edu/hopper/opensource/download>`__ [#]_ and
-the `First1KGreek <http://opengreekandlatin.github.io/First1KGreek/>`__ [#]_
-open source data sources.
+The first task is to get a big raw ancient Greek text to operate with. I have
+implemented an importer interface with `tqdm <https://github.com/tqdm/tqdm>`__
+library to the `Perseus
+<http://www.perseus.tufts.edu/hopper/opensource/download>`__ [#]_ and the
+`First1KGreek <http://opengreekandlatin.github.io/First1KGreek/>`__ [#]_ open
+source data sources in this chapter.
 
-I'm using my own `Abnum <https://github.com/markomanninen/abnum3>`__ [#]_ library
-to strip accents of the Greek words, remove non-alphabetical characters, as well
-as calculating the isopsephical value of the words. `Greek accentuation
-<https://github.com/jtauber/greek-accentuation>`__ [#]_ library is used to split
-words into syllables. This is required because few of the riddles contain
-specific information about syllables of the word. `Pandas
-<http://pandas.pydata.org/>`__ [#]_ library is used as an API to the collected
-database. `Plotly <https://plot.ly/>`__ [#]_ library and online infographic
-service are used for the visual presentation of the statistics.
+I'm using my own `Abnum <https://github.com/markomanninen/abnum3>`__ [#]_
+library to remove accents and non-alphabetical character of the Greek wordss,
+as well as calculating the isopsephical value of the Greek words. `Greek
+accentuation <https://github.com/jtauber/greek-accentuation>`__ [#]_ library is
+used to split words into syllables. This is required because few of the riddles
+contain specific information about the syllables of the words. `Pandas
+<http://pandas.pydata.org/>`__ [#]_ library is used as an API (application
+programming interface) to the collected database. `Plotly
+<https://plot.ly/>`__ [#]_ library and online infographic service are used for
+the visual presentation of the statistics.
 
 You can install these libraries by uncommenting and running the next install
 lines:
@@ -87,7 +94,7 @@ lines:
 
   	import sys
 
-  	#!{sys.executable} -m pip install cltk abnum
+  	#!{sys.executable} -m pip install tqdm abnum
   	#!{sys.executable} -m pip install pandas plotly
   	#!{sys.executable} -m pip install greek_accentuation
 
@@ -101,136 +108,115 @@ Output:
 
 .. code-block:: txt
 
-    Python 3.6.1 | Anaconda 4.4.0 (64-bit)| (default, May 11 2017, 13:25:24) [MSC v.1900 64 bit (AMD64)]
+    Python 3.6.1 | Anaconda 4.4.0 (64-bit) | (default, May 11 2017, 13:25:24) [MSC v.1900 64 bit (AMD64)]
 
 Note that `Python 3.4+` is required for all examples to work properly.
 
-Listing CLTK corpora
-~~~~~~~~~~~~~~~~~~~~
+Downloading corpora
+~~~~~~~~~~~~~~~~~~~
 
-Let's see what corpora are available for download:
+I'm going to use `greek_text_perseus` and `greek_text_first1k` corpora for the
+study by combining them into a single raw text file and unique words database.
+
+The next code snippets will download hundreds of megabytes of Greek text to a
+local computer for quicker access.
+
+1. Download packed zip files from their GitHub repositories:
 
 .. code-block:: python
 
-  	from cltk.corpus.utils.importer import CorpusImporter
-  	corpus_importer = CorpusImporter('greek')
-  	print(', '.join(corpus_importer.list_corpora))
+  	from functions import download_with_indicator, perseus_zip_file, first1k_zip_file
+    # download perseus files
+    fs = "https://github.com/PerseusDL/canonical-greekLit/archive/master.zip"
+    download_with_indicator(fs, perseus_zip_file)
+    # download first1k files
+    fs = "https://github.com/OpenGreekAndLatin/First1KGreek/archive/master.zip"
+    download_with_indicator(fs, first1k_zip_file)
 
 Output:
 
 .. code-block:: txt
 
-	greek_software_tlgu, greek_text_perseus, phi7, tlg, greek_proper_names_cltk,
-	greek_models_cltk, greek_treebank_perseus, greek_lexica_perseus,
-	greek_training_set_sentence_cltk, greek_word2vec_cltk,
-	greek_text_lacus_curtius, greek_text_first1kgreek
+    Downloading: https://github.com/PerseusDL/canonical-greekLit/archive/master.zip
+    xx.xxMB [00:15, 4.08MB/s]
+    Downloading: https://github.com/OpenGreekAndLatin/First1KGreek/archive/master.zip
+    xxx.xxMB [00:15, 4.08MB/s]
 
-I'm going to use `greek_text_perseus` and `greek_text_first1kgreek` corpora for
-the study by combining them into a single raw text file and unique words
-database.
-
-Downloading corpora
-~~~~~~~~~~~~~~~~~~~
-
-The next code snippet will download hundreds of megabytes of Greek text to a
-local computer for quicker access:
+2. Unzip files to the corresponding directories:
 
 .. code-block:: python
 
-  	for corpus in ["greek_text_perseus", "greek_text_first1kgreek"]:
-  	    try:
-  	        corpus_importer.import_corpus(corpus)
-  	    except Exception as e:
-  	        print(e)
+    from functions import perseus_zip_dir, first1k_zip_dir, unzip
+    # first argument is the zip source, second is the destination dir
+    unzip(perseus_zip_file, perseus_zip_dir)
+    unzip(first1k_zip_file, first1k_zip_dir)
 
-Next, I will copy only suitable greek text files from `greek_text_first1kgreek`
-to the temporary work directory `greek_text_tlg`.
-
-.. note::
-
-    You can download `greek_text_first1kgreek` corpora directly from their
-    `project page
-    <https://github.com/OpenGreekAndLatin/First1KGreek/zipball/master>`__ [#]_.
-    It may have the most recent and complete set of files. If you wish to use
-    it, extract package directly to
-    `~\\cltk_data\\greek\\text\\greek_text_first1kgreek`.
-
-I have collected the large part of the used procedures to the `functions.py`
-script to maintain this document more concise. Thus I will use the custom
-`copy_corpora` function to do the copy task:
+3. Copy only suitable Greek text xml files from `perseus_zip_dir` and
+`first1k_zip_dir` to the temporary work directories. Original repositories
+contain a lot of unnecessary files for the riddle solver which are skipped in
+this process.
 
 .. code-block:: python
 
-    from functions import copy_corpora
-
-    for item in [["greek_text_first1kgreek", "greek_text_tlg"],
-                 ["greek_text_perseus", "greek_text_prs"]]:
+    from functions import copy_corpora, joinpaths, perseus_tmp_dir, first1k_tmp_dir
+    # important files resides in the data directory of the repositories
+    for item in [[joinpaths(perseus_zip_dir,
+                  ["canonical-greekLit-master", "data"]), perseus_tmp_dir],
+                 [joinpaths(first1k_zip_dir,
+                  ["First1KGreek-master", "data"]), first1k_tmp_dir]]:
         copy_corpora(*item)
 
 Output:
 
 .. code-block:: txt
 
-    C:\Users\marko\cltk_data\greek\text\greek_text_tlg already exists, lets roll on!
-    Copying C:\Users\marko\cltk_data\greek\text\greek_text_perseus\ ->
-    C:\Users\marko\cltk_data\greek\text\greek_text_prs
+    greek_text_perseus_tmp already exists. Either remove it and run again, or
+    just use the old one.
 
-Similarly, appropriate `greek_text_perseus` files are copied to the temporary
-`greek_text_prs` work directory.
+    Copying greek_text_first1k_tmp -> greek_text_first1k
 
-Perseus Greek source text is written as a `betacode
-<https://en.wikipedia.org/wiki/Beta_Code>`__ [#]_, so I also needed a converter
-script for it. I found a suitable one from Python `hexameter
-<https://github.com/epilanthanomai/hexameter>`__ [#]_ GitHub
-repository maintained by `@epilanthanomai <https://github.com/epilanthanomai>`__
-but I had to make a small fix to it, so I'm using my own version of the
-`betacode.py
-<https://github.com/markomanninen/grcriddles/blob/master/betacode.py>`__ [#]_
-script.
+Depending on if the files have been downloaded already, the output may differ.
 
 Collecting files
 ~~~~~~~~~~~~~~~~
 
-Next step is to find out Greek text nodes from the provided XML source files. I
-had to specify a tag table to find main text lines from the source files so
-that only Greek texts are processed. XML files have a lot of meta information
-and text blocks written for example in English and Latin that needs to be
-stripped out.
-
-Extracted content is saved to the author/work based temporary directories.
-Simplified uncial conversion is also made at the same time so that the final
-output file contains only plain uppercase words separated by spaces. Pretty
-much in a format written by the ancient Greeks btw. Noteworth is that stored
-words are not stems, or word roots but contain words in all possible prefixes
-and affixes, i.e. inflected forms.
+When the files has been downloaded and copied, it is time to read them to the
+runtime memory. At this point file paths are collected to the `greek_corpora_x`
+variable that is used on later iterators.
 
 .. code-block:: python
 
-  	from functions import init_corpora
-
-  	# init corpora list
-  	corpora = ["greek_text_prs", "greek_text_tlg"]
-
-  	greek_corpora_x = init_corpora(corpora)
-  	print("%s files found" % len(greek_corpora_x))
+    from functions import init_corpora, perseus_dir, first1k_dir
+    # collect files and initialize data dictionary
+    greek_corpora_x = init_corpora([[perseus_tmp_dir, perseus_dir], [first1k_tmp_dir, first1k_dir]])
+    print(len(greek_corpora_x), "files found")
 
 Output:
 
 .. code-block:: text
 
-    1311 files found
+    1699 files found
 
 Processing files
 ~~~~~~~~~~~~~~~~
 
+Next step is to extract Greek content from the provided XML source files.
+
+Extracted content is saved to the corpora/author/work based directories.
+Simplified uncial conversion is also made at the same time so that the final
+output file contains only plain uppercase words separated by spaces. Pretty
+much in a format written by the ancient Greeks. Noteworth is that stored
+words are not stems but contain words in all possible inflected forms.
+
 This will take several minutes depending on if you have already run it once and
-have temporary directories available. Old processed corpora files are removed
-first, then they are recreated by calling `process_greek_corpora` function.
+have the previous temporary directories available. Old processed corpora files
+are removed first, then they are recreated by calling `process_greek_corpora`
+function.
 
 .. code-block:: python
 
-  	from functions import remove, all_greek_text_file, perseus_greek_text_file, first1k_greek_text_file, process_greek_corpora
-
+  	from functions import remove, all_greek_text_file, perseus_greek_text_file,\
+                          first1k_greek_text_file, process_greek_corpora
   	# remove old processed temporary files
   	try:
   	    remove(all_greek_text_file)
@@ -238,14 +224,14 @@ first, then they are recreated by calling `process_greek_corpora` function.
   	    remove(first1k_greek_text_file)
   	except OSError:
   	    pass
-
-	# process and get greek corpora data
+	# process and get greek corpora data to the RAM memory
 	greek_corpora = process_greek_corpora(greek_corpora_x)
 
 Statistics
 ----------
 
-When files are downloaded and preprocessed, I can get the size of the text files:
+After the files have been downloaded and preprocessed, I'm going to output the
+size of them:
 
 .. code-block:: python
 
@@ -259,11 +245,11 @@ Output:
 
 .. code-block:: txt
 
-    Size of the all raw text: 604.88 MB
-    Size of the perseus raw text: 79.74 MB
-    Size of the first1k raw text: 525.13 MB
+    Size of the all raw text: 346.5 MB
+    Size of the perseus raw text: 107.5 MB
+    Size of the first1k raw text: 239.0 MB
 
-I will calculate other statistics of the saved text files to compare their
+Then, I will calculate other statistics of the saved text files to compare their
 content:
 
 .. code-block:: python
@@ -279,19 +265,19 @@ Output:
 .. code-block:: txt
 
     Corpora: perseus_greek_text_files.txt
-    Letters: 38146511
-    Words in total: 7322673
-    Unique words: 355348
+    Letters: 51411752
+    Words in total: 9900720
+    Unique words: 423428
 
     Corpora: first1k_greek_text_files.txt
-    Letters: 249255721
-    Words in total: 52130741
-    Unique words: 648873
+    Letters: 113763150
+    Words in total: 23084445
+    Unique words: 667503
 
     Corpora: all_greek_text_files.txt
-    Letters: 287402232
-    Words in total: 59453414
-    Unique words: 826516
+    Letters: 165174902
+    Words in total: 32985165
+    Unique words: 831308
 
 Letter statistics
 ~~~~~~~~~~~~~~~~~
@@ -334,66 +320,34 @@ and the third column is the percentage of the letter contra all letters.
 ----------------------------- ----------------------------- -----------------------------
  Letter    Count     Percent   Letter    Count     Percent   Letter    Count     Percent
 ========= ========= ========= ========= ========= ========= ========= ========= =========
- Α         4182002   10.96     Α         26817705  10.76     Α         4182002   10.96
- Ε         3678672   9.64      Ο         23687669  9.50      Ε         3678672   9.64
- Ο         3664034   9.61      Ι         22665483  9.09      Ο         3664034   9.61
- Ι         3613662   9.47      Ν         22498413  9.03      Ι         3613662   9.47
- Ν         3410850   8.94      Ε         22121458  8.88      Ν         3410850   8.94
- Τ         2903418   7.61      Τ         21698265  8.71      Τ         2903418   7.61
- Σ         2830967   7.42      Σ         18738234  7.52      Σ         2830967   7.42
- Υ         1776871   4.66      Υ         11384921  4.57      Υ         1776871   4.66
- Ρ         1440852   3.78      Ρ         9776411   3.92      Ρ         1440852   3.78
- Η         1392909   3.65      Η         9268111   3.72      Η         1392909   3.65
- Π         1326596   3.48      Κ         8982955   3.60      Π         1326596   3.48
- Κ         1261673   3.31      Π         8290364   3.33      Κ         1261673   3.31
- Ω         1179566   3.09      Ω         7874161   3.16      Ω         1179566   3.09
- Λ         1147548   3.01      Μ         7498489   3.01      Λ         1147548   3.01
- Μ         1139510   2.99      Λ         6929170   2.78      Μ         1139510   2.99
- Δ         932823    2.45      Δ         5757782   2.31      Δ         932823    2.45
- Γ         584668    1.53      Γ         4197053   1.68      Γ         584668    1.53
- Θ         501512    1.31      Θ         3440599   1.38      Θ         501512    1.31
- Χ         352579    0.92      Χ         2294905   0.92      Χ         352579    0.92
- Φ         325210    0.85      Φ         2115768   0.85      Φ         325210    0.85
- Β         220267    0.58      Β         1322737   0.53      Β         220267    0.58
- Ξ         152971    0.40      Ξ         951076    0.38      Ξ         152971    0.40
- Ζ         75946     0.20      Ζ         559728    0.22      Ζ         75946     0.20
- Ψ         51405     0.13      Ψ         375266    0.15      Ψ         51405     0.13
+ Α         4182002   10.96     Α         26817705  10.76     Α         30999707   10.79
+ Ε         3678672   9.64      Ο         23687669  9.50      Ε         27351703   9.52
+ Ο         3664034   9.61      Ι         22665483  9.09      Ο         26279145   9.14
+ Ι         3613662   9.47      Ν         22498413  9.03      Ι         25909263   9.01
+ Ν         3410850   8.94      Ε         22121458  8.88      Ν         25800130   8.98
+ Τ         2903418   7.61      Τ         21698265  8.71      Τ         24601683   8.56
+ Σ         2830967   7.42      Σ         18738234  7.52      Σ         21569201   7.50
+ Υ         1776871   4.66      Υ         11384921  4.57      Υ         13161792   4.58
+ Ρ         1440852   3.78      Ρ         9776411   3.92      Ρ         11217263   3.90
+ Η         1392909   3.65      Η         9268111   3.72      Η         10661020   3.71
+ Π         1326596   3.48      Κ         8982955   3.60      Κ         10244628   3.56
+ Κ         1261673   3.31      Π         8290364   3.33      Π         9616960   3.35
+ Ω         1179566   3.09      Ω         7874161   3.16      Ω         9053727   3.15
+ Λ         1147548   3.01      Μ         7498489   3.01      Μ         1147548   3.01
+ Μ         1139510   2.99      Λ         6929170   2.78      Λ         8076718   2.81
+ Δ         932823    2.45      Δ         5757782   2.31      Δ         6690605   2.33
+ Γ         584668    1.53      Γ         4197053   1.68      Γ         4781721   1.66
+ Θ         501512    1.31      Θ         3440599   1.38      Θ         3942111   1.37
+ Χ         352579    0.92      Χ         2294905   0.92      Χ         2647484   0.92
+ Φ         325210    0.85      Φ         2115768   0.85      Φ         2440978   0.85
+ Β         220267    0.58      Β         1322737   0.53      Β         1543004   0.54
+ Ξ         152971    0.40      Ξ         951076    0.38      Ξ         1104047   0.38
+ Ζ         75946     0.20      Ζ         559728    0.22      Ζ         635674    0.22
+ Ψ         51405     0.13      Ψ         375266    0.15      Ψ         426671    0.15
  Ϛ         0         0.00      Ϛ         8430      0.00      Ϛ         8430      0.00
  Ϡ         0         0.00      Ϡ         364       0.00      Ϡ         364       0.00
  Ϟ         0         0.00      Ϟ         204       0.00      Ϟ         204       0.00
 ========= ========= ========= ========= ========= ========= ========= ========= =========
-
-**Both**
-
-| Letter | Count | Percent |
-| --- | --- | --- |
-| Α | 30999707 | 10.79 |
-| Ο | 27351703 | 9.52 |
-| Ι | 26279145 | 9.14 |
-| Ν | 25909263 | 9.01 |
-| Ε | 25800130 | 8.98 |
-| Τ | 24601683 | 8.56 |
-| Σ | 21569201 | 7.50 |
-| Υ | 13161792 | 4.58 |
-| Ρ | 11217263 | 3.90 |
-| Η | 10661020 | 3.71 |
-| Κ | 10244628 | 3.56 |
-| Π | 9616960 | 3.35 |
-| Ω | 9053727 | 3.15 |
-| Μ | 8637999 | 3.01 |
-| Λ | 8076718 | 2.81 |
-| Δ | 6690605 | 2.33 |
-| Γ | 4781721 | 1.66 |
-| Θ | 3942111 | 1.37 |
-| Χ | 2647484 | 0.92 |
-| Φ | 2440978 | 0.85 |
-| Β | 1543004 | 0.54 |
-| Ξ | 1104047 | 0.38 |
-| Ζ | 635674 | 0.22 |
-| Ψ | 426671 | 0.15 |
-| Ϛ | 8430 | 0.00 |
-| Ϡ | 364 | 0.00 |
-| Ϟ | 204 | 0.00 |
 
 `First1K` corpora contains mathematical texts in Greek, which explains why the
 rarely used digamma (Ϛ = 6), qoppa (Ϟ/Ϙ = 90), and sampi(Ϡ = 900) letters are
@@ -412,7 +366,10 @@ used letters in the available Ancient Greek corpora.
 Vowels with `N`, `S`, and `T` consonants pops up as the most used letters. The
 least used letters are `Z`, `Chi`, and `Psi`.
 
-Uncomment next part to output a new fresh graph from Plotly:
+Optional live chart
+^^^^^^^^^^^^^^^^^^^
+
+Uncomment the next part to output a new fresh graph from Plotly:
 
 .. code-block:: python
 
@@ -431,27 +388,26 @@ Uncomment next part to output a new fresh graph from Plotly:
 Unique words database
 ---------------------
 
-Then it is time to collect unique Greek words to the database and show some
-specialties of the word statistics. This will take a minute or two:
+Now it is time to collect unique Greek words to the database and show certain
+specialties of the word statistics. I'm reusing data from the `greek_corpora`
+variable that is in the memory already. Running the next code will take a
+minute or two depending on the processor speed of your computer:
 
 .. code-block:: python
 
     from functions import syllabify, Abnum, greek, vowels
-
-    # greek abnum object for calculating isopsephical value
+    # greek abnum object for calculating isopsephical value of the words
     g = Abnum(greek)
-
-    # lets count unique words statistic from the parsed greek corpora
-    # rather than the plain text file it would be pretty hefty work to find
-    # out occurence of the all 800000+ unique words from the text  file that
-    # is over 600 MB big!
+    # count unique words statistic from the parsed greek corpora
+    # rather than the plain text file. it would be pretty hefty work to find
+    # out occurence of the all over 800000 unique words from the text file that
+    # is over 300 MB big!
     unique_word_stats = {}
     for item in greek_corpora:
         for word, cnt in item['uwords'].items():
             if word not in unique_word_stats:
                 unique_word_stats[word] = 0
             unique_word_stats[word] += cnt
-
     # init dataframe
     df = DataFrame([[k, v] for k, v in unique_word_stats.items()])
     # add column for the occurrence percentage of the word
@@ -464,16 +420,16 @@ specialties of the word statistics. This will take a minute or two:
     df[5] = df[0].apply(lambda x: syllabify(x))
     # add length of the syllables column
     df[6] = df[5].apply(lambda x: len(x))
-    # count vowels in the word
+    # count vowels in the word as a column
     df[7] = df[0].apply(lambda x: sum(list(x.count(c) for c in vowels)))
-    # count consonants in the word
+    # count consonants in the word as a column
     df[8] = df[0].apply(lambda x: len(x)-sum(list(x.count(c) for c in vowels)))
 
 Store database
 ~~~~~~~~~~~~~~
 
-This is the single most important part of the document. I'm saving all
-simplified unique words as a csv file that can be used as a database for the
+This is the single most important part of the chapter. I'm saving all
+simplified unique words as a CSV file that can be used as a database for the
 riddle solver. After this you may proceed to the `riddle solver
 <https://git.io/vASrY>`__ Jupyter notebook document in interactive mode if
 you prefer.
@@ -481,18 +437,22 @@ you prefer.
 .. code-block:: python
 
     from functions import csv_file_name
+    # save dataframe to CSV file
     df.to_csv(csv_file_name, header=False, index=False, encoding='utf-8')
 
 Most repeated words
 ~~~~~~~~~~~~~~~~~~~
 
-For confirmation, I will show five of the most repeated words in the database:
+For a confirmation of the succesful task, I will show the total number of the
+unique words, and five of the most repeated words in the database:
 
 .. code-block:: python
 
     from functions import display_html
-    # use to_html and index=False to hide index column
-    display_html(df.sort_values(1, ascending=False).head(n=5).to_html(index=False), raw=True)
+    # use to_html and index=False to hide index column and output table
+    words = df.sort_values(1, ascending=False).head(n=5)
+    print("Total records: %s" % len(words))
+    display_html(words.to_html(index=False), raw=True)
 
 =====  =========  =========
  Word   Count      Percent
@@ -509,13 +469,14 @@ KAI...
 Longest words
 ~~~~~~~~~~~~~
 
-For curiosity, let's also see the longest words in the database:
+For a curiosity, let's also see the longest words in the database:
 
 .. code-block:: python
 
     from functions import HTML
     # load result to the temporary variable for later usage
     l = df.sort_values(3, ascending=False).head(n=20)
+    # output table
     HTML(l.to_html(index=False))
 
 ========================================== ============= ========
@@ -546,11 +507,14 @@ For curiosity, let's also see the longest words in the database:
 Biggest isopsephy
 ~~~~~~~~~~~~~~~~~
 
-How about finding out, which words has the biggest isopsephical values?
+How about finding out, which words have the biggest isopsephical values?
 
 .. code-block:: python
 
-    HTML(df.sort_values(4, ascending=False).head(n=20).to_html(index=False))
+    # sort by the isopsephy column
+    words = df.sort_values(4, ascending=False).head(n=20)
+    # output table
+    HTML(words.to_html(index=False))
 
 ========================================== ============= ======== ===========
  Word                                       Occurrences   Length   Isopsephy
@@ -584,7 +548,9 @@ How many percent of the whole word base, the least repeated words take:
 
 .. code-block:: python
 
+    # length of the words database
     le = len(df)
+    # group words by occurrence and count grouped items, list the first 10 items
     for x, y in df.groupby([1, 2]).count()[:10].T.items():
         print("words repeating %s time(s): " % x[0], round(100*y[0]/le, 2), "%")
 
@@ -592,16 +558,16 @@ Output:
 
 .. code-block:: txt
 
-    words repeating 1 time(s):  14.81 %
-    words repeating 2 time(s):  14.61 %
-    words repeating 3 time(s):  16.49 %
-    words repeating 4 time(s):  10.5 %
-    words repeating 5 time(s):  3.66 %
-    words repeating 6 time(s):  4.95 %
-    words repeating 7 time(s):  2.53 %
-    words repeating 8 time(s):  3.3 %
-    words repeating 9 time(s):  2.17 %
-    words repeating 10 time(s):  1.7 %
+    words repeating 1 time(s):  44.95 %
+    words repeating 2 time(s):  15.86 %
+    words repeating 3 time(s):  7.48 %
+    words repeating 4 time(s):  4.84 %
+    words repeating 5 time(s):  3.32 %
+    words repeating 6 time(s):  2.5 %
+    words repeating 7 time(s):  1.92 %
+    words repeating 8 time(s):  1.59 %
+    words repeating 9 time(s):  1.28 %
+    words repeating 10 time(s):  1.11 %
 
 Words that repeat 1-4 times fills the 60% of the whole text. Words repeating
 three times takes 16.5% of the words being the greatest repeatance factor.
@@ -614,29 +580,10 @@ which texts the longest words occur:
 
 .. code-block:: python
 
-    from functions import listdir, get_content, path
+    from functions import search_words_from_corpora
     # using already instantiated l variable I'm collecting the plain text words
     words = list(y[0] for x, y in l.T.items())
-    # find how many times word occurs in text
-    def has_words(data):
-        a = {}
-        for x in words:
-            # partial match is fine here. data should be split to words for exact match
-            # but it will take more processing time. for shorter words it might be more useful however
-            if x in data:
-                a[x] = data.count(x)
-        return a
-    # output occurences of the words if there are any
-    def has_content(f):
-        content = get_content(f)
-        a = has_words(content)
-        if a:
-            print(" - %s => \r\n   %s\r\n" % (f, ', '.join(list("%s: %s" % (k, v) for k, v in a.items()))))
-    # iterate all corporas and see if selected words occur in the text
-    for corp in corporas:
-        for b in filter(path.isdir, map(lambda x: path.join(corp, x), listdir(corp))):
-            for c in filter(path.isfile, map(lambda x: path.join(b, x), listdir(b))):
-                has_content(c)
+    search_words_from_corpora(words, [perseus_dir, first1k_dir])
 
 Output:
 
@@ -680,7 +627,17 @@ For a small explanation: `Aristophanes
 and a word expert of a kind. Mathematical texts are also filled with long
 compoud words for fractions for example.
 
-So thats all for the Greek corpora processing and basic statistics. One could
+.. code-block:: python
+
+    words = list(y[0] for x, y in m.T.items())
+    search_words_from_corpora(words, [perseus_dir, first1k_dir])
+
+Output:
+
+.. code-block:: txt
+
+
+So that's all for the Greek corpora processing and basic statistics. One could
 further investigate the basic stats, categorize and compare individual texts as
 well.
 

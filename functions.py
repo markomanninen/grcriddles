@@ -9,6 +9,81 @@ from abnum import Abnum, greek
 from pandas import DataFrame
 from os import path, listdir, remove, makedirs
 from greek_accentuation.syllabify import syllabify
+from romanize3 import grc
+from pathlib import Path # python 3.4+ version
+from IPython.display import display_html, HTML
+from zipfile import ZipFile
+from tqdm import tqdm
+from requests import get as rget
+
+# SET PU VARIABLES
+
+# home dir
+home = path.expanduser("~")
+
+# greek abnum object for isopsephical value getter
+g = Abnum(greek)
+
+# file to collect all stripped greek text
+all_greek_text_file = "all_greek_text_files.txt"
+# file to collect all perseus greek text
+perseus_greek_text_file = "perseus_greek_text_files.txt"
+# file to collect all first 1k greek text
+first1k_greek_text_file = "first1k_greek_text_files.txt"
+# unique greek words database
+csv_file_name = "greek_words_corpora.csv"
+# zip download files
+perseus_zip_file = "perseus.zip"
+perseus_zip_dir = 'greek_text_perseus_zip'
+perseus_tmp_dir = 'greek_text_perseus_tmp'
+perseus_dir = 'greek_text_perseus'
+
+first1k_zip_file = "first1k.zip"
+first1k_zip_dir = 'greek_text_first1k_zip'
+first1k_tmp_dir = 'greek_text_first1k_tmp'
+first1k_dir = 'greek_text_first1k'
+
+# ϒ not needed?
+vowels = "ΩΗΥΕΙΟΑ"
+
+roman_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+roman_letters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".lower()
+
+# DEFINE FUNCTIONS
+
+# download file with output progress bar indicator
+# nice utility for big files that takes time to transfer
+def download_with_indicator(fs, fd, rl = False):
+    if rl or (not rl and not path.isfile(fd)):
+        try:
+            req = rget(fs, stream = True)
+            total_size = int(req.headers.get('content-length', 0))
+            block_size = 1024
+            print("Downloading: %s" % fs)
+            with open(fd, 'wb') as f:
+                params = {'total': total_size / (32.0 * block_size), 'unit': 'B', 'unit_scale': True, 'unit_divisor': block_size}
+                #for data in tqdm(req.iter_content(32 * block_size), **params):
+                #    f.write(data)
+                with tqdm(**params) as g:
+                    for data in req.iter_content(32 * block_size):
+                        f.write(data)
+                        g.update(len(data))
+        except Exception as e:
+            print(e)
+
+# unzip packed file to desctination dir
+def unzip(fs, fd):
+    if not path.isdir(fd) and path.isfile(fs):
+        zip_ref = ZipFile(fs, 'r')
+        zip_ref.extractall(fd)
+        zip_ref.close()
+
+# get only greek letters from the source text
+def extract_greek(s):
+    # words are separated by spaces but all other whitespace is removed
+    s = grc.filter(s)
+    t = ' '.join(filter(lambda x: len(x), s.split()))
+    return t, grc.deaccent(s).upper().replace("ϒ", "Υ").replace("Ϲ", "Σ")
 
 # file path utility for win/mac/lin
 def joinpaths(d, paths):
@@ -21,75 +96,43 @@ def append_to_file(file, string, mode = 'a'):
     with open(file, mode, encoding="utf-8", newline='\n') as f:
         f.write(string)
 
-# home dir
-home = path.expanduser("~")
-
-# filter dirs and files to get all greek authors
-# directory: by default corpora is downloaded to the user root under cltk_data
-dirt = joinpaths(home, ["cltk_data", "greek", "text"])
-
-# greek abnum object for preprocess and isopsephical value getter
-g = Abnum(greek)
-
-# download greek betacode decoder script
-file_bc = 'betacode.py'
-if not path.isfile(file_bc):
-    from urllib.request import urlopen
-    response = urlopen('https://raw.githubusercontent.com/markomanninen/grcriddles/master/betacode.py')
-    append_to_file(file_bc, response.read().decode("utf-8"), 'w')
-
-# import betacode to unicode function
-from betacode import betacode_to_unicode
-
-# file to collect all stripped greek text
-all_greek_text_file = "all_greek_text_files.txt"
-# file to collect all perseus greek text
-perseus_greek_text_file = "perseus_greek_text_files.txt"
-# file to collect all first 1k greek text
-first1k_greek_text_file = "first1k_greek_text_files.txt"
-# unique greek words database
-csv_file_name = "greek_words_corpora.csv"
+# helper function to get file size
+def get_file_size(f):
+    file = Path() / f
+    size = file.stat().st_size
+    return round(size/1024/1024, 2)
 
 # copy files utility
-def copy(src, dest):
+def copy(src, dst):
     try:
-        ignore = shutil.ignore_patterns('*.csv*', '*lat.xml', '*lat1.xml', '*cop1.xml', \
-		                                '*eng1.xml', '__cts__.xml', '*.json', '*_eng*', \
-										'*_lat*', '*_cop*', '*english.xml', '*higg.xml')
-        shutil.copytree(src, dest, ignore=ignore)
+        # ignore files containing these patterns
+        ignore = shutil.ignore_patterns('*.csv*',  '*lat*.xml', '*cop*.xml', '*ara*.xml', '*mul*.xml', \
+		                                '*eng*.xml', '__cts__.xml', '*.json', '*fre*.xml', '*ger*.xml', \
+									    '*english.xml', '*higg.xml', '.directory')
+        shutil.copytree(src, dst, ignore=ignore)
     except OSError as e:
         # error was caused because the source wasn't a directory
         if e.errno == errno.ENOTDIR:
-            shutil.copy(src, dest)
+            # copy the file
+            shutil.copy(src, dst)
         else:
             print('Directory not copied. Error: %s' % e)
 
 def copy_corpora(src, dst):
     # copy all suitable greek text files from the source dir to the destination work dir
-    if not path.isdir(path.join(dirt, dst)):
-        source = joinpaths(dirt, [src, "data" if src == "greek_text_first1kgreek" else ""])
-        destination = joinpaths(dirt, [dst])
-        print("Copying %s -> %s" % (source, destination))
+    if not path.isdir(dst):
+        print("Copying %s -> %s" % (src, dst))
         try:
-            copy(source, destination)
-            pass
+            copy(src, dst)
         except Exception as e:
             print(e)
     else:
-        print(path.join(dirt, dst), "already exists, lets roll on!")
+        print(dst, "already exists. Either remove it and run again, or just use the old one.")
 
 # read file and return content
 def get_content(fl):
     with open(fl, 'r', encoding="utf-8") as f:
         return f.read().replace("\n", " ")
-
-# remove tags from the content
-def remove_tags(x, corpus):
-    x = re.sub('<[^<]+?>', '', x)
-    if corpus == "greek_text_prs":
-        # with perseus data decode betacode to unicode
-        x = betacode_to_unicode(x)
-    return x
 
 # remove all sub tags and their content. usually they are footnotes or other metadata
 def soupit(txt, tag):
@@ -97,147 +140,29 @@ def soupit(txt, tag):
     root = getattr(soup, tag)
     return " ".join(filter(lambda x: len(x), list(c.strip() for c in root.children if "<" not in str(c))))
 
-# parse greek text line for corpora
-def line_for_corpora(node, tag, corpus):
-    try:
-        line = node.toxml().strip()
-        if line:
-            line = soupit(line, tag)
-            if corpus == "greek_text_prs":
-                line = betacode_to_unicode(line)
-            line = " ".join(filter(lambda x: x.strip() != "", line.split()))
-            if line:
-                return line.strip()
-    except Exception as e:
-        #print(e)
-        pass
-    return ''
-
-# tags used to retrieve lines from xml file
-tags = {
-    # perseus
-    "Aeschines": ["div1", ["head", "p"]],
-    "Aeschylus": ["div1", ["speaker", "l"]],
-    "Andocides": ["div1", ["head", "p"]],
-    "Anth": ["div1", ["label", "p"]],
-    "Apollodorus": ["div1", ["p"]],
-    "Apollonius": ["div1", ["l"]],
-    "Appian": ["p", []],
-    "Aratus": ["div1", ["p"]],
-    "Aretaeus": ["p", ["foreign"]],
-    "Aristides": ["body", ["head", "p"]],
-    "Aristophanes": ["div1", ["speaker", "l"]],
-    "Aristotle": ["p", []],
-    "Arrian": ["body", ["p"]],
-    "Athenaeus": ["body", ["p"]],
-    "Bacchylides": ["div2", ["persName", "l"]],
-    "Bible": ["div1", ["head", "p"]],
-    "Callimachus": ["div1", ["head", "p"]],
-    "Colluthus": ["body", ["p"]],
-    "Demades": ["p", []],
-    "Demosthenes": ["p", []],
-    "Diodorus": ["p", []],
-    "Diogenes": ["div1", ["head", "p"]],
-    "Dionysius": ["div1", ["opener", "p"]],
-    "Dinarchus": ["p", []],
-    "DioChrys": ["p", []],
-    "Epictetus": ["p", []],
-    "Euclid": ["p", []],
-    "Galen": ["p", []],
-    "Herodotus": ["p", []],
-    "Hippocrates": ["p", []],
-	"Homer": ["body", ["l", "lemma"]],
-    "Hyperides": ["p", []],
-    "JebbOrators": ["p", ["lemma", "foreign", "l"]],
-    "Josephus": ["p", []],
-    "Lucian": ["p", []],
-    "Lycophron": ["div1", ["p"]],
-    "Lycurgus": ["div1", ["head", "p"]],
-    "Lysias": ["div1", ["head", "p"]],
-    "Oppian": ["div1", ["p"]],
-    "Nonnos": ["div1", ["p"]],
-    "Plato": ["p", []],
-    "Plutarch": ["p", []],
-    "Polybius": ["p", []],
-    "Sibyl": ["div", ["head", "p"]],
-    "Tryphiodorus": ["p", []],
-    "Xenophon": ["p", []],
-    "Theophrastus": ["p", []],
-    # first1k
-    "tlg0643\\tlg001": ["div", ["l"]],
-    "tlg0068\\tlg001": ["div", ["head", "l"]],
-    "tlg0085\\tlg007": ["div", ["head", "p", "l"]],
-    "tlg0527\\tlg035": ["div", ["l"]],
-    "tlg0084\\tlg001": ["div", ["head", "l"]],
-    "tlg0643\\tlg002": ["div", ["l"]],
-    "tlg0643\\tlg001": ["div", ["p"]],
-    "tlg0011\\tlg003": ["div", ["l"]],
-    "tlg0031\\tlg002": ["div", ["w"]],
-    "tlg0527\\tlg029": ["div", ["l"]],
-    "tlg0527\\tlg031": ["div", ["l"]],
-    "tlg0527\\tlg032": ["div", ["l"]],
-    "tlg0527\\tlg033": ["div", ["l"]],
-    "tlg0527\\tlg034": ["div", ["l"]],
-    "tlg0527\\tlg035": ["div", ["head", "l"]],
-    "tlg0085\\tlg001": ["div", ["head", "speaker", "l"]],
-    "tlg0011\\tlg003": ["div", ["speaker", "l"]],
-    "tlg0643\\tlg001": ["div", ["l"]],
-    "tlg0527\\tlg027": ["div", ["head", "l"]],
-    "tlg0591\\1st1K001": ["div", ["head", "p"]],
-    "tlg0591\\1st1K002": ["div", ["head", "p"]],
-    "tlg0593\\1st1K001": ["div", ["head", "p"]],
-    "tlg1766\\tlg001": ["div", ["head", "seq"]],
-    "tlg1220\\tlg001": ["div", ["head", "l"]],
-    "tlg0643\\tlg001": ["div", ["head", "l"]],
-    "tlg0069\\tlg001": ["div", ["head", "l"]],
-}
-
-# filter only greek xml files
-def is_greek_file(x):
-    return ("greek_orators" in x or \
-            "attic_orators" in x or \
-            "grc1.xml" in x or \
-            "grc2.xml" in x or \
-            "grc3.xml" in x or \
-            "_01.xml" in x or "_02.xml" in x or \
-            "_03.xml" in x or "_gk.xml" in x) and ".json" not in x
-
-def init_corpora(corporas):
-    global dirt
-    greek_corpora = []
-    for corpus in corporas:
-        d = path.join(dirt, corpus)
+# return list of available greek files
+def init_corpora(corpora):
+    result = []
+    for d, corpus in corpora:
         files = []
-        for a in listdir(d):
-            # get only dirs
-            if "." not in a:
-                # again get only dirs containing xml files
-                for b in filter(lambda x: "." not in x and "json" not in x, listdir(path.join(d, a))):
-                    # build file paths to greek source files
-                    e = joinpaths(d, [a, b])
-                    files.extend(map(lambda x: path.join(e, x), filter(lambda x: is_greek_file(x), listdir(e))))
-        # prepare corpora data
-        for file in files:
-            # defaul xml parse path
-            if corpus == "greek_text_prs":
-                tg = ["l", []]
-            else:
-                tg = ["div", ["head", "p"]]
-            # overwrite with custom parse path if exists
-            for key, tag in tags.items():
-                if key in file:
-                    tg = tag
-                    break
-            greek_corpora.append({"tag": tg, "corpus": corpus, "uwords": {}, "length": 0,
-                                  "file": file, "content": [], "simplified": ""})
-    return greek_corpora
-
-# filter out non greek words. there are also some special chars
-# in greek text that I will leave out from the processed simplified files
-special_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÔÊṂḌẠ";
-
-def filter_only_greek_words(x):
-    return len(x) and not any(map(lambda y: y in special_chars, x))
+        # get only sub directories
+        for a in filter(lambda x: path.isdir(path.join(d, x)), listdir(d)):
+            aa = path.join(d, a)
+            # get only sub directories
+            for b in filter(lambda x: path.isdir(joinpaths(d, [a, x])), listdir(aa)):
+                bb = path.join(aa, b)
+                # get only files and construct paths to them
+                files.extend(map(lambda x: path.join(bb, x),
+                                 filter(lambda x: path.isfile(path.join(bb, x)), listdir(bb))))
+        # prepare corpora data by adding keys for corpus, unique words,
+        # length, file, content and simplified data
+        for f in files:
+            if 'grc' not in f:
+                print("Unindentified language tag found from the file.")
+                print("Please check and possibly add to the ignore list: %s" % f)
+            result.append({"corpus": corpus, "uwords": {}, "length": 0,
+                           "file": f, "content": [], "simplified": ""})
+    return result
 
 def get_title_and_author(xmldoc, corpus):
     # parse title and author for storing temp files
@@ -248,21 +173,22 @@ def get_title_and_author(xmldoc, corpus):
     title = title.replace("?", "").replace("[", "").replace("]", "")
     title = title.replace(".", "").replace(",", "")
     title = ''.join(filter(lambda x: x.strip() != "", map(lambda x: x.title(), title.split())))
+    author = ""
     try:
         author = desc.getElementsByTagName('author')[0].toxml().strip().replace("\n", " ")
         author = re.sub('<[^<]+?>', '', author)
         author = author.replace("&gt;", "").replace(">", "")
         author = author.replace(".", "").replace(",", "")
+        author = author.replace("(", "").replace(")", "")
         author = ''.join(filter(lambda x: x.strip() != "", map(lambda x: x.title(), author.split())))
     except Exception as e:
-        author = "Unnamed"
-    if author == "":
+        pass
+    if not author:
         author = "Unnamed"
     return author, title.replace("MachineReadableText", "")
 
 def process_greek_corpora(greek_corpora):
-    #print(greek_corpora)
-    r = []
+    result = []
     for corpus in greek_corpora:
 
         corp = corpus["corpus"]
@@ -270,12 +196,9 @@ def process_greek_corpora(greek_corpora):
 
         try:
             s = get_content(f)
-            if corp == "greek_text_prs":
-                # replace html entities with empty char and replace double empties with single ones
-                s = re.sub("&(?:[a-z\d]+|#\d+|#x[a-f\d]+);", " ", s).replace("  ", " ")
             xmldoc = minidom.parseString(s)
         except Exception as e:
-            print(e)
+            #print("Could not parse document.", e, corp, f)
             continue
         # get author and title
         author, title = get_title_and_author(xmldoc, corp)
@@ -284,64 +207,41 @@ def process_greek_corpora(greek_corpora):
         if not path.exists(direct):
             makedirs(direct)
         # init author and work based file paths
-        f1 = path.join(direct, title + ".txt")
-        f2 = path.join(direct, "Simplified_" + title + ".txt")
+        f1 = title + ".txt"
+        #f1 = path.join(direct, f0)
+        f2 = path.join(direct, "Simplified_" + f1)
+        f3 = path.join(direct, "Search_" + f1)
+        f4 = path.join(direct, "Path_" + f1)
 
         try:
             # is file already processed?
             with open(f2, 'r', encoding="utf-8") as _:
                 corpus['simplified'] = _.read()
         except:
-            #print("process file: " + f.replace(dirt, ""))
-            if corpus['tag'][0] == "foreign":
-                for item in xmldoc.getElementsByTagName("foreign"):
-                    if item.hasAttribute("lang") and item.getAttribute("lang") == "greek":
-                        corpus['content'].append(line_for_corpora(item, "foreign", corp))
-                    elif item.hasAttribute("xml:lang") and item.getAttribute("xml:lang") == "greek":
-                        corpus['content'].append(line_for_corpora(item, "foreign", corp))
-            else:
-                itemlist = xmldoc.getElementsByTagName(corpus['tag'][0])
-                for item in itemlist:
-                    if len(corpus['tag'][1]):
-                        for tag in corpus['tag'][1]:
-                            if tag == "foreign":
-                                for item2 in item.getElementsByTagName("foreign"):
-                                    if item2.hasAttribute("lang") and item2.getAttribute("lang") == "greek":
-                                        corpus['content'].append(line_for_corpora(item2, "foreign", corp))
-                                    elif item2.hasAttribute("xml:lang") and item2.getAttribute("xml:lang") == "greek":
-                                        corpus['content'].append(line_for_corpora(item2, "foreign", corp))
-                            elif tag == "lemma":
-                                for item2 in item.getElementsByTagName("lemma"):
-                                    if item2.hasAttribute("lang") and item2.getAttribute("lang") == "greek":
-                                        corpus['content'].append(line_for_corpora(item2, "lemma", corp))
-                                    elif item2.hasAttribute("xml:lang") and item2.getAttribute("xml:lang") == "greek":
-                                        corpus['content'].append(line_for_corpora(item2, "lemma", corp))
-                            else:
-                                for item2 in item.getElementsByTagName(tag):
-                                    corpus['content'].append(line_for_corpora(item2, tag, corp))
-                    else:
-                        corpus['content'].append(line_for_corpora(item, corpus['tag'][0], corp))
-            content = ' '.join(corpus['content'])
-            #print(content[:20000])
-            # there is some comma separated words without spaces that needs to be separated and united again
-            content = content.replace(",", ", ").replace(",  ", ", ").replace(".", " . ").replace("  ", " ")
-            content = content.replace("·", " · ").replace("  ", " ")
-            corpus['simplified'] = ' '.join(filter(filter_only_greek_words, g.preprocess(content).upper().split()))
+            # for greek text tlg this is pretty simple because all the text we are interested is in greek letters
+            # so we can dismiss all other characters and just keep the greek one
+            content, content_search = extract_greek(s)
+            # transform all diacritics to simple uppercase Greek letters
+            corpus['simplified'] = grc.deaccent(content).upper()
 
             if not corpus['simplified']:
                 #print("no data", corp, corpus['file'])
                 continue
-            # unify these two different camelcase upsilons
+            # unify two different camelcase upsilons
             # unify also medial, final and lunate sigmas
             corpus['simplified'] = corpus['simplified'].replace("ϒ", "Υ").replace("Ϲ", "Σ")
             # store original stripped text
-            append_to_file(f1, content, 'w')
-            # store preprocessed, unified, uppercased and simplified text
+            #append_to_file(f1, content, 'w')
+            # store preprocessed/unaccented, unified, uppercased and simplified text
             append_to_file(f2, corpus['simplified'], 'w')
+            # store original stripped text
+            append_to_file(f3, content_search, 'w')
+            # store original file path
+            append_to_file(f4, f, 'w')
 
         # append to different text files for statistical purposes
         append_to_file(all_greek_text_file, corpus['simplified'] + "\n")
-        if corp == "greek_text_prs":
+        if corp == "greek_text_perseus":
             append_to_file(perseus_greek_text_file, corpus['simplified'] + "\n")
         else:
             append_to_file(first1k_greek_text_file, corpus['simplified'] + "\n")
@@ -349,27 +249,16 @@ def process_greek_corpora(greek_corpora):
         corpus['uwords'] = Counter(corpus['simplified'].split())
         corpus['length'] = len(corpus['simplified'].replace(" ", ""))
 
-        # log processing
-        #print(corpus['file'].replace(dirt, ""), ":", author, ":", title, corpus['length'])
-
         if corpus['length'] < 100:
-            #print("min length", corp, corpus['file'], corpus['length'])
+            #print("Minimum length not meet on the document", f, corpus['length'])
             continue
         else:
             corpus['lperw'] = corpus['length'] / len(corpus['uwords'])
 
         if 'content' in corpus:
             del corpus['content']
-        r.append(corpus)
-    return r
-
-# to get file size, python 3.4+ version
-from pathlib import Path
-
-def get_file_size(f):
-    file = Path() / f
-    size = file.stat().st_size
-    return round(size/1024/1024, 2)
+        result.append(corpus)
+    return result
 
 def get_stats(fl):
     content = get_content(fl)
@@ -391,8 +280,6 @@ def get_stats(fl):
     return ccontent, chars, lwords
 
 # display tables side by side
-from IPython.display import display_html, HTML
-
 def display_side_by_side(**kwargs):
     html = ''
     for caption, df in kwargs.items():
@@ -401,18 +288,6 @@ def display_side_by_side(**kwargs):
                   .replace("<thead>", "<caption style='text-align:center'>%s</caption><thead>" % caption)
     display_html(html.replace('table', 'table style="display:inline"'), raw=True)
 
-# loop all extracted text files and find out these:
-mixed_content = "" #"ϹḌϘ"
-mixed_content += mixed_content.lower()
-
-def has_mixed_content(data):
-    a = {}
-    for x in mixed_content:
-        if x in data:
-            a[x] = data.count(x)
-    return a
-
-roman_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 def has_roman_letters(data):
     a = {}
@@ -421,8 +296,6 @@ def has_roman_letters(data):
             a[x] = data.count(x)
     return a
 
-vowels = "ϒΩΗΥΕΙΟΑ"
-
 def nvowels(x, n):
     word, tot = x[0], 0
     for c in vowels:
@@ -430,3 +303,54 @@ def nvowels(x, n):
         if tot > n:
             return False
     return tot == n
+
+# find the string (s) from the search source text (t) and match with the original source text (u)
+# search and original source texts should have same character indices for keywords
+# based on that assumption the location of the matches +- threshold (l)
+# is calculated and substring is returned with the original start and end location of the matches
+def find_original(s, t, u, l = 100):
+    # length of the original text
+    ll = len(t)
+    # calculate the start and end points
+    return list((u[m.start() - l if m.start() > l else 0 : \
+                   m.end() + l if m.end() + l < ll else -1], \
+                 m.start(), m.end())
+                for m in re.finditer(s, t))
+
+# search words from the source text
+def search_words(source, words):
+    result = {}
+    for word in words:
+        # partial match is fine here. data should be split to words for exact match
+        # but it would take more processing time. for shorter words it might be more useful however
+        if word in source:
+            result[word] = source.count(word)
+    return result
+
+def print_if_match(f, words, maxwords = -1):
+    content = get_content(f)
+    result = search_words(content, words)
+    if result:
+        g = f.replace("Search_", "Path_")
+        try:
+            path = get_content(g)
+            pathx = path.split('\\')[-1]
+            pathx = " (%s)" % pathx[:100].strip()
+        except Exception as e:
+            pathx = ""
+        xcontent = get_content(path)
+        chunks = ""
+        i = 1
+        for k, v in result.items():
+            chunks += '\r\n\r\n   ----- %s (%s) -----\r\n' % (k, v)
+            chunks += '\r\n'.join(list("   " + ' '.join(filter(lambda x: len(x), grc.filter(match[0]).strip().split())) for match in find_original(k, content, xcontent)[:maxwords]))
+            i += 1
+        c = ', '.join(f.replace("Search_", "").replace(".txt", "").split('\\')[1:])
+        print(" + %s%s =>    %s\r\n" % (c, pathx, chunks))
+
+def search_words_from_corpora(words, corpora):
+    # iterate all corpora and see if selected words occur in the text
+    for corp in corpora:
+        for b in filter(path.isdir, map(lambda x: path.join(corp, x), listdir(corp))):
+            for c in filter(lambda x: path.isfile(x) and x.find("Search_") > 0, map(lambda x: path.join(b, x), listdir(b))):
+                print_if_match(c, words, 1)
