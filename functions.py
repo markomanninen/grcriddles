@@ -62,12 +62,12 @@ def download_with_indicator(fs, fd, rl = False):
             print("Downloading: %s" % fs)
             with open(fd, 'wb') as f:
                 params = {'total': total_size / (32.0 * block_size), 'unit': 'B', 'unit_scale': True, 'unit_divisor': block_size}
-                #for data in tqdm(req.iter_content(32 * block_size), **params):
-                #    f.write(data)
-                with tqdm(**params) as g:
-                    for data in req.iter_content(32 * block_size):
-                        f.write(data)
-                        g.update(len(data))
+                for data in tqdm(req.iter_content(32 * block_size), **params):
+                    f.write(data)
+                #with tqdm(**params) as g:
+                #    for data in req.iter_content(32 * block_size):
+                #        f.write(data)
+                #        g.update(len(data))
         except Exception as e:
             print(e)
 
@@ -348,9 +348,9 @@ def print_if_match(f, words, maxwords = -1):
         c = ', '.join(f.replace("Search_", "").replace(".txt", "").split('\\')[1:])
         print(" + %s%s =>    %s\r\n" % (c, pathx, chunks))
 
-def search_words_from_corpora(words, corpora):
+def search_words_from_corpora(words, corpora, mx = 1):
     # iterate all corpora and see if selected words occur in the text
     for corp in corpora:
         for b in filter(path.isdir, map(lambda x: path.join(corp, x), listdir(corp))):
             for c in filter(lambda x: path.isfile(x) and x.find("Search_") > 0, map(lambda x: path.join(b, x), listdir(b))):
-                print_if_match(c, words, 1)
+                print_if_match(c, words, mx)

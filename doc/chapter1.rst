@@ -10,8 +10,9 @@ Processing Greek corpora for the riddle solver
 
 `Pseudo-Sibylline <https://en.wikipedia.org/wiki/Sibylline_Oracles>`__ [#]_
 oracles contain hexametric poems written in Ancient Greek. These *oracula* were
-mainly composed in 150BC - 200AD to twelve distinct extant books. They were
+mainly composed in 150BC - 700AD to twelve distinct extant books. They were
 circulating and quite famous among the Judaeo-Christian community at that time.
+
 They shouldn't, however, be too much confused with the earlier `Sibylline books
 <https://en.wikipedia.org/wiki/Sibylline_Books>`__ [#]_. Sibylline books
 contained religious ceremonial advices that were consulted by the selected
@@ -24,18 +25,35 @@ human history contrasted to the Greek mythology and to the chronology of the
 other great ancient empires. Other intention of the material is to support
 evolving Christian doctrine and interpretation of the prophesies. Prophesies
 were mostly grounded on Jewish literature, but surprisingly some pagan world
-events also came to be interpreted as signs of the coming Messiah.
+events also came to be interpreted as signs of the coming Messiah. Sibyl, as a
+woman prophetess, child of Noah in the Pseudo-Sibylline lore, has a unique
+character crossing over the common borders in several ancient religions and art.
 
-Some of the material in the Pseudo-Sibylline oracles contain cryptic puzzles,
+Good introductions to the Pseudo-Sibylline oracles can be found from these two
+books:
+
+1. `Sibylline Oracles <https://books.google.fi/books?id=TNdeolWctsQC>`__ [#]_ by J. J.
+Collins in The Old Testament Pseudepigrapha, Volume I
+2. `The Book Three of the Sibylline Oracles and Its Social Setting
+<https://books.google.fi/books?id=Zqh8ZQZqnWYC>`__ [#]_ (Part 1) by Rieuwerd
+Buitenwerf
+
+Some material in the Pseudo-Sibylline oracles contain cryptic puzzles,
 referring to persons, cities, countries, and epithets of God for example. These
 secretive references are often very general in nature, pointing only to the
-first letter of the subject and its numerical value. Solving them requires
-a proper knowledge of the context, not only inner textual but historical context.
+first letter of the subject and its numerical value. Solving them requires, not
+so much of mathematical or cryptographical skills in modern sense, but a proper
+knowledge of the context, both inner textual and historical context.
 
-Most of the alphanumeric riddles in the oracles have already been solved by
-various researchers. Some of the riddles are still problematic and open for
-better proposals. Better yet, few of these open riddles are specific enough so
-that one may try to solve them by modern programmable tools.
+Most of the alphanumeric riddles in the oracles can already been taken as solved
+by various researchers. Some of the riddles are still problematic and open for
+better proposals. Better yet, few of these open riddles are more complex and
+specific enough so that one may try to solve them by modern programmable tools.
+
+As an independent researcher not associated or affiliated by any organization,
+the sole motivation and purpose of mine in the chapters one and two is to
+provide a reusable and a testable method for processing and analysing ancient
+corpora, especially detecting alphanumeric patterns in text.
 
 Natural language processing
 ---------------------------
@@ -43,16 +61,20 @@ Natural language processing
 Programmatical approach to solve the riddles requires huge Greek text corpora.
 Bigger it is, the better. I will download and preprocess available open source
 Greek corpora, which is a quite daunting task for many reasons. Programming
-language of my choice is [Python](http://python.org). I have left the
-most of the details of this part for the enthusiasts to read straight from the
-commented code in `functions.py <https://git.io/vAS2Z>`__ [#]_ script. By
-collecting the large part of the used procedures to the separate script
-maintains this document more concise too.
+language of my choice is `Python <http://python.org>`__ [#]_ for it has plenty
+of good and stable open source libraries required for my work. Python is widely
+recognized in academic and scientific circles and well oriented to the research
+projects.
+
+I have left the most of the overly technical details of these chapters for the
+enthusiasts to read straight from the commented code in `functions.py
+<https://git.io/vAS2Z>`__ [#]_ script. By collecting the large part of the used
+procedures to the separate script maintains this document more concise too.
 
 In the end of the task of the first chapter, I'll have a word database
 containing hundreds of thousands of unique Greek words extracted from the
 naturally written language corpora. Then words can be further used in the
-riddle solver.
+riddle solver in the second chapter.
 
 .. note::
 
@@ -62,14 +84,17 @@ riddle solver.
     you may test and verify the procedure or alter parameters and try solving
     the riddles with your own parameters.
 
-    Your can download these independent Jupyter notebooks for `processing
-    corpora <https://git.io/vASwM>`__ [#]_, `solving riddles
-    <https://git.io/vASrY>`__ [#]_, and `analysing results <>`__ [#]_.
+    Your can download independent Jupyter notebooks for `processing corpora
+    <https://git.io/vASwM>`__ [#]_, `solving riddles <https://git.io/vASrY>`__
+    [#]_, and `analysing results <https://>`__ [#]_.
+
+    You may also run code directly from `Python shell
+    <https://www.python.org/shell/>`__ environment, no problem.
 
 Required components
 ~~~~~~~~~~~~~~~~~~~
 
-The first task is to get a big raw ancient Greek text to operate with. I have
+The first sub task is to get a big raw ancient Greek text to operate with. I have
 implemented an importer interface with `tqdm <https://github.com/tqdm/tqdm>`__
 library to the `Perseus
 <http://www.perseus.tufts.edu/hopper/opensource/download>`__ [#]_ and the
@@ -77,18 +102,19 @@ library to the `Perseus
 source data sources in this chapter.
 
 I'm using my own `Abnum <https://github.com/markomanninen/abnum3>`__ [#]_
-library to remove accents and non-alphabetical character of the Greek wordss,
-as well as calculating the isopsephical value of the Greek words. `Greek
-accentuation <https://github.com/jtauber/greek-accentuation>`__ [#]_ library is
-used to split words into syllables. This is required because few of the riddles
-contain specific information about the syllables of the words. `Pandas
+library to remove accents from the Greek words, remove non-alphabetical
+characters from the corpora, as well as calculating the isopsephical value of
+the Greek words. `Greek accentuation
+<https://github.com/jtauber/greek-accentuation>`__ [#]_ library is used to split
+words into syllables. This is required because the riddles of my closest
+interest contain specific information about the syllables of the words. `Pandas
 <http://pandas.pydata.org/>`__ [#]_ library is used as an API (application
 programming interface) to the collected database. `Plotly
 <https://plot.ly/>`__ [#]_ library and online infographic service are used for
 the visual presentation of the statistics.
 
 You can install these libraries by uncommenting and running the next install
-lines:
+lines in the Jupyter notebook:
 
 .. code-block:: python
 
@@ -108,28 +134,36 @@ Output:
 
 .. code-block:: txt
 
-    Python 3.6.1 | Anaconda 4.4.0 (64-bit) | (default, May 11 2017, 13:25:24) [MSC v.1900 64 bit (AMD64)]
+    Python 3.6.1 | Anaconda 4.4.0 (64-bit) | (default, May 11 2017, 13:25:24)
+    [MSC v.1900 64 bit (AMD64)]
 
-Note that `Python 3.4+` is required for all examples to work properly.
+Note that `Python 3.4+` is required for all examples to work properly. To find
+out other ways of installing PyPI maintained libraries, please consult:
+https://packaging.python.org/tutorials/installing-packages/
 
 Downloading corpora
 ~~~~~~~~~~~~~~~~~~~
 
-I'm going to use `greek_text_perseus` and `greek_text_first1k` corpora for the
-study by combining them into a single raw text file and unique words database.
+I'm going to use `Perseus` and `OpenGreekAndLatin` corpora for the study by
+combining them into a single raw text file and unique words database.
 
 The next code snippets will download hundreds of megabytes of Greek text to a
-local computer for quicker access.
+local computer for quicker access. `tqdm` downloader requires a stable internet
+connection to work properly.
+
+One could also download source zip files via browser and place them to the same
+directory with the Jupyter notebook or where Python is optionally run in shell
+mode. Zip files must then be renamed as `perseus.zip` and `first1k.zip`.
 
 1. Download packed zip files from their GitHub repositories:
 
 .. code-block:: python
 
   	from functions import download_with_indicator, perseus_zip_file, first1k_zip_file
-    # download perseus files
+    # download from perseus file source
     fs = "https://github.com/PerseusDL/canonical-greekLit/archive/master.zip"
     download_with_indicator(fs, perseus_zip_file)
-    # download first1k files
+    # download from first1k file source
     fs = "https://github.com/OpenGreekAndLatin/First1KGreek/archive/master.zip"
     download_with_indicator(fs, first1k_zip_file)
 
@@ -138,16 +172,16 @@ Output:
 .. code-block:: txt
 
     Downloading: https://github.com/PerseusDL/canonical-greekLit/archive/master.zip
-    xx.xxMB [00:15, 4.08MB/s]
+    71.00MB [04:15, 211.08KB/s]
     Downloading: https://github.com/OpenGreekAndLatin/First1KGreek/archive/master.zip
-    xxx.xxMB [00:15, 4.08MB/s]
+    195.00MB [09:15, 201.54KB/s]
 
 2. Unzip files to the corresponding directories:
 
 .. code-block:: python
 
     from functions import perseus_zip_dir, first1k_zip_dir, unzip
-    # first argument is the zip source, second is the destination dir
+    # first argument is the zip source, second is the destination directory
     unzip(perseus_zip_file, perseus_zip_dir)
     unzip(first1k_zip_file, first1k_zip_dir)
 
@@ -159,7 +193,7 @@ this process.
 .. code-block:: python
 
     from functions import copy_corpora, joinpaths, perseus_tmp_dir, first1k_tmp_dir
-    # important files resides in the data directory of the repositories
+    # important Greek text files resides in the data directory of the repositories
     for item in [[joinpaths(perseus_zip_dir,
                   ["canonical-greekLit-master", "data"]), perseus_tmp_dir],
                  [joinpaths(first1k_zip_dir,
@@ -181,8 +215,8 @@ Collecting files
 ~~~~~~~~~~~~~~~~
 
 When the files has been downloaded and copied, it is time to read them to the
-runtime memory. At this point file paths are collected to the `greek_corpora_x`
-variable that is used on later iterators.
+RAM (Random-Access Memory). At this point file paths are collected to the
+`greek_corpora_x` variable that is used on later iterators.
 
 .. code-block:: python
 
@@ -195,18 +229,37 @@ Output:
 
 .. code-block:: text
 
-    1699 files found
+    1705 files found
+
+Actual files found may differ by increasing over time, because Greek corpora
+repositories are constantly maintained and new texts are added by voluteer
+contributors.
 
 Processing files
 ~~~~~~~~~~~~~~~~
 
-Next step is to extract Greek content from the provided XML source files.
+Next step is to extract Greek content from the downloaded and selected XML
+source files. Usually this task might take a lot of effort in NLP. Python `NLTK
+<https://www.nltk.org/>`__ [#]_ and `CLTK <https://github.com/cltk/cltk>`__ [#]_
+libraries would be useful at this point, but in my case I'm only interested of
+Greek words, that is, text content that has a certain `Greek Unicode
+<https://en.wikipedia.org/wiki/Greek_alphabet#Greek_in_Unicode>`__ [#]_ letter
+block. Thus I'm able to simplify this part by removing all other characters from
+source files. Again, details can be found from the `functions.py
+<https://git.io/vAS2Z>`__ script.
 
-Extracted content is saved to the corpora/author/work based directories.
+Extracted content is saved to the `corpora/author/work` based directories.
 Simplified uncial conversion is also made at the same time so that the final
-output file contains only plain uppercase words separated by spaces. Pretty
-much in a format written by the ancient Greeks. Noteworth is that stored
-words are not stems but contain words in all possible inflected forms.
+data contains only plain uppercase words separated by spaces. Pretty much in a
+format written by the ancient Greeks, except they didn't have even spaces to
+denote individual words and phrases.
+
+.. figure:: P47.png
+   :scale: 100 %
+   :alt: Papyrus 47, Uncial Greek text without spaces
+   :align: center
+
+   Papyrus 47, Uncial Greek text without spaces. Rev 13:17-
 
 This will take several minutes depending on if you have already run it once and
 have the previous temporary directories available. Old processed corpora files
@@ -245,9 +298,9 @@ Output:
 
 .. code-block:: txt
 
-    Size of the all raw text: 346.5 MB
-    Size of the perseus raw text: 107.5 MB
-    Size of the first1k raw text: 239.0 MB
+    Size of the all raw text: 347.76 MB
+    Size of the perseus raw text: 107.41 MB
+    Size of the first1k raw text: 240.35 MB
 
 Then, I will calculate other statistics of the saved text files to compare their
 content:
@@ -315,26 +368,29 @@ and the third column is the percentage of the letter contra all letters.
     # show tables side by side to save some vertical space
     display_side_by_side(Perseus=a, First1K=b, Perseus_First1K=c)
 
+Table data
+^^^^^^^^^^
+
 ========= ========= ========= ========= ========= ========= ========= ========= =========
   Perseus                      FirstK1                       Both
 ----------------------------- ----------------------------- -----------------------------
  Letter    Count     Percent   Letter    Count     Percent   Letter    Count     Percent
 ========= ========= ========= ========= ========= ========= ========= ========= =========
  Α         4182002   10.96     Α         26817705  10.76     Α         30999707   10.79
- Ε         3678672   9.64      Ο         23687669  9.50      Ε         27351703   9.52
- Ο         3664034   9.61      Ι         22665483  9.09      Ο         26279145   9.14
- Ι         3613662   9.47      Ν         22498413  9.03      Ι         25909263   9.01
- Ν         3410850   8.94      Ε         22121458  8.88      Ν         25800130   8.98
+ Ε         3678672   9.64      Ο         23687669  9.50      Ο         27351703   9.52
+ Ο         3664034   9.61      Ι         22665483  9.09      Ι         26279145   9.14
+ Ι         3613662   9.47      Ε         22498413  9.03      Ε         25909263   9.01
+ Ν         3410850   8.94      Ν         22121458  8.88      Ν         25800130   8.98
  Τ         2903418   7.61      Τ         21698265  8.71      Τ         24601683   8.56
  Σ         2830967   7.42      Σ         18738234  7.52      Σ         21569201   7.50
  Υ         1776871   4.66      Υ         11384921  4.57      Υ         13161792   4.58
- Ρ         1440852   3.78      Ρ         9776411   3.92      Ρ         11217263   3.90
- Η         1392909   3.65      Η         9268111   3.72      Η         10661020   3.71
+ Ρ         1440852   3.78      Η         9776411   3.92      Η         11217263   3.90
+ Η         1392909   3.65      Ρ         9268111   3.72      Ρ         10661020   3.71
  Π         1326596   3.48      Κ         8982955   3.60      Κ         10244628   3.56
  Κ         1261673   3.31      Π         8290364   3.33      Π         9616960   3.35
  Ω         1179566   3.09      Ω         7874161   3.16      Ω         9053727   3.15
- Λ         1147548   3.01      Μ         7498489   3.01      Μ         1147548   3.01
- Μ         1139510   2.99      Λ         6929170   2.78      Λ         8076718   2.81
+ Μ         1147548   3.01      Μ         7498489   3.01      Μ         1147548   3.01
+ Λ         1139510   2.99      Λ         6929170   2.78      Λ         8076718   2.81
  Δ         932823    2.45      Δ         5757782   2.31      Δ         6690605   2.33
  Γ         584668    1.53      Γ         4197053   1.68      Γ         4781721   1.66
  Θ         501512    1.31      Θ         3440599   1.38      Θ         3942111   1.37
@@ -344,9 +400,11 @@ and the third column is the percentage of the letter contra all letters.
  Ξ         152971    0.40      Ξ         951076    0.38      Ξ         1104047   0.38
  Ζ         75946     0.20      Ζ         559728    0.22      Ζ         635674    0.22
  Ψ         51405     0.13      Ψ         375266    0.15      Ψ         426671    0.15
- Ϛ         0         0.00      Ϛ         8430      0.00      Ϛ         8430      0.00
- Ϡ         0         0.00      Ϡ         364       0.00      Ϡ         364       0.00
- Ϟ         0         0.00      Ϟ         204       0.00      Ϟ         204       0.00
+ Ϝ         349       0.00      Ϛ         5162      0.00      Ϛ         5171      0.00
+ Ϛ         9         0.00      Ϡ         259       0.00      Ϝ         505       0.00
+ Ϡ         4         0.00      Ϝ         156       0.00      Ϡ         263       0.00
+ Ϟ         3         0.00      Ϟ         111       0.00      Ϟ         114       0.00
+           0         0.00      Ϙ         13        0.00      Ϙ         13        0.00
 ========= ========= ========= ========= ========= ========= ========= ========= =========
 
 `First1K` corpora contains mathematical texts in Greek, which explains why the
@@ -355,8 +413,8 @@ included on the table. You can find other interesting differences too, like the
 occurrence of E/T, K/Π, and M/Λ, which are probably explained by the difference
 of the included text genres in the corporas.
 
-Plotly bar chart for letter stats
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Bar chart
+^^^^^^^^^
 
 The next chart will show visually which are the most used letters and the least
 used letters in the available Ancient Greek corpora.
@@ -431,7 +489,7 @@ Store database
 This is the single most important part of the chapter. I'm saving all
 simplified unique words as a CSV file that can be used as a database for the
 riddle solver. After this you may proceed to the `riddle solver
-<https://git.io/vASrY>`__ Jupyter notebook document in interactive mode if
+<https://git.io/vASrY>`__ Jupyter notebook document in interactive mode, if
 you prefer.
 
 .. code-block:: python
@@ -439,6 +497,14 @@ you prefer.
     from functions import csv_file_name
     # save dataframe to CSV file
     df.to_csv(csv_file_name, header=False, index=False, encoding='utf-8')
+
+Noteworth is that stored words are not stems or any base forms of the words but
+contain words in all possible inflected forms. Due to nature of machine
+processed texts, one should also be warned about corrupted words and other noise
+to occur in results. Programming tools are good for extracting interesting
+content and filtering data that would be impossible for a human to do because
+of its enormous size. But results still need verification and interpretation,
+also procedures can be fine tuned and developed in many ways.
 
 Most repeated words
 ~~~~~~~~~~~~~~~~~~~
@@ -454,14 +520,16 @@ unique words, and five of the most repeated words in the database:
     print("Total records: %s" % len(words))
     display_html(words.to_html(index=False), raw=True)
 
+Total records: 833817
+
 =====  =========  =========
  Word   Count      Percent
 =====  =========  =========
- ΚΑΙ    3489609    5.60
- ΔΕ     1430133    2.29
- ΤΟ     1355647    2.17
- ΤΟΥ    989407     1.59
- ΤΩΝ    958932     1.54
+ ΚΑΙ    1781528    5.38
+ ΔΕ     778589     2.35
+ ΤΟ     670952     2.03
+ ΤΩΝ    487015     1.47
+ Η      483372     1.46
 =====  =========  =========
 
 KAI...
@@ -479,30 +547,30 @@ For a curiosity, let's also see the longest words in the database:
     # output table
     HTML(l.to_html(index=False))
 
-========================================== ============= ========
- Word                                       Occurrences   Length
-========================================== ============= ========
- ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ   3             40
- ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ      3             37
- ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ       2             36
- ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ       4             36
- ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ       3             36
- ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ        2             35
- ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ        1             35
- ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ          1             33
- ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ           1             32
- ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ           3             32
- ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ            2             31
- ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ            3             31
- ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ            1             31
- ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ             2             30
- ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ              3             29
- ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ              2             29
- ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ              2             29
- ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ              3             29
- ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ              1             29
- ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ               1             28
-========================================== ============= ========
+========================================== ======= ========
+ Word                                       Count   Length
+========================================== ======= ========
+ ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ   3       40
+ ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ      3       37
+ ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ       2       36
+ ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ       4       36
+ ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ       3       36
+ ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ        2       35
+ ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ        1       35
+ ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ          1       33
+ ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ           1       32
+ ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ           3       32
+ ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ            2       31
+ ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ            3       31
+ ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ            1       31
+ ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ             2       30
+ ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ              3       29
+ ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ              2       29
+ ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ              2       29
+ ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ              3       29
+ ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ              1       29
+ ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ               1       28
+========================================== ======= ========
 
 Biggest isopsephy
 ~~~~~~~~~~~~~~~~~
@@ -516,30 +584,30 @@ How about finding out, which words have the biggest isopsephical values?
     # output table
     HTML(words.to_html(index=False))
 
-========================================== ============= ======== ===========
- Word                                       Occurrences   Length   Isopsephy
-========================================== ============= ======== ===========
- ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ          1             33       5186
- ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ                 3             26       5056
- ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ       4             36       4553
- ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ                             1             14       4550
- ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ       3             36       4486
- ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ      3             37       4466
- ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ                            1             15       4370
- ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ                         4             18       4370
- ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ   3             40       4280
- ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ                          2             17       4235
- ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ        2             35       4220
- ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ                   2             24       4211
- ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ                             3             14       4193
- ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ               1             28       4187
- ΨΥΧΑΓΩΓΟΥΝΤΩΝ                              1             13       4177
- ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ                         4             18       4166
- ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ                         3             18       4128
- ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ                  3             25       4120
- ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ              3             29       4102
- ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ                        8             19       4102
-========================================== ============= ======== ===========
+========================================== ======= ===========
+ Word                                       Count   Isopsephy
+========================================== ======= ===========
+ ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ          1       5186
+ ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ                 3       5056
+ ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ       4       4553
+ ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ                             1       4550
+ ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ       3       4486
+ ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ      3       4466
+ ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ                            1       4370
+ ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ                         4       4370
+ ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ   3       4280
+ ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ                          2       4235
+ ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ        2       4220
+ ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ                   2       4211
+ ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ                             3       4193
+ ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ               1       4187
+ ΨΥΧΑΓΩΓΟΥΝΤΩΝ                              1       4177
+ ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ                         4       4166
+ ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ                         3       4128
+ ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ                  3       4120
+ ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ              3       4102
+ ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ                        8       4102
+========================================== ======= ===========
 
 Word frequency
 ~~~~~~~~~~~~~~
@@ -641,22 +709,24 @@ So that's all for the Greek corpora processing and basic statistics. One could
 further investigate the basic stats, categorize and compare individual texts as
 well.
 
-.. |Output:| replace:: [output]
-
 .. [#] https://en.wikipedia.org/wiki/Sibylline_Oracles
 .. [#] https://en.wikipedia.org/wiki/Sibylline_Books
+.. [#] https://books.google.fi/books?id=TNdeolWctsQC
+.. [#] https://books.google.fi/books?id=Zqh8ZQZqnWYC
+.. [#] http://python.org
 .. [#] https://github.com/markomanninen/grcriddles/blob/master/functions.py
 .. [#] https://jupyter.org
 .. [#] https://github.com/markomanninen/grcriddles/blob/master/Processing%20Greek%20corpora%20for%20the%20isopsehical%20riddle%20solver.ipynb
 .. [#] https://github.com/markomanninen/grcriddles/blob/master/Isopsephical%20riddles%20in%20the%20Greek%20Pseudo%20Sibylline%20hexameter%20poetry.ipynb
-.. [#] https://github.com/cltk/cltk
+.. [#] https://github.com/markomanninen/grcriddles/blob/master/
+.. [#] https://www.python.org/shell/
+.. [#] https://github.com/tqdm/tqdm
 .. [#] http://www.perseus.tufts.edu/hopper/opensource/download
 .. [#] http://opengreekandlatin.github.io/First1KGreek/
 .. [#] https://github.com/markomanninen/abnum3
 .. [#] https://github.com/jtauber/greek-accentuation
 .. [#] http://pandas.pydata.org
 .. [#] https://plot.ly
-.. [#] https://github.com/OpenGreekAndLatin/First1KGreek/zipball/master
-.. [#] https://en.wikipedia.org/wiki/Beta_Code
-.. [#] https://github.com/epilanthanomai/hexameter
-.. [#] https://github.com/markomanninen/grcriddles/blob/master/betacode.py
+.. [#] https://www.nltk.org/
+.. [#] https://github.com/cltk/cltk
+.. [#] https://en.wikipedia.org/wiki/Greek_alphabet#Greek_in_Unicode
