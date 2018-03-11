@@ -32,8 +32,9 @@ character crossing over the common borders in several ancient religions and art.
 Good introductions to the Pseudo-Sibylline oracles can be found from these two
 books:
 
-1. `Sibylline Oracles <https://books.google.fi/books?id=TNdeolWctsQC>`__ [#]_ by J. J.
-Collins in The Old Testament Pseudepigrapha, Volume I
+1. `Sibylline Oracles <https://books.google.fi/books?id=TNdeolWctsQC>`__ [#]_
+by J. J. Collins in The Old Testament Pseudepigrapha, Volume I
+
 2. `The Book Three of the Sibylline Oracles and Its Social Setting
 <https://books.google.fi/books?id=Zqh8ZQZqnWYC>`__ [#]_ (Part 1) by Rieuwerd
 Buitenwerf
@@ -45,7 +46,7 @@ first letter of the subject and its numerical value. Solving them requires, not
 so much of mathematical or cryptographical skills in modern sense, but a proper
 knowledge of the context, both inner textual and historical context.
 
-Most of the alphanumeric riddles in the oracles can already been taken as solved
+Most of the alphanumeric riddles in the oracles can already be taken as solved
 by various researchers. Some of the riddles are still problematic and open for
 better proposals. Better yet, few of these open riddles are more complex and
 specific enough so that one may try to solve them by modern programmable tools.
@@ -239,19 +240,20 @@ Processing files
 ~~~~~~~~~~~~~~~~
 
 Next step is to extract Greek content from the downloaded and selected XML
-source files. Usually this task might take a lot of effort in NLP. Python `NLTK
-<https://www.nltk.org/>`__ [#]_ and `CLTK <https://github.com/cltk/cltk>`__ [#]_
-libraries would be useful at this point, but in my case I'm only interested of
-Greek words, that is, text content that has a certain `Greek Unicode
-<https://en.wikipedia.org/wiki/Greek_alphabet#Greek_in_Unicode>`__ [#]_ letter
-block. Thus I'm able to simplify this part by removing all other characters from
-source files. Again, details can be found from the `functions.py
-<https://git.io/vAS2Z>`__ script.
+source files. Usually this task might take a lot of effort in NLP (natural
+language processing). Python `NLTK <https://www.nltk.org/>`__ [#]_ and `CLTK
+<https://github.com/cltk/cltk>`__ [#]_ libraries would be useful at this point,
+but in my case I'm only interested of Greek words, that is, text content
+encoded by a certain `Greek Unicode letter
+<https://en.wikipedia.org/wiki/Greek_alphabet#Greek_in_Unicode>`__ [#]_ block.
+Thus, I'm able to simplify this part by removing all other characters from
+source files except Greek characters. Again, details can be found from the
+`functions.py <https://git.io/vAS2Z>`__ script.
 
 Extracted content is saved to the `corpora/author/work` based directories.
 Simplified uncial conversion is also made at the same time so that the final
-data contains only plain uppercase words separated by spaces. Pretty much in a
-format written by the ancient Greeks, except they didn't have even spaces to
+data contain only plain uppercase words separated by spaces. Pretty much in a
+format written by the ancient Greeks, except they didn't even use spaces to
 denote individual words and phrases.
 
 .. figure:: P47.png
@@ -261,10 +263,10 @@ denote individual words and phrases.
 
    Papyrus 47, Uncial Greek text without spaces. Rev 13:17-
 
-This will take several minutes depending on if you have already run it once and
-have the previous temporary directories available. Old processed corpora files
-are removed first, then they are recreated by calling `process_greek_corpora`
-function.
+Next code execution will take several minutes depending on if you have already
+run it once and have the previous temporary directories available. Old processed
+corpora files are removed first, then they are recreated by calling
+`process_greek_corpora` function.
 
 .. code-block:: python
 
