@@ -24,7 +24,7 @@ Pseudo-Sibylline oracles, on the other hand, contain Jewish narrative of the
 human history contrasted to the Greek mythology and to the chronology of the
 other great ancient empires. Other intention of the material is to support
 evolving Christian doctrine and interpretation of the prophesies. Prophesies
-were mostly grounded on Jewish literature, but surprisingly some pagan world
+were mostly grounded on Jewish tradition, but surprisingly some pagan world
 events also came to be interpreted as signs of the coming Messiah. Sibyl, as a
 woman prophetess, child of Noah in the Pseudo-Sibylline lore, has a unique
 character crossing over the common borders in several ancient religions and art.
@@ -32,12 +32,11 @@ character crossing over the common borders in several ancient religions and art.
 Good introductions to the Pseudo-Sibylline oracles can be found from these two
 books:
 
-1. `Sibylline Oracles <https://books.google.fi/books?id=TNdeolWctsQC>`__ [#]_
-by J. J. Collins in The Old Testament Pseudepigrapha, Volume I
+- Sibylline Oracles in `The Old Testament Pseudepigrapha, Volume I
+<https://books.google.fi/books?id=TNdeolWctsQC>`__ [#]_ by J. J. Collins
 
-2. `The Book Three of the Sibylline Oracles and Its Social Setting
-<https://books.google.fi/books?id=Zqh8ZQZqnWYC>`__ [#]_ (Part 1) by Rieuwerd
-Buitenwerf
+- Part 1 in `The Book Three of the Sibylline Oracles and Its Social Setting
+<https://books.google.fi/books?id=Zqh8ZQZqnWYC>`__ [#]_ by Rieuwerd Buitenwerf
 
 Some material in the Pseudo-Sibylline oracles contain cryptic puzzles,
 referring to persons, cities, countries, and epithets of God for example. These
@@ -409,11 +408,12 @@ Table data
            0         0.00      Ϙ         13        0.00      Ϙ         13        0.00
 ========= ========= ========= ========= ========= ========= ========= ========= =========
 
-`First1K` corpora contains mathematical texts in Greek, which explains why the
-rarely used digamma (Ϛ = 6), qoppa (Ϟ/Ϙ = 90), and sampi(Ϡ = 900) letters are
-included on the table. You can find other interesting differences too, like the
-occurrence of E/T, K/Π, and M/Λ, which are probably explained by the difference
-of the included text genres in the corporas.
+Greek corpora contains mathematical texts in Greek, which explains why the
+rarely used digamma (Ϝ/Ϛ = 6), qoppa (Ϟ/Ϙ = 90), and sampi (Ϡ = 900) letters are
+included on the table. You can find other interesting differences between
+`Perseus` and `First1k` corpora, like the occurrence of Ρ/Η, K/Π, and Ο/Ι/Ε
+which are probably explained by the difference of the included text genres in
+corpora.
 
 Bar chart
 ^^^^^^^^^
@@ -424,7 +424,8 @@ used letters in the available Ancient Greek corpora.
 .. image:: stats.png
 
 Vowels with `N`, `S`, and `T` consonants pops up as the most used letters. The
-least used letters are `Z`, `Chi`, and `Psi`.
+least used letters are `Ζ`, `Ξ`, and `Ψ`, if the exclusive numerals `Ϛ`, `Ϟ`,
+and `Ϡ` are not counted.
 
 Optional live chart
 ^^^^^^^^^^^^^^^^^^^
@@ -433,17 +434,15 @@ Uncomment the next part to output a new fresh graph from Plotly:
 
 .. code-block:: python
 
-    #from plotly.offline import init_notebook_mode
-    #init_notebook_mode(connected=False)
-
-    # for the fist time set plotly service credentials, then you can comment the next line
     #import plotly
+    #plotly.offline.init_notebook_mode(connected=False)
+
+    # for the fist time set plotly service credentials, then you can comment
+    # next line
     #plotly.tools.set_credentials_file(username='MarkoManninen', api_key='xyz')
 
-    # use tables and graphs...
-    #import plotly.tools as tls
     # embed plotly graphs
-    #tls.embed("https://plot.ly/~MarkoManninen/8/")
+    #plotly.tools.embed("https://plot.ly/~MarkoManninen/8/")
 
 Unique words database
 ---------------------
@@ -471,14 +470,15 @@ minute or two depending on the processor speed of your computer:
     # init dataframe
     df = DataFrame([[k, v] for k, v in unique_word_stats.items()])
     # add column for the occurrence percentage of the word
+    # lwords3 variable is the length of the all words list
     df[2] = df[1].apply(lambda x: round(x*100/lwords3, 2))
-    # add column for the length of the word
+    # add column for the length of the individual word
     df[3] = df[0].apply(lambda x: len(x))
-    # add isopsephy column
+    # add isopsephical value column
     df[4] = df[0].apply(lambda x: g.value(x))
-    # add syllabified column
+    # add syllabified word column
     df[5] = df[0].apply(lambda x: syllabify(x))
-    # add length of the syllables column
+    # add length of the syllables in word column
     df[6] = df[5].apply(lambda x: len(x))
     # count vowels in the word as a column
     df[7] = df[0].apply(lambda x: sum(list(x.count(c) for c in vowels)))
@@ -505,8 +505,8 @@ contain words in all possible inflected forms. Due to nature of machine
 processed texts, one should also be warned about corrupted words and other noise
 to occur in results. Programming tools are good for extracting interesting
 content and filtering data that would be impossible for a human to do because
-of its enormous size. But results still need verification and interpretation,
-also procedures can be fine tuned and developed in many ways.
+of its enormous size. But results still need verification and interpretation.
+Also, procedures can be fine tuned and developed in many ways.
 
 Most repeated words
 ~~~~~~~~~~~~~~~~~~~
@@ -516,10 +516,15 @@ unique words, and five of the most repeated words in the database:
 
 .. code-block:: python
 
+    # import display html helper function
     from functions import display_html
-    # use to_html and index=False to hide index column and output table
-    words = df.sort_values(1, ascending=False).head(n=5)
-    print("Total records: %s" % len(words))
+    # sort and limit words, select columns by index 1, 2, and 3
+    words = df.sort_values(1, ascending=False).head(n=5).iloc[:,0:3]
+    # label columns
+    words.columns = ['Word', 'Count', 'Percent']
+    # output total number of the words from df object
+    print("Total records: %s" % len(df))
+    # index=False to hide index column and output table by using to_html method
     display_html(words.to_html(index=False), raw=True)
 
 Total records: 833817
@@ -534,7 +539,26 @@ Total records: 833817
  Η      483372     1.46
 =====  =========  =========
 
-KAI...
+`KAI`, the word denoting `and-conjuction
+<http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0057:entry=kai/1>`__ [#]_,
+is well known as the most repeated word in the Ancient Greek. Above statistics
+says that `KAI` word takes almost 5.4% of the all words.
+
+This can be explained easily because `KAI` serves for many fundamental functions
+in text, such as an indicator of a new chapter or a paragraph, list copulative
+of two or more items, etc., basicly in a place, where we would use punctuation
+nowadays. From the other words, `Η` stands for a paraphrase and `ΔΕ` for a
+disconjunction. All these three words characterises Ancient Greek as
+fundamentally based on logical constructors, one could argue. Maybe even early
+type of list processing structures have been developed in a form of natural
+language. It would be an interesting excurse to compare the propositional logic
+and the list processing features of the Ancient Greek rhetorics to the modern
+LISP language or similar programming paradigm, but that is definitely beyond
+the scope of the investigation of this study.
+
+Naturally, articles and particles (`ΤΟ`, `ΤΩΝ`) belong to the most repeated
+words as well. One could use the knowledge of the certain word rate as one of
+the indicators of the text genre, or even quess the author of the text.
 
 Longest words
 ~~~~~~~~~~~~~
@@ -545,80 +569,114 @@ For a curiosity, let's also see the longest words in the database:
 
     from functions import HTML
     # load result to the temporary variable for later usage
+    # sort by length, limit to 20 items
     l = df.sort_values(3, ascending=False).head(n=20)
-    # output table
+    # take column index 0, 1, and 3. this is the second way of selecting
+    # certain columns. see iloc method in the previous example
+    l = l[[0, 1, 3]]
+    # label columns
+    l.columns = ['Word', 'Count', 'Length']
+    # output table without the index column
     HTML(l.to_html(index=False))
 
-========================================== ======= ========
- Word                                       Count   Length
-========================================== ======= ========
- ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ   3       40
- ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ      3       37
- ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ       2       36
- ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ       4       36
- ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ       3       36
- ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ        2       35
- ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ        1       35
- ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ          1       33
- ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ           1       32
- ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ           3       32
- ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ            2       31
- ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ            3       31
- ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ            1       31
- ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ             2       30
- ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ              3       29
- ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ              2       29
- ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ              2       29
- ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ              3       29
- ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ              1       29
- ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ               1       28
-========================================== ======= ========
+============================================= ======= ========
+ Word                                          Count   Length
+============================================= ======= ========
+ ΠΑΡΕΓΕΝΟΜΕΝΟΜΕΝΟΣΗΝΚΑΙΕΤΙΕΚΤΗΣΛΕΣΒΟΥΟΥΦΑΜΕΝ	 1	     43
+ ΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΟΤΗΤΟΣΑΤΜΙΔΟΥΜΕΝΟΝΦΕΡΕΤΑΙ	   1	     42
+ ΕΜΟΥΟΙΑΠΕΦΕΥΓΑΧΕΙΡΑΣΛΥΠΗΣΑΣΜΕΝΟΥΔΕΝΑΟΥΔΕΝ	   1	     41
+ ΠΥΡΟΒΡΟΜΟΛΕΥΚΕΡΕΒΙΝΘΟΑΚΑΝΘΙΔΟΜΙΚΡΙΤΡΙΑΔΥ	     1	     40
+ ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΙΑΙΗΣΓΕΝΕΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ	     1	     39
+ ΠΥΡΒΡΟΜΟΛΕΥΚΕΡΕΒΙΝΘΟΑΚΑΝΘΟΥΜΙΚΤΡΙΤΥΑΔΥ	       1	     38
+ ΚΑΙΙΚΕΛΗΧΡΥΣΗΑΦΡΟΔΙΤΗΚΑΙΟΙΣΕΚΟΣΜΗΣΕ	         1	     35
+ ΚΑΙΤΟΝΑΡΙΣΤΑΡΧΟΝΑΣΜΕΝΩΣΤΗΝΓΡΑΦΗΝΤΟΥ	         1	     35
+ ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ	         1	     35
+ ΑΡΣΕΝΙΚΩΝΟΝΟΜΑΤΩΝΣΤΟΙΧΕΙΑΕΣΤΙΠΕΝΤΕ	           1	     34
+ ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΕΡΩΝΟΡΙΖΕΣΘΑΙΤΡΕΙΣ	           1	     33
+ ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ	           1	     33
+ ΟΡΘΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ	             2	     32
+ ΟΥΝΙΚΑΝΩΣΠΕΡΙΑΥΤΩΝΗΜΙΝΕΝΤΟΙΣΠΕΡΙ	             1	     32
+ ΗΔΙΚΗΜΕΝΟΝΔΕΑΠΕΡΡΙΜΜΕΝΟΝΠΕΡΙΟΡΑΣ	             1	     32
+ ΑΡΙΣΤΑΡΧΟΣΚΑΙΟΙΑΠΟΤΗΣΣΧΟΛΗΣΦΑΣΙΝ	             1	     32
+ ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ	             1	     32
+ ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ	             1	     31
+ ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ	             3	     31
+ ΚΑΝΤΩΝΕΠΙΤΑΙΣΔΥΝΑΜΕΣΙΠΑΡΑΒΑΙΝΗ	               1	     30
+============================================= ======= ========
 
-Biggest isopsephy
-~~~~~~~~~~~~~~~~~
+A bit later I'm searching exact place of these words from the corpora, but lets
+first find out, what words have the biggest isopsephical value.
 
-How about finding out, which words have the biggest isopsephical values?
+Biggest isopsephical value
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+So, which words have the biggest isopsephical value in the database? We can find
+it out by sorting words database by the fourth column, that is the isopsephical
+value of the word.
 
 .. code-block:: python
 
-    # sort by the isopsephy column
-    words = df.sort_values(4, ascending=False).head(n=20)
-    # output table
-    HTML(words.to_html(index=False))
+    # sort by the isopsephy column and get the first 20 items
+    m = df.sort_values(4, ascending=False).head(n=20)
+    # select columns by indices
+    m = m[[0, 1, 4]]
+    # relabel selected columns
+    m.columns = ['Word', 'Count', 'Isopsephy']
+    # remove the index column and output table
+    HTML(m.to_html(index=False))
 
 ========================================== ======= ===========
  Word                                       Count   Isopsephy
 ========================================== ======= ===========
- ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ          1       5186
- ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ                 3       5056
- ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ       4       4553
- ΤΟΙΧΩΡΥΧΟΥΝΤΩΝ                             1       4550
- ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ       3       4486
- ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ      3       4466
- ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ                            1       4370
- ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ                         4       4370
- ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ   3       4280
- ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ                          2       4235
- ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ        2       4220
- ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ                   2       4211
- ΨΥΧΟΓΟΝΙΜΩΤΤΩΝ                             3       4193
- ΚΙΧΛΕΠΙΚΟΣΣΥΦΟΦΑΤΤΟΠΕΡΙΣΤΕΡΑ               1       4187
- ΨΥΧΑΓΩΓΟΥΝΤΩΝ                              1       4177
- ΦΙΛΟΞΕΝΩΤΑΤΟΣΟΥΤΩΣ                         4       4166
- ΥΠΟΧΩΡΗΤΙΚΩΤΤΟΙΣΙΝ                         3       4128
- ΚΩΝΣΤΑΝΤΙΝΟΥΤΕΛΕΥΤΗΣΑΝΤΟΣ                  3       4120
- ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ              3       4102
- ΕΜΨΥΧΟΝΑΝΘΡΩΠΟΣΖΩΟΝ                        8       4102
+ ΛΕΟΝΤΑΤΥΦΛΩΣΩΝΣΚΩΛΩΨΔΕΤΟΥ	                1	      6865
+ ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ	        1	      5186
+ ΒΡΥΣΩΝΟΘΡΑΣΥΜΑΧΕΙΟΛΗΨΙΚΕΡΜΑΤΩΝ	            2	      5122
+ ΟΡΘΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ	          2	      5086
+ ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ	                1	      5056
+ ΚΑΙΤΟΝΑΡΙΣΤΑΡΧΟΝΑΣΜΕΝΩΣΤΗΝΓΡΑΦΗΝΤΟΥ	      1	      4969
+ ΑΡΣΕΝΙΚΩΝΟΝΟΜΑΤΩΝΣΤΟΙΧΕΙΑΕΣΤΙΠΕΝΤΕ	        1	      4768
+ ΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΟΤΗΤΟΣΑΤΜΙΔΟΥΜΕΝΟΝΦΕΡΕΤΑΙ	1	      4754
+ ΕΠΙΣΚΟΠΩΚΩΝΣΤΑΝΤΙΝΟΥΠΟΛΕΩΣ	                1	      4701
+ ΚΩΔΩΝΟΦΑΛΑΡΑΧΡΩΜΕΝΟΥΣ	                    1	      4642
+ ΕΜΟΥΟΙΑΠΕΦΕΥΓΑΧΕΙΡΑΣΛΥΠΗΣΑΣΜΕΝΟΥΔΕΝΑΟΥΔΕΝ	1	      4579
+ ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΙΑΙΗΣΓΕΝΕΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ	  1	      4481
+ ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ	                        1	      4370
+ ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ	                          1	      4370
+ ΟΠΡΩΤΟΣΑΝΘΡΩΠΩΝΥΠΟΔΕΙΞΑΣ	                  1	      4340
+ ΟΥΝΙΚΑΝΩΣΠΕΡΙΑΥΤΩΝΗΜΙΝΕΝΤΟΙΣΠΕΡΙ	          1	      4285
+ ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ	                        1	      4235
+ ΑΡΙΣΤΑΡΧΟΣΚΑΙΟΙΑΠΟΤΗΣΣΧΟΛΗΣΦΑΣΙΝ	          1	      4221
+ ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ	                  1	      4211
+ ΨΥΧΟΓΟΝΙΜΩΤΑΤΩΝ	                          1	      4194
 ========================================== ======= ===========
+
+These are very rare words, as was the case with the longest words too, but as
+it can be seen, the longest and the biggest isopsephical words are just partly
+overlapping. Isopsephical value of the word is not depending of the length of
+the word, but it is depending on the fact, how many times the latter part of the
+letters in the alphabet occus in the word. In `ΛΕΟΝΤΑΤΥΦΛΩΣΩΝΣΚΩΛΩΨΔΕΤΟΥ` letters
+`Τ`, `Φ`, `Ω`, and `Σ` are repeated several times so that the sum of the
+alphabetic numerals in the word, i.e. the isopsephical value, is 6865. The value
+gap between the first and the second word is rather big. Results like these are
+interesting because they may tell deliberate construction of the words, which I
+want to detect from the vast sample of coincidental hits.
+
+Before going to the last useful procedure of spotting the location of the words,
+lets see a special statictic about the frequency of the words.
 
 Word frequency
 ~~~~~~~~~~~~~~
 
-How many percent of the whole word base, the least repeated words take:
+So, I already know that there are certain words repeating very often, for
+different reasons. But then there are words repeating once or few times only.
+Thus, it is relevant to ask, how many percent of the whole word base, the least
+repeated words actually take? For the task I'm using `groupby` and `count`
+methods of the `Dataframe` object in `Pandas`.
 
 .. code-block:: python
 
-    # length of the words database
+    # length of the words database. taken to a variable to prevent unnecessary
+    # repeatition in the next for loop
     le = len(df)
     # group words by occurrence and count grouped items, list the first 10 items
     for x, y in df.groupby([1, 2]).count()[:10].T.items():
@@ -639,19 +697,29 @@ Output:
     words repeating 9 time(s):  1.28 %
     words repeating 10 time(s):  1.11 %
 
-Words that repeat 1-4 times fills the 60% of the whole text. Words repeating
-three times takes 16.5% of the words being the greatest repeatance factor.
+Almost 45% of the wodrds in database occurs only once in a corpora. That looks
+pretty high number which reason I have yet to resolved. Words that repeat 1-4
+times fills roughly 70% of the whole corpora.
 
-Detect source texts for longest words
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Detect source texts
+~~~~~~~~~~~~~~~~~~~
 
-Finally, for cross checking the data processing algorithm, I want to know in
-which texts the longest words occur:
+Stats are nice, but it wouldn't be so useful, if there was no routine to find
+out words from corpora, where they actually occur.
+
+The last part of the chapter one is to specify the procedure to find out the
+exact places of the given words in the corpora. This is going to be useful on
+the next chapters too. I have provided a `search_words_from_corpora` function to
+simplify this task. You may find the code from `functions.py` and alter it for
+your use.
+
+Longest words
+^^^^^^^^^^^^^
 
 .. code-block:: python
 
     from functions import search_words_from_corpora
-    # using already instantiated l variable I'm collecting the plain text words
+    # I'm collecting the plain text words from the already instantiated l variable
     words = list(y[0] for x, y in l.T.items())
     search_words_from_corpora(words, [perseus_dir, first1k_dir])
 
@@ -659,46 +727,111 @@ Output:
 
 .. code-block:: txt
 
-    greek_text_perseus\Aristophanes\Simplified_Ecclesiazusae.txt =>
-    ΣΙΛΦΙΟΤΥΡΟΜΕΛΙΤΟΚΑΤΑΚΕΧΥΜΕΝΟ: 1
-    greek_text_perseus\Aristophanes\Simplified_Lysistrata.txt =>
-    ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ: 1, ΣΚΟΡΟΔΟΠΑΝΔΟΚΕΥΤΡΙΑΡΤΟΠΩΛΙΔΕΣ: 1
-    greek_text_perseus\Aristophanes\Simplified_Wasps.txt =>
-    ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ: 1
-    greek_text_perseus\Plato\Simplified_LawsMachineReadableText.txt =>
-    ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ: 1
-    greek_text_perseus\Plato\Simplified_RepublicMachineReadableText.txt =>
-    ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ: 1
-    greek_text_tlg\AlexanderOfAphrodisias\Simplified_InAristotelisTopicorumLibrosOctoCommentaria.txt =>
-    ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΡΩΝΟΡΖΕΣΘΑΙΤΡΕΙΣ: 2
-    greek_text_tlg\Ammonius\Simplified_InAristotelisLibrumDeInterpretationeCommentarius.txt =>
-    ΚΑΙΟΣΑΑΛΛΑΤΩΝΤΟΙΟΥΤΩΝΠΡΟΣΔΙΟΡΙΖΜΕΘΑ: 2
-    greek_text_tlg\ApolloniusDyscolus\Simplified_DeConstructione.txt =>
-    ΠΑΡΥΦΙΣΤΑΜΕΝΟΥΠΡΑΓΜΑΤΟΣΚΟΙΝΩΣ: 3
-    greek_text_tlg\Artemidorus\Simplified_Onirocriticon.txt =>
-    ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ: 3
-    greek_text_tlg\ChroniconPaschale\Simplified_ChroniconPaschale.txt =>
-    ΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΙΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΟΣ: 2, ΕΝΝΕΑΚΑΙΔΕΕΝΝΕΑΚΑΙΔΕΚΑΕΤΗΡΔΩΝ: 2
-    greek_text_tlg\ClaudiusPtolemaeus\Simplified_SyntaxisMathematica.txt =>
-    ΕΚΑΤΟΝΤΑΚΑΙΕΒΔΟΜΗΚΟΝΤΑΠΛΑΣΙΟΝ: 3
-    greek_text_tlg\JoannesPhiloponus\Simplified_InAristotetelisMeteorologicorumLibrumPrimumCommentarium.txt =>
-    ΑΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΤΗΤΟΣΑΤΜΙΔΟΜΕΝΟΝΦΡΕΤΑΙ: 3, ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΑΙΗΣΓΕΝΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ: 3
-    greek_text_tlg\Libanius\Simplified_Epistulae1-839.txt =>
-    ΕΜΟΥΙΑΠΦΕΥΓΑΧΕΙΡΑΣΛΥΠΣΑΣΜΕΝΟΥΔΝΑΟΥΔΝ: 3, ΚΑΙΙΚΛΗΧΡΥΣΗΑΦΡΟΔΤΗΚΑΙΟΙΣΕΚΣΜΗΣΕ: 3
-    greek_text_tlg\Libanius\Simplified_OratioI.txt =>
-    ΗΔΙΚΗΜΝΟΝΔΕΑΠΕΡΡΙΜΜΝΟΝΠΕΡΙΟΡΑΣ: 2
-    greek_text_tlg\ScholiaInHomerum\Simplified_ScholiaInIliadum.txt =>
-    ΣΙΑΛΟΙΟΡΑΧΙΝΤΕΘΑΛΥΙΑΝΑΛΟΙΦΗΕΥΤΡΑΦΟΥΣ: 4
-    greek_text_tlg\TheonSmyrnaeus\Simplified_DeUtilitateMathematicae.txt =>
-    ΧΙΛΙΟΚΤΑΚΟΣΙΟΥΔΟΗΚΟΝΤΑΠΛΑΣΟΝΑ: 2
+    + Aristophanes, Lysistrata (tlg0019.tlg007.perseus-grc2.xml) =>
+
+    ----- ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ (1) -----
+    ὦ ξύμμαχοι γυναῖκες ἐκθεῖτ ἔνδοθεν ὦ σπερμαγοραιολεκιθολαχανοπώλιδες ὦ σκοροδοπανδοκευτριαρτοπώλιδες
+
+    + Aristophanes, Wasps (tlg0019.tlg004.perseus-grc1.xml) =>
+
+    ----- ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ (1) -----
+    ς ἀκούειν ἡδἔ εἰ καὶ νῦν ἐγὼ τὸν πατέρ ὅτι βούλομαι τούτων ἀπαλλαχθέντα τῶν ὀρθροφοιτοσυκοφαντοδικοταλαιπώρων τρόπων ζῆν βίον γενναῖον ὥσπερ Μόρυχος αἰτίαν ἔχω ταῦτα δρᾶν ξυνωμότης ὢν καὶ φρονῶν
+
+    + Athenaeus, Deipnosophistae (tlg0008.tlg001.perseus-grc3.xml) =>
+
+    ----- ΠΥΡΒΡΟΜΟΛΕΥΚΕΡΕΒΙΝΘΟΑΚΑΝΘΟΥΜΙΚΤΡΙΤΥΑΔΥ (1) -----
+    τις ἃ Ζανὸς καλέοντι τρώγματ ἔπειτ ἐπένειμεν ἐνκατακνακομιγὲς πεφρυγμένον πυρβρομολευκερεβινθοακανθουμικτριτυαδυ βρῶμα τοπανταναμικτον ἀμπυκικηροιδηστίχας παρεγίνετο τούτοις
+
+    + Athenaeus, TheDeipnosophists (tlg0008.tlg001.perseus-grc4.xml) =>
+
+    ----- ΠΥΡΟΒΡΟΜΟΛΕΥΚΕΡΕΒΙΝΘΟΑΚΑΝΘΙΔΟΜΙΚΡΙΤΡΙΑΔΥ (1) -----
+    ἐπεί γ ἐπένειμεν ἐγκατακνακομιγὲς πεφρυγμένον πυροβρομολευκερεβινθοακανθιδομικριτριαδυ βρωματοπαντανάμικτον ἄμπυκι καριδίᾳ στιχὰς παρεγίνετο τούτοις σταιτινοκογχομαγὴς
+
+    + Plato, Laws (tlg0059.tlg034.perseus-grc2.xml) =>
+
+    ----- ΤΕΤΤΑΡΑΚΟΝΤΑΚΑΙΠΕΝΤΑΚΙΣΧΙΛΙΟΣΤΟΝ (1) -----
+    πεφευγότος ἀμφοτέρωθεν πρός τε ἀνδρῶν καὶ πρὸς γυναικῶν κληρονόμον εἰς τὸν οἶκον τοῦτον τῇ πόλει τετταρακοντακαιπεντακισχιλιοστὸν καταστῆσαι βουλευομένους μετὰ νομοφυλάκων καὶ ἱερέων διανοηθέντας τρόπῳ καὶ λόγῳ τοιῷδε ὡς οὐδεὶς
+
+    + Plato, Republic (tlg0059.tlg030.perseus-grc2.xml) =>
+
+    ----- ΕΝΝΕΑΚΑΙΕΙΚΟΣΙΚΑΙΕΠΤΑΚΟΣΙΟΠΛΑΣΙΑΚΙΣ (1) -----
+    τοῦ τυράννου ἀφεστηκότα λέγῃ ὅσον ἀφέστηκεν ἐννεακαιεικοσικαιεπτακοσιοπλασιάκις ἥδιον αὐτὸν ζῶντα εὑρήσει τελειωθείσῃ τῇ πολλαπλασιώσει τὸν δὲ τύραννον ἀνιαρότερον τῇ αὐτῇ ταύτῃ
+
+    + AlexanderOfAphrodisias, InAristotelisMetaphysicaCommentaria (tlg0732.tlg004.opp-grc1.xml) =>
+
+    ----- ΟΥΝΙΚΑΝΩΣΠΕΡΙΑΥΤΩΝΗΜΙΝΕΝΤΟΙΣΠΕΡΙ (1) -----
+    οιησά αενο τ ιστεύσομεν ρ Φ τεθεώρηται μὲν οὐνὶκανῶςπερὶαὐτῶνἡμῖνἐντοῖςπερὶ φύσεως ἰκαὶἱκανῶς φησί περὶτῶ ν ἀρχῶν τῶν φυσικῶν ἐν τοῖς περὶ φύσεως
+
+    + AlexanderOfAphrodisias, InAristotelisTopicorumLibrosOctoCommentaria (tlg0732.tlg006.opp-grc1.xml) =>
+
+    ----- ΟΤΙΤΟΥΜΗΔΙΑΠΡΟΤΕΡΩΝΟΡΙΖΕΣΘΑΙΤΡΕΙΣ (1) -----
+    Τοῦ δὲ μὴ ἐκπροτέρων τρεῖς εἰσι τρόποι Ὅτιτοῦμὴδιὰπροτέρωνὁρίζεσθαιτρεῖς εἰσι τρόποι πρῶτοςμὲν εἰ διὰ τοῦ ἀντικειμένου τὸ ἀντικείμενον ὥρισται ἅμ γὰρ τῇ φύσει τὰ ἀντικείμ
+
+    + ApolloniusDyscolus, DeAdverbiis (tlg0082.tlg002.1st1K-grc1.xml) =>
+
+    ----- ΠΑΡΕΓΕΝΟΜΕΝΟΜΕΝΟΣΗΝΚΑΙΕΤΙΕΚΤΗΣΛΕΣΒΟΥΟΥΦΑΜΕΝ (1) -----
+    τῆϲ Λέϲβου τηϲ εκ εκ Λεϲβο παρεγενόμην καὶ ἔτι οῦ φαμεν παρεγενομενομενοϲηνκαιετιεκτηϲλεϲβουουφαμεν Α εκ τηϲ Λεϲβου ἔτι οὐ
+
+    + ApolloniusDyscolus, DeConstructione (tlg0082.tlg004.1st1K-grc1.xml) =>
+
+    ----- ΚΑΙΤΟΝΑΡΙΣΤΑΡΧΟΝΑΣΜΕΝΩΣΤΗΝΓΡΑΦΗΝΤΟΥ (1) -----
+    ἠλογῆϲθαι φαϲ δὲ καίτὸνἈρίϲταρχονἀϲμένωϲτὴνγραφὴντοῦ Δικαιάρχουπαραδέξαϲθαι ἐνγὰρἁπάϲαιϲ ν τὸ εὲῇ ἐν πατρίδι γαί ὑπολαβόντα τὸ ἑαυτῆϲ νοεὶϲθαι ἐκ το
+
+    ----- ΑΡΣΕΝΙΚΩΝΟΝΟΜΑΤΩΝΣΤΟΙΧΕΙΑΕΣΤΙΠΕΝΤΕ (1) -----
+    τ τὸ ᾶ τελικόν ἐϲτιν κτλ Τελικὰ ἀρϲενικῶνὸνομάτωνϲτοιχεῖάἐϲτιπέντε θηλυκῶνδὲ ὸκτώ ᾶη ωνξΒ ψ οὐδετέ ρων δὲ ἐ ῦ εραίαν
+
+    ----- ΑΡΙΣΤΑΡΧΟΣΚΑΙΟΙΑΠΟΤΗΣΣΧΟΛΗΣΦΑΣΙΝ (1) -----
+    αὐτῇ Ϲ θϲτή εϲι Β καθότ Ϲ καθ ϲ ὁ Ἀρίϲταρχοϲκαὶοίἀπὸτῆϲϲχολῆϲφαϲιν οὶϲ οὐ ϲυγκαταθετέον ε φαϲίν οὐκ ὀρθῶϲ
+
+    + Artemidorus, Onirocriticon (tlg0553.tlg001.1st1K-grc1.xml) =>
+
+    ----- ΑΥΤΟΜΑΤΟΙΔΕΟΙΘΕΟΙΑΠΑΛΛΑΣΣΟΜΕΝΟΙ (1) -----
+    ς μεγάλας σημαίνει οἱ γὰρ ἐν μεγάλαις συμφοραῖς γενόμενοι καὶ τῆς πρὸς θεούς εὐσεβείας ἀφίστανται αὐτόματοιδέοἱθεοὶἀπαλλασσόμενοι καὶ τὰ ἀγάλμιατα αὐτῶν συμπίπτοντα θάνατον τῷ ἰδόντι ἤ τινι τῶν αὐτοῦ προαγορεύει θεο
+
+    + JoannesPhiloponus, InAristotetelisMeteorologicorumLibrumPrimumCommentarium (tlg4015.tlg005.opp-grc1.xml) =>
+
+    ----- ΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΟΤΗΤΟΣΑΤΜΙΔΟΥΜΕΝΟΝΦΕΡΕΤΑΙ (1) -----
+    νῦν μενούσης ἀμεταβλήτου τὸ οὖν περὶ τὴν γῆν ὑγρόν φησίν ὑπὸ τῶν ἀκτίνων καὶ ὑπὸ τῆς ὰ λληςτῆςἄνωθενθερμότητοςἀτμιδούμενονφέρεται ἄνω πῶς μὲν ἡ ἐκ τῶν ἀκτίνων γίνεται θερμότης ἐδίδαξεν ὅτι ὁ ε ναπο λαμβαν
+
+    ----- ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΙΑΙΗΣΓΕΝΕΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ (1) -----
+    λὴ ἀνάλογόν ἐστι γενέσει ἡ δὲ τοὔμπαλιν τῶν κουφοτέρων εἰς τὰ βαρότεραφθορᾷ δυνατὸνδὲτὸαἰτίαιῆςγενέσεωςκαὶτῆςφθορᾶς διὰ τὸ ἄρθρον μὴ καθολικῶς ἀκούειν πάσης γενέσεως καὶ φθορᾶς ἀλλὰ ὑετοῦ χιόν
+
+    + Libanius, Epistulae1-839 (tlg2200.tlg001.opp-grc1.xml) =>
+
+    ----- ΕΜΟΥΟΙΑΠΕΦΕΥΓΑΧΕΙΡΑΣΛΥΠΗΣΑΣΜΕΝΟΥΔΕΝΑΟΥΔΕΝ (1) -----
+    δον κατηφῆ καὶ συνεοταλμἐνον καὶ δάκρυα πρὸ τῶν λόγωνἀφεὶς ἐγὼ μόλις τὰς τῶν παθόντων ἐμοῦόιαπέφευγαχεῖραςλυπήσαςμὲνοὐδέναοὐδέν ἡνίκα ἐξῆν μικρο δὲ διασπασθείς καὶ προσετίθει φυγὴν ἀδελφοῦ καὶ γένους ὅλου πλάνην καὶ γῆν ἄσπ
+
+    ----- ΚΑΙΙΚΕΛΗΧΡΥΣΗΑΦΡΟΔΙΤΗΚΑΙΟΙΣΕΚΟΣΜΗΣΕ (1) -----
+    ε γονεῦσιν αὐτῆς καὶ σοὶ συνη σθην τοῖς μέν οἕαν ἔφυσαν σοὶ δέ οἴαν ἔχεις Δήλῳ δή ποτε τοῖον καὶἰκέληχρυσῇἈφροδίτῃκαὶοἷςἐκόσμησε γυναῖκας Ὅμηρος πάντα ἂν δέξαιτο ἀναμιμν
+
+    ----- ΚΑΝΤΩΝΕΠΙΤΑΙΣΔΥΝΑΜΕΣΙΠΑΡΑΒΑΙΝΗ (1) -----
+    ὅτι ὦ βασιλεῦ τῶν ἀδικούντων οὐδένα οὺόὲν ἀξίωμα ῥύσεται ἀλλὰ κἂν τῶν δικαζόντων τις κἂντῶνἐπὶταἱςδυνάμεσιπαραβαίνη του ςνο μους οὐκἀνέζομαιἀμελεῖσθαι τα
+
+    + Libanius, OratioI (tlg2200.tlg00401.opp-grc1.xml) =>
+
+    ----- ΗΔΙΚΗΜΕΝΟΝΔΕΑΠΕΡΡΙΜΜΕΝΟΝΠΕΡΙΟΡΑΣ (1) -----
+    τέ τῶν μὲν ἐξέβαλες τὰ δὲοὐΙδίδως ἀλλ ὁ μὲν ἠπατηκὼς τρυφᾷ τὸν ἠδικημένονδὲἀπερριμμένονπεριορᾷς τοι αυ τα με ν προ ς το ε δος πο ρ
+
+    + Suda, SuidaeLexicon (tlg9010.tlg001.1st1K-grc1.xml) =>
+
+    ----- ΟΡΘΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ (2) -----
+    Ὀρθοφοιτοϲυκοφαντοδικοταλαιπώρων Ἀριϲτοφάνηϲ ὁτιὴ βούλομαι τούτων ἀπαλλαχθέντα τῶν ὀρθοφοιτοϲυκοφα
+    οδικοταλαιπώρων Ἀριϲτοφάνηϲ ὁτιὴ βούλομαι τούτων ἀπαλλαχθέντα τῶν ὀρθοφοιτοϲυκοφαντοδικοταλαιπώρων τρόπων ζῆν βίον γενναῖον ὥϲπερ Μόρυχοϲ αἰτίαν ἔχων ταῦτα δρᾶν
+
+    ----- ΣΠΕΡΜΑΓΟΡΑΙΟΛΕΚΙΘΟΛΑΧΑΝΟΠΩΛΙΔΕΣ (1) -----
+    Ὦ ϲπερμαγοραιολεκιθολαχανοπώλιδεϲ ὦ ϲκοροδοπανδοκευτριαρτοπώλιδεϲ οὐκ ἐξέλκετ οὐ παιήϲετ οὐκ
 
 For a small explanation: `Aristophanes
 <https://en.wikipedia.org/wiki/Aristophanes>`__ was a Greek comic playwright
 and a word expert of a kind. Mathematical texts are also filled with long
 compoud words for fractions for example.
 
+Highest isopsephy
+^^^^^^^^^^^^^^^^^
+
 .. code-block:: python
 
+    # I'm collecting the plain text words from the already instantiated m variable
     words = list(y[0] for x, y in m.T.items())
     search_words_from_corpora(words, [perseus_dir, first1k_dir])
 
@@ -706,10 +839,139 @@ Output:
 
 .. code-block:: txt
 
+    + Appian, TheCivilWars (tlg0551.tlg017.perseus-grc2.xml) =>
 
-So that's all for the Greek corpora processing and basic statistics. One could
-further investigate the basic stats, categorize and compare individual texts as
-well.
+    ----- ΣΥΝΥΠΟΧΩΡΟΥΝΤΩΝ (1) -----
+    καὶ ἡ σύνταξις ἤδη παρελέλυτο ὀξύτερον ὑπεχώρουν καί τῶν ἐπιτεταγμένων σφίσι
+    δευτέρων καὶ τρίτων συνυποχωρούντων μισγόμενοι πάντες ἀλλήλοις ἀκόσμως
+    ἐθλίβοντο ὑπὸ σφῶν καὶ τῶν πολεμίων ἀπαύστως αὐτοῖς ἐπικειμένων
+
+    + Aristophanes, Wasps (tlg0019.tlg004.perseus-grc1.xml) =>
+
+    ----- ΟΡΘΡΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ (1) -----
+    ς ἀκούειν ἡδἔ εἰ καὶ νῦν ἐγὼ τὸν πατέρ ὅτι βούλομαι τούτων ἀπαλλαχθέντα τῶν
+    ὀρθροφοιτοσυκοφαντοδικοταλαιπώρων τρόπων ζῆν βίον γενναῖον ὥσπερ Μόρυχος
+    αἰτίαν ἔχω ταῦτα δρᾶν ξυνωμότης ὢν καὶ φρονῶν
+
+    + Athenaeus, Deipnosophistae (tlg0008.tlg001.perseus-grc3.xml) =>
+
+    ----- ΒΡΥΣΩΝΟΘΡΑΣΥΜΑΧΕΙΟΛΗΨΙΚΕΡΜΑΤΩΝ (1) -----
+    τῶν ἐξ Ἀκαδημίας τις ὑπὸ Πλάτωνα καὶ Βρυσωνοθρασυμαχειοληψικερμάτων πληγεὶς
+    ἀνάγκῃ ληψολιγομίσθῳ τέχνῃ σ
+
+    + Athenaeus, TheDeipnosophists (tlg0008.tlg001.perseus-grc4.xml) =>
+
+    ----- ΒΡΥΣΩΝΟΘΡΑΣΥΜΑΧΕΙΟΛΗΨΙΚΕΡΜΑΤΩΝ (1) -----
+    Βρυσωνοθρασυμαχειοληψικερμάτων πληγεὶς ἀνάγκῃ ληψιλογομίσθῳ τέχνῃ
+
+    + AlexanderOfAphrodisias, InAristotelisMetaphysicaCommentaria (tlg0732.tlg004.opp-grc1.xml) =>
+
+    ----- ΟΥΝΙΚΑΝΩΣΠΕΡΙΑΥΤΩΝΗΜΙΝΕΝΤΟΙΣΠΕΡΙ (1) -----
+    οιησά αενο τ ιστεύσομεν ρ Φ τεθεώρηται μὲν οὐνὶκανῶςπερὶαὐτῶνἡμῖνἐντοῖςπερὶ
+    φύσεως ἰκαὶἱκανῶς φησί περὶτῶ ν ἀρχῶν τῶν φυσικῶν ἐν τοῖς περὶ φύσεως
+
+    + ApolloniusDyscolus, DeConstructione (tlg0082.tlg004.1st1K-grc1.xml) =>
+
+    ----- ΚΑΙΤΟΝΑΡΙΣΤΑΡΧΟΝΑΣΜΕΝΩΣΤΗΝΓΡΑΦΗΝΤΟΥ (1) -----
+    ἠλογῆϲθαι φαϲ δὲ καίτὸνἈρίϲταρχονἀϲμένωϲτὴνγραφὴντοῦ Δικαιάρχουπαραδέξαϲθαι
+    ἐνγὰρἁπάϲαιϲ ν τὸ εὲῇ ἐν πατρίδι γαί ὑπολαβόντα τὸ ἑαυτῆϲ νοεὶϲθαι ἐκ το
+
+    ----- ΑΡΣΕΝΙΚΩΝΟΝΟΜΑΤΩΝΣΤΟΙΧΕΙΑΕΣΤΙΠΕΝΤΕ (1) -----
+    τ τὸ ᾶ τελικόν ἐϲτιν κτλ Τελικὰ ἀρϲενικῶνὸνομάτωνϲτοιχεῖάἐϲτιπέντε
+    θηλυκῶνδὲ ὸκτώ ᾶη ωνξΒ ψ οὐδετέ ρων δὲ ἐ ῦ εραίαν
+
+    ----- ΑΡΙΣΤΑΡΧΟΣΚΑΙΟΙΑΠΟΤΗΣΣΧΟΛΗΣΦΑΣΙΝ (1) -----
+    αὐτῇ Ϲ θϲτή εϲι Β καθότ Ϲ καθ ϲ ὁ Ἀρίϲταρχοϲκαὶοίἀπὸτῆϲϲχολῆϲφαϲιν οὶϲ οὐ
+    ϲυγκαταθετέον ε φαϲίν οὐκ ὀρθῶϲ
+
+    + ApolloniusDyscolus, DePronominibus (tlg0082.tlg001.1st1K-grc1.xml) =>
+
+    ----- ΩΡΙΣΜΕΝΩΝΠΡΟΣΩΠΩΝ (1) -----
+    ι καὶ τὰ ἀναφερύμενα γνῶϲιν ἐπαγγέλλεται προῦφεϲτῶϲαν ὅ ἐϲτι πάλιν πρόϲωπον
+    ὡριϲμένον ὀρθῶϲ ἄρα ὡριϲμένωνπροϲώπων παραϲτατικὴ ἡ ἀντωνυμία
+
+    + Aristotle, MagnaMoralia (tlg0086.tlg022.1st1K-grc1.xml) =>
+
+    ----- ΤΩΟΡΘΩΕΚΑΣΤΑΘΕΩΡΩΝ (1) -----
+    καὶ μὴ διεψεῦσθαι τῷ λόγῳ ἔστιν δὲ καὶ ὁ φρόνιμός τοιοῦτος ὁτῷ λόγῳ
+    τῷὀρθῷἕκασταθεωρῶν πότερον δ ἐνδέχεταιτὸν φρόνιμον ἀκρατῆ εἶναι ἢ οὔ
+    ἀπορήσειε γὰρ ἄν τις τὰ εἰρημένα ἐὰν δὲ πα ρ
+
+    + ChroniconPaschale, ChroniconPaschale (tlg2371.tlg001.opp-grc1.xml) =>
+
+    ----- ΟΠΡΩΤΟΣΑΝΘΡΩΠΩΝΥΠΟΔΕΙΞΑΣ (1) -----
+    δείξας οὐρανοδρομεῖν όπρῶτοςἀνθρώπωνὑποδείξας ἀγγέλων καὶ ἀνθρώπων μίαν
+    ὁδόν ὁ τὴν γῆν λαχὼν οἰκητηιριον καὶ τὸν οὐρανὸν
+
+    + EvagriusScholasticus, HistoriaEcclesiastica (tlg2733.tlg001.1st1K-grc1.xml) =>
+
+    ----- ΓΛΩΣΣΟΤΟΜΗΘΕΝΤΩΝΧΡΙΣΤΙΑΝΩΝ (1) -----
+    ιδ Περὶ Ὀνωρίχου τοῦ Βανδίλων ἄρχοντος καὶ τῶν γλωσσοτομηθέντωνΧριστιανῶν
+    παῤ αὐτοῦ ιε Περὶ Καβαώνου
+
+    ----- ΕΠΙΣΚΟΠΩΚΩΝΣΤΑΝΤΙΝΟΥΠΟΛΕΩΣ (1) -----
+    ἐστιν ἐν τούτοις Ἐπιστολὴ ἤτοι δέησις ἀποσταλεῖσα Ἀκακίῳ
+    ἐπισκόπῳΚωνσταντινουπόλεως παρὰ τῶν τῆς Ἀσίας ἐπισκόπων Ἀκακίῳ τῷ ἁγιωτάτῳ
+    καὶ ὁσιωτάτῳ πατριάρχῃ
+
+    + JoannesPhiloponus, InAristotetelisMeteorologicorumLibrumPrimumCommentarium (tlg4015.tlg005.opp-grc1.xml) =>
+
+    ----- ΛΛΗΣΤΗΣΑΝΩΘΕΝΘΕΡΜΟΤΗΤΟΣΑΤΜΙΔΟΥΜΕΝΟΝΦΕΡΕΤΑΙ (1) -----
+    νῦν μενούσης ἀμεταβλήτου τὸ οὖν περὶ τὴν γῆν ὑγρόν φησίν ὑπὸ τῶν ἀκτίνων καὶ
+    ὑπὸ τῆς ὰ λληςτῆςἄνωθενθερμότητοςἀτμιδούμενονφέρεται ἄνω πῶς μὲν ἡ ἐκ τῶν
+    ἀκτίνων γίνεται θερμότης ἐδίδαξεν ὅτι ὁ ε ναπο λαμβαν
+
+    ----- ΔΥΝΑΤΟΝΔΕΤΟΑΙΤΙΑΙΗΣΓΕΝΕΣΕΩΣΚΑΙΤΗΣΦΘΟΡΑΣ (1) -----
+    λὴ ἀνάλογόν ἐστι γενέσει ἡ δὲ τοὔμπαλιν τῶν κουφοτέρων εἰς τὰ βαρότεραφθορᾷ
+    δυνατὸνδὲτὸαἰτίαιῆςγενέσεωςκαὶτῆςφθορᾶς διὰ τὸ ἄρθρον μὴ καθολικῶς ἀκούειν
+    πάσης γενέσεως καὶ φθορᾶς ἀλλὰ ὑετοῦ χιόν
+
+    + Libanius, Epistulae1-839 (tlg2200.tlg001.opp-grc1.xml) =>
+
+    ----- ΕΜΟΥΟΙΑΠΕΦΕΥΓΑΧΕΙΡΑΣΛΥΠΗΣΑΣΜΕΝΟΥΔΕΝΑΟΥΔΕΝ (1) -----
+    δον κατηφῆ καὶ συνεοταλμἐνον καὶ δάκρυα πρὸ τῶν λόγωνἀφεὶς ἐγὼ μόλις τὰς
+    τῶν παθόντων ἐμοῦόιαπέφευγαχεῖραςλυπήσαςμὲνοὐδέναοὐδέν ἡνίκα ἐξῆν μικρο δὲ
+    διασπασθείς καὶ προσετίθει φυγὴν ἀδελφοῦ καὶ γένους ὅλου πλάνην καὶ γῆν ἄσπ
+
+    + PhiloJudaeus, DeVitaMosisLibI‑Ii (tlg0018.tlg022.opp-grc1.xml) =>
+
+    ----- ΨΥΧΟΓΟΝΙΜΩΤΑΤΩΝ (1) -----
+    ν ἀπετελέσθησαν αἱ σωματικαὶ ποιότητες ἐφεὶς τῷ Μωυσέως ἀδελφῷ τὰς δ ἴσας
+    ἐξ ἀέρος καὶ πυρὸς τῶν ψυχογονιμωτάτων μόνῳ Μωυσεῖ μίαν δὲ κοινὴν ἀμφοτέροις
+    ἑβδόμην ἐπιτρέπει τρεῖς δὲ τὰς ἄλλας εἰς συμπ
+
+    + Porphyrius, VitaPythagorae (tlg2034.tlg002.1st1K-grc1.xml) =>
+
+    ----- ΤΟΥΤΟΥΣΛΕΓΟΝΤΕΣΩΣΠΡΟΣΤΗΝ (1) -----
+    οι τὰς δυνάμεις τῶν στοιχείων καὶ αὐτὰ ταῦτα βουλόμενοι παραδοῦναι
+    παρεγένοντο ἐπὶ τοὺςχαρακτῆρας τούτουςλέγοντεςὡςπρὸςτὴν πρώτην διδασκαλίαν
+    στοιχεῖα εἶναι ὕστερον μέντοι διδάσκου σιν ὅτι οὐχ οὗτοι στοιχεῖά εἰσιν οἱ
+    χαρ
+
+    + Suda, SuidaeLexicon (tlg9010.tlg001.1st1K-grc1.xml) =>
+
+    ----- ΟΡΘΟΦΟΙΤΟΣΥΚΟΦΑΝΤΟΔΙΚΟΤΑΛΑΙΠΩΡΩΝ (2) -----
+    Ὀρθοφοιτοϲυκοφαντοδικοταλαιπώρων Ἀριϲτοφάνηϲ ὁτιὴ βούλομαι τούτων
+    ἀπαλλαχθέντα τῶν ὀρθοφοιτοϲυκοφα
+
+    οδικοταλαιπώρων Ἀριϲτοφάνηϲ ὁτιὴ βούλομαι τούτων ἀπαλλαχθέντα τῶν
+    ὀρθοφοιτοϲυκοφαντοδικοταλαιπώρων τρόπων ζῆν βίον γενναῖον ὥϲπερ Μόρυχοϲ
+    αἰτίαν ἔχων ταῦτα δρᾶν
+
+    ----- ΚΩΔΩΝΟΦΑΛΑΡΑΧΡΩΜΕΝΟΥΣ (1) -----
+    μετήνεκται οὕτω ψοφοῦνταϲ ψοφοῦντεϲ Κωδωνοφαλαραχρωμένουϲ αὐτὰϲ Κώδων
+    Σοφοκλῆϲ Τυρρηνικῆϲ
+
+    + ValeriusBabrius, FabulaeAesopeae (tlg0614.tlg001.1st1K-grc2.xml) =>
+
+    ----- ΛΕΟΝΤΑΤΥΦΛΩΣΩΝΣΚΩΛΩΨΔΕΤΟΥ (1) -----
+    τι ποιήσω καὶ εἰπὼν ἐπέβαλε τοιχοδεχειρασεπεβαλετον λεοντατυφλωσωνσκωλωψδετου
+    τωυπονυχα υποδυνα κεκαδαιμωσδουστη σαρκοσεισδυσησηνυσε θ ποιων
+
+So, that's all for the Greek corpora processing and basic statistics. One could
+further investigate, categorize, and compare individual texts, but for me it is
+time to jump to the second big task, that is defining procedures for the riddle
+solver.
 
 .. [#] https://en.wikipedia.org/wiki/Sibylline_Oracles
 .. [#] https://en.wikipedia.org/wiki/Sibylline_Books
@@ -732,3 +994,4 @@ well.
 .. [#] https://www.nltk.org/
 .. [#] https://github.com/cltk/cltk
 .. [#] https://en.wikipedia.org/wiki/Greek_alphabet#Greek_in_Unicode
+.. [#] http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0057:entry=kai/1
