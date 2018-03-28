@@ -8,7 +8,7 @@ enigmatic alphanumeric riddles in the Greek `Pseudo Sibylline
 
 In the first chapter, I will download and preprocess freely available open
 source Greek corpora. In the second chapter, I will use the processed unique
-word database for solving some riddles in the Sibylline oracles. The third
+word database to solve some specific riddles in the Sibylline oracles. The third
 chapter is reserved more for the speculative analysis of the results.
 
 The reader may download all material and code for the interactive exploration
