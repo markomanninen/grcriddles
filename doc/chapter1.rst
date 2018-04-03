@@ -47,40 +47,42 @@ referring to persons, cities, countries, and epithets of God for example. These
 secretive references are often very general in nature, pointing only to the
 first letter of the subject and its numerical value. Solving them requires, not
 so much of mathematical or cryptographical skills in a modern sense, but a proper
-knowledge of the context, both inner textual and historical context.
+knowledge of the context, both the inner textual and the historical context.
 
 Most of the alphanumeric riddles in the oracles can already be taken as solved
-by various researchers. But, some of the riddles are still problematic and open
-for better proposals. Better yet, few of these open riddles are more complex and
-specific enough so that one may try to solve them by modern programmable tools.
+by various researchers. See footnotes in [The Sibylline Oracles](http://www.sacred-texts.com/cla/sib/sib.pdf)
+by Milton S. Terry for example. But, some of the riddles are still problematic
+and open for better proposals. Better yet, few of these open riddles are more
+complex and specific enough so that one may try to solve them by modern
+programmable tools.
 
-As an independent researcher not associated or affiliated with any organization,
-the sole motivation and purpose of mine in the chapters one and two is to
-provide a reusable and a testable method for processing and analyzing ancient
-corpora, especially detecting alphanumeric patterns in text. Although the
-target language in this study is Ancient Greek, the method should be applicable
-to any language using alphabetic numerals.
+As an independent researcher not affiliated with any organization, the sole
+motivation and purpose of mine in this book is to provide a reusable and a
+testable method for processing and analyzing ancient corpora, especially
+detecting alphanumeric patterns in a digitalized text. Although the target
+language in this study is Ancient Greek, the method should be applicable to any
+language using alphabetic numerals.
 
 Natural language processing
 ---------------------------
 
-Programmatical approach to solve the riddles requires huge Greek text corpora.
+Programmatical approach to solve the riddles requires a huge Greek text corpora.
 Bigger it is, the better. I will download and preprocess available open source
 Greek corpora, which is a quite daunting task for many reasons. Programming
 language of my choice is `Python <http://python.org>`__ [#]_ for it has plenty
 of good and stable open source libraries required for my work. Python is widely
-recognized in academic and scientific circles and well oriented to the research
+recognized in academic and scientific field and well oriented to the research
 projects.
 
-I have left the most of the overly technical details of these chapters for the
-enthusiasts to read straight from the commented code in `functions.py
+I have left the most of the overly technical details of these chapters
+for the enthusiasts to read straight from the commented code in `functions.py
 <https://git.io/vAS2Z>`__ [#]_ script. By collecting the large part of the used
 procedures to the separate script maintains this document more concise too.
 
 In the end of the task of the first chapter, I'll have a word database
 containing hundreds of thousands of unique Greek words extracted from the
-naturally written language corpora. Then words can be further used in the
-riddle solver in the second chapter.
+naturally written language corpora. Then words can be further used in the riddle
+solver in the second chapter.
 
 .. note::
 
