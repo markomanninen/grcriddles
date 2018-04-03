@@ -7,7 +7,8 @@ from xml.dom import minidom
 from collections import Counter
 from abnum import Abnum, greek
 from pandas import DataFrame
-from os import path, listdir, remove, makedirs
+from os import path, listdir, makedirs
+from os import remove as rm
 from greek_accentuation.syllabify import syllabify
 from romanize3 import grc
 from pathlib import Path # python 3.4+ version
@@ -16,7 +17,7 @@ from zipfile import ZipFile
 from tqdm import tqdm
 from requests import get as rget
 
-# SET PU VARIABLES
+# SET UP VARIABLES
 
 # home dir
 home = path.expanduser("~")
@@ -51,6 +52,13 @@ roman_letters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".lower()
 
 # DEFINE FUNCTIONS
 
+# silently bypass removal if file does not exist
+def remove(f):
+	try:
+		rm(f)
+	except:
+		pass
+
 # download file with output progress bar indicator
 # nice utility for big files that takes time to transfer
 def download_with_indicator(fs, fd, rl = False):
@@ -62,12 +70,12 @@ def download_with_indicator(fs, fd, rl = False):
             print("Downloading: %s" % fs)
             with open(fd, 'wb') as f:
                 params = {'total': total_size / (32.0 * block_size), 'unit': 'B', 'unit_scale': True, 'unit_divisor': block_size}
-                for data in tqdm(req.iter_content(32 * block_size), **params):
-                    f.write(data)
-                #with tqdm(**params) as g:
-                #    for data in req.iter_content(32 * block_size):
-                #        f.write(data)
-                #        g.update(len(data))
+                #for data in tqdm(req.iter_content(32 * block_size), **params):
+                #    f.write(data)
+                with tqdm(**params) as g:
+                    for data in req.iter_content(32 * block_size):
+                        f.write(data)
+                        g.update(len(data))
         except Exception as e:
             print(e)
 
@@ -92,7 +100,7 @@ def joinpaths(d, paths):
     return d
 
 # append (a) or rewrite (w) a file
-def append_to_file(file, string, mode = 'a'):
+def to_file(file, string, mode = 'a'):
     with open(file, mode, encoding="utf-8", newline='\n') as f:
         f.write(string)
 
@@ -183,11 +191,17 @@ def get_title_and_author(xmldoc, corpus):
         author = ''.join(filter(lambda x: x.strip() != "", map(lambda x: x.title(), author.split())))
     except Exception as e:
         pass
+	# default author name in case it could not have been parsed
     if not author:
         author = "Unnamed"
     return author, title.replace("MachineReadableText", "")
 
 def process_greek_corpora(greek_corpora):
+	# remove old temp files
+	remove(all_greek_text_file)
+	remove(perseus_greek_text_file)
+	remove(first1k_greek_text_file)
+	# collect corpora data to result
     result = []
     for corpus in greek_corpora:
 
@@ -231,20 +245,20 @@ def process_greek_corpora(greek_corpora):
             # unify also medial, final and lunate sigmas
             corpus['simplified'] = corpus['simplified'].replace("ϒ", "Υ").replace("Ϲ", "Σ")
             # store original stripped text
-            #append_to_file(f1, content, 'w')
+            #to_file(f1, content, 'w')
             # store preprocessed/unaccented, unified, uppercased and simplified text
-            append_to_file(f2, corpus['simplified'], 'w')
+            to_file(f2, corpus['simplified'], 'w')
             # store original stripped text
-            append_to_file(f3, content_search, 'w')
+            to_file(f3, content_search, 'w')
             # store original file path
-            append_to_file(f4, f, 'w')
+            to_file(f4, f, 'w')
 
         # append to different text files for statistical purposes
-        append_to_file(all_greek_text_file, corpus['simplified'] + "\n")
+        to_file(all_greek_text_file, corpus['simplified'] + "\n")
         if corp == "greek_text_perseus":
-            append_to_file(perseus_greek_text_file, corpus['simplified'] + "\n")
+            to_file(perseus_greek_text_file, corpus['simplified'] + "\n")
         else:
-            append_to_file(first1k_greek_text_file, corpus['simplified'] + "\n")
+            to_file(first1k_greek_text_file, corpus['simplified'] + "\n")
 
         corpus['uwords'] = Counter(corpus['simplified'].split())
         corpus['length'] = len(corpus['simplified'].replace(" ", ""))
@@ -327,6 +341,7 @@ def search_words(source, words):
             result[word] = source.count(word)
     return result
 
+# helper function for search_words_from_corpora
 def print_if_match(f, words, maxwords = -1):
     content = get_content(f)
     result = search_words(content, words)

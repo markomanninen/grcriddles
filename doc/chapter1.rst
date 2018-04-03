@@ -235,7 +235,7 @@ Output:
 
 .. code-block:: text
 
-    1705 files found
+    1708 files found
 
 Actual files found may differ by increasing over time, because Greek corpora
 repositories are constantly maintained and new texts are added by voluteer

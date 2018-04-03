@@ -99,3 +99,19 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+perseus.zip
+first1k.zip
+
+greek_text_perseus_zip
+greek_text_first1k_zip
+
+greek_text_perseus_tmp
+greek_text_first1k_tmp
+
+greek_text_perseus
+greek_text_first1k
+
+perseus_greek_text_files.txt
+first1k_greek_text_files.txt
+all_greek_text_files.txt
