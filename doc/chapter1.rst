@@ -128,8 +128,8 @@ lines in the Jupyter notebook:
 
   	import sys
 
-  	#!{sys.executable} -m pip install tqdm abnum
-  	#!{sys.executable} -m pip install pandas plotly
+  	#!{sys.executable} -m pip install tqdm abnum requests
+  	#!{sys.executable} -m pip install pandas plotly pathlib
   	#!{sys.executable} -m pip install greek_accentuation
 
 For your convenience, my environment is the following:

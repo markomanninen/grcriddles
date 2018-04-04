@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# pip install greek_accentuation, abnum, requests, pathlib, pandas, tqdm
 import re
 import shutil, errno
-from bs4 import BeautifulSoup
 from xml.dom import minidom
 from collections import Counter
 from abnum import Abnum, greek
-from pandas import DataFrame
+from pandas import DataFrame, read_csv
 from os import path, listdir, makedirs
 from os import remove as rm
 from greek_accentuation.syllabify import syllabify
@@ -54,10 +54,10 @@ roman_letters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".lower()
 
 # silently bypass removal if file does not exist
 def remove(f):
-	try:
-		rm(f)
-	except:
-		pass
+    try:
+        rm(f)
+    except:
+        pass
 
 # download file with output progress bar indicator
 # nice utility for big files that takes time to transfer
@@ -115,8 +115,8 @@ def copy(src, dst):
     try:
         # ignore files containing these patterns
         ignore = shutil.ignore_patterns('*.csv*',  '*lat*.xml', '*cop*.xml', '*ara*.xml', '*mul*.xml', \
-		                                '*eng*.xml', '__cts__.xml', '*.json', '*fre*.xml', '*ger*.xml', \
-									    '*english.xml', '*higg.xml', '.directory')
+                                    '*eng*.xml', '__cts__.xml', '*.json', '*fre*.xml', '*ger*.xml', \
+        '*english.xml', '*higg.xml', '.directory')
         shutil.copytree(src, dst, ignore=ignore)
     except OSError as e:
         # error was caused because the source wasn't a directory
@@ -141,12 +141,6 @@ def copy_corpora(src, dst):
 def get_content(fl):
     with open(fl, 'r', encoding="utf-8") as f:
         return f.read().replace("\n", " ")
-
-# remove all sub tags and their content. usually they are footnotes or other metadata
-def soupit(txt, tag):
-    soup = BeautifulSoup(txt, "lxml")
-    root = getattr(soup, tag)
-    return " ".join(filter(lambda x: len(x), list(c.strip() for c in root.children if "<" not in str(c))))
 
 # return list of available greek files
 def init_corpora(corpora):
@@ -191,17 +185,17 @@ def get_title_and_author(xmldoc, corpus):
         author = ''.join(filter(lambda x: x.strip() != "", map(lambda x: x.title(), author.split())))
     except Exception as e:
         pass
-	# default author name in case it could not have been parsed
+    # default author name in case it could not have been parsed
     if not author:
         author = "Unnamed"
     return author, title.replace("MachineReadableText", "")
 
 def process_greek_corpora(greek_corpora):
-	# remove old temp files
-	remove(all_greek_text_file)
-	remove(perseus_greek_text_file)
-	remove(first1k_greek_text_file)
-	# collect corpora data to result
+    # remove old temp files
+    remove(all_greek_text_file)
+    remove(perseus_greek_text_file)
+    remove(first1k_greek_text_file)
+    # collect corpora data to result
     result = []
     for corpus in greek_corpora:
 

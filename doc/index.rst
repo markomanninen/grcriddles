@@ -24,3 +24,4 @@ Contents:
    chapter2
    chapter3
    appendix1
+   appendix2
