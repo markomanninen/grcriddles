@@ -1,23 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# pip install greek_accentuation, abnum, requests, pathlib, pandas, tqdm
+# File: functions.py
+# License: MIT
+# Copyright: (c) 2018 Marko Manninen
+# Module requirements: greek_accentuation, abnum, requests, pathlib, pandas, tqdm
 import re
 import shutil, errno
 from xml.dom import minidom
 from collections import Counter
 from abnum import Abnum, greek
+from romanize3 import grc
 from pandas import DataFrame, read_csv
 from os import path, listdir, makedirs
 from os import remove as rm
-from greek_accentuation.syllabify import syllabify
-from romanize3 import grc
 from pathlib import Path # python 3.4+ version
+from greek_accentuation.syllabify import syllabify
 from IPython.display import display_html, HTML
+from requests import get as rget
 from zipfile import ZipFile
 from tqdm import tqdm
-from requests import get as rget
 
-# SET UP VARIABLES
+###################
+# DEFINE VARIABLES
+##################
 
 # file to collect all stripped greek text
 all_greek_text_file = "all_greek_text_files.txt"
@@ -41,15 +46,18 @@ first1k_dir = 'greek_text_first1k'
 # ϒ not needed?
 vowels = "ΩΗΥΕΙΟΑ"
 
+# roman letters, big and small
 roman_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 roman_letters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".lower()
 
 # main database entry point
 database = None
 
+###################
 # DEFINE FUNCTIONS
+###################
 
-# silently bypass removal if file does not exist
+# silently bypass exception if file does not exist
 def remove(f):
     try:
         rm(f)
@@ -62,13 +70,14 @@ def download_with_indicator(fs, fd, rl = False):
     if rl or (not rl and not path.isfile(fd)):
         try:
             req = rget(fs, stream = True)
-            total_size = int(req.headers.get('content-length', 0))
-            block_size = 1024
+            total_size, block_size = int(req.headers.get('content-length', 0)), 1024
             print("Downloading: %s" % fs)
             with open(fd, 'wb') as f:
                 params = {'total': total_size / (32.0 * block_size), 'unit': 'B', 'unit_scale': True, 'unit_divisor': block_size}
+                # way 1 of doing indicator
                 #for data in tqdm(req.iter_content(32 * block_size), **params):
                 #    f.write(data)
+                # way 2 of doing indicator
                 with tqdm(**params) as g:
                     for data in req.iter_content(32 * block_size):
                         f.write(data)
@@ -112,8 +121,8 @@ def copy(src, dst):
     try:
         # ignore files containing these patterns
         ignore = shutil.ignore_patterns('*.csv*',  '*lat*.xml', '*cop*.xml', '*ara*.xml', '*mul*.xml', \
-                                    '*eng*.xml', '__cts__.xml', '*.json', '*fre*.xml', '*ger*.xml', \
-        '*english.xml', '*higg.xml', '.directory')
+                                        '*eng*.xml', '__cts__.xml', '*.json', '*fre*.xml', '*ger*.xml', \
+                                        '*english.xml', '*higg.xml', '.directory')
         shutil.copytree(src, dst, ignore=ignore)
     except OSError as e:
         # error was caused because the source wasn't a directory
@@ -168,6 +177,7 @@ def get_title_and_author(xmldoc, corpus):
     # parse title and author for storing temp files
     desc = xmldoc.getElementsByTagName('fileDesc')[0]
     title = desc.getElementsByTagName('title')[0].toxml().strip().replace("\n", " ")
+    # remove tags
     title = re.sub('<[^<]+?>', '', title)
     title = title.replace("Greek", "").replace("(", "").replace(")", "")
     title = title.replace("?", "").replace("[", "").replace("]", "")
@@ -176,6 +186,7 @@ def get_title_and_author(xmldoc, corpus):
     author = ""
     try:
         author = desc.getElementsByTagName('author')[0].toxml().strip().replace("\n", " ")
+        # remove tags
         author = re.sub('<[^<]+?>', '', author)
         author = author.replace("&gt;", "").replace(">", "")
         author = author.replace(".", "").replace(",", "")
