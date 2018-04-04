@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # file: __init__.py
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 from .functions import Abnum, greek, syllabify, Counter, HTML, display_html, \
                        display_side_by_side, remove, download_with_indicator, \

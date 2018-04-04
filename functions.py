@@ -5,7 +5,7 @@
 # Copyright: (c) 2018 Marko Manninen
 # Module requirements: greek_accentuation, abnum, requests, pathlib, pandas, tqdm
 import re
-import shutil, errno
+import shutil, errno, pkg_resources
 from xml.dom import minidom
 from collections import Counter
 from abnum import Abnum, greek
@@ -298,7 +298,12 @@ def get_stats(fl):
 def get_database():
     global database
     if not database:
-        df = read_csv(csv_file_name, header = None)
+        # try to read from the current directory
+        if path.exists(csv_file_name):
+        	df = read_csv(csv_file_name, header = None)
+        else:
+            # fallback to package root directory
+            df = read_csv(pkg_resources.resource_filename('grcriddles', csv_file_name), header = None)
         df[1] = df[1].apply(lambda x: int(x))
         df[2] = df[2].apply(lambda x: float(x))
         df[3] = df[3].apply(lambda x: int(x))

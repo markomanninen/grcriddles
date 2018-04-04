@@ -6,7 +6,7 @@ import os
 
 #python setup.py sdist upload
 
-version = 'v0.1.2'
+version = 'v0.1.3'
 
 name = 'grcriddles'
 
@@ -22,7 +22,7 @@ setup(
   packages = [name],
   package_dir = {name: name},
   package_data = {
-    name: ['functions.py', 'greek_words_corpora.csv']
+    name: ['functions.py']
   },
   include_package_data = True,
   install_requires = ["abnum", "IPython", "pandas", "greek_accentuation", "requests", "pathlib", "tqdm"],
