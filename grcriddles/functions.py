@@ -295,7 +295,7 @@ def get_stats(fl):
     return ccontent, chars, lwords
 
 # get word database
-def get_database():
+def get_database(cols = None):
     global database
     if not database:
         # try to read from the current directory
@@ -313,7 +313,16 @@ def get_database():
         df[7] = df[7].apply(lambda x: int(x))
         df[8] = df[8].apply(lambda x: int(x))
         database = df
-    return database.copy()
+    # rename columns and set index
+    if cols:
+        words = database.copy()
+        words = words[list(cols.keys())]
+        words.columns = list(cols.values())
+        if 0 in cols:
+            words.set_index(cols[0], inplace=True)
+        return words
+    else:
+        return database.copy()
 
 # display tables side by side, jupyter notebook helper
 def display_side_by_side(**kwargs):

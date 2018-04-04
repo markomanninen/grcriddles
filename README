@@ -11,17 +11,35 @@ pip install grcriddles
 Use from Python/IPython console:
 
 ```python
-  # import database getter
-  from grcriddles import get_database
-  a = get_database()
-  # filter words
-  a = a[a[0].str.contains("ΑΜΦΕΚΑΛΥ")]
-  # sort and print word info
-  words = a.sort_values(0)
-  words = words[[0, 1, 3, 4, 5, 7, 8]]
-  words.columns = ['Word', 'Count', 'Chars', 'Isopsephy', 'Syllables', 'Vowels', 'Mutes']
-  words.set_index('Word', inplace=True)
-  words
+  # get words with length 9, isopsephy 1697, consonants 5,
+  # and the first three syllables having 2 letters each
+  # syllable count is going to be 4 with above parameters
+  words = get_database({0: 'Word', 1: 'Count', 3: 'Chars', 4: 'Isopsephy', 5: 'Syllables', 7: 'Vowels', 8: 'Mutes'})
+  a = words[words['Isopsephy'] == 1697]
+  a = a[a['Chars'] == 9]
+  a = a[a['Mutes'] == 5]
+  a = a[a.apply(lambda x: len(x['Syllables'][0]) == 2 and \
+                          len(x['Syllables'][1]) == 2 and \
+                          len(x['Syllables'][2]) == 2, axis=1)]
+  # output words ordered alphabetically
+  a.sort_index()
+```
+
+Output:
+
+```txt
+             Count    Chars  Isopsephy          Syllables  Vowels       Mutes
+  Word
+  ΑΜΦΕΚΑΛΥΨ      1        9       1697  [ΑΜ, ΦΕ, ΚΑ, ΛΥΨ]       4           5
+  ΛΗΛΥΘΟΤΩΝ      1        9       1697  [ΛΗ, ΛΥ, ΘΟ, ΤΩΝ]       4           5
+  ΜΕΤΑΝΑΣΤΩ      1        9       1697  [ΜΕ, ΤΑ, ΝΑ, ΣΤΩ]       4           5
+  ΣΥΝΩΚΙΣΘΗ     13        9       1697  [ΣΥ, ΝΩ, ΚΙ, ΣΘΗ]       4           5
+```
+
+```python
+  # get words containing ΑΜΦΕΚΑΛΥ stem word
+  b = words.filter(like="ΑΜΦΕΚΑΛΥ", axis=0)
+  b.sort_index()
 ```
 
 Output:
@@ -38,7 +56,7 @@ Word
 ΑΜΦΕΚΑΛΥΨΕΝ      20     11       1752   [ΑΜ, ΦΕ, ΚΑ, ΛΥ, ΨΕΝ]       5      6
 ```
 
-Docs:
+### Docs
 
 Developer documentation: http://grcriddles.readthedocs.io/en/latest/
 
