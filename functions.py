@@ -44,6 +44,9 @@ vowels = "ΩΗΥΕΙΟΑ"
 roman_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 roman_letters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".lower()
 
+# main database entry point
+database = None
+
 # DEFINE FUNCTIONS
 
 # silently bypass removal if file does not exist
@@ -279,6 +282,22 @@ def get_stats(fl):
     print("Unique words: %s" % str(luwords))
     print() # newline
     return ccontent, chars, lwords
+
+# get word database
+def get_database():
+    global database
+    if not database:
+        df = read_csv(csv_file_name, header = None)
+        df[1] = df[1].apply(lambda x: int(x))
+        df[2] = df[2].apply(lambda x: float(x))
+        df[3] = df[3].apply(lambda x: int(x))
+        df[4] = df[4].apply(lambda x: int(x))
+        df[5] = df[5].apply(lambda x: str(x).replace("'", "").replace("[", "").replace("]", "").split(", "))
+        df[6] = df[6].apply(lambda x: int(x))
+        df[7] = df[7].apply(lambda x: int(x))
+        df[8] = df[8].apply(lambda x: int(x))
+        database = df
+    return database.copy()
 
 # display tables side by side, jupyter notebook helper
 def display_side_by_side(**kwargs):
