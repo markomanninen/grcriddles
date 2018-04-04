@@ -6,7 +6,7 @@ import os
 
 #python setup.py sdist upload
 
-version = 'v0.1.1'
+version = 'v0.1.2'
 
 name = 'grcriddles'
 
@@ -24,6 +24,7 @@ setup(
   package_data = {
     name: ['functions.py', 'greek_words_corpora.csv']
   },
+  include_package_data = True,
   install_requires = ["abnum", "IPython", "pandas", "greek_accentuation", "requests", "pathlib", "tqdm"],
   version = version,
   description = 'GRCRiddle - Study and examination of alphabetical and isopsephical riddles of ancient Greeks',
