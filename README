@@ -2,13 +2,17 @@
 
 Study of alpha-numeric riddles of ancient Greeks
 
-´´´bash
-pip install grcriddles
-´´´
+Install:
 
-´´´python
+```bash
+pip install grcriddles
+```
+
+Use from Python/IPython console:
+
+```python
   # import database getter
-  from grcriddles.functions import get_database
+  from grcriddles import get_database
   a = get_database()
   # filter words
   a = a[a[0].str.contains("ΑΜΦΕΚΑΛΥ")]
@@ -18,9 +22,11 @@ pip install grcriddles
   words.columns = ['Word', 'Count', 'Chars', 'Isopsephy', 'Syllables', 'Vowels', 'Mutes']
   words.set_index('Word', inplace=True)
   words
-´´´
+```
 
-´´´txt
+Output:
+
+```txt
               Count  Chars  Isopsephy               Syllables  Vowels  Mutes
 Word
 ΑΜΦΕΚΑΛΥΠΤΕ       3     11       1382   [ΑΜ, ΦΕ, ΚΑ, ΛΥ, ΠΤΕ]       5      6
@@ -30,7 +36,9 @@ Word
 ΑΜΦΕΚΑΛΥΨΑΝ       2     11       1748   [ΑΜ, ΦΕ, ΚΑ, ΛΥ, ΨΑΝ]       5      6
 ΑΜΦΕΚΑΛΥΨΕ       18     10       1702    [ΑΜ, ΦΕ, ΚΑ, ΛΥ, ΨΕ]       5      5
 ΑΜΦΕΚΑΛΥΨΕΝ      20     11       1752   [ΑΜ, ΦΕ, ΚΑ, ΛΥ, ΨΕΝ]       5      6
-´´´
+```
+
+Docs:
 
 Developer documentation: http://grcriddles.readthedocs.io/en/latest/
 
