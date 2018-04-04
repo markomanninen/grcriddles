@@ -1,7 +1,9 @@
 # Appendix 2 - Riddle solver
 ============================
 
-Minimum code to solve riddles.
+Minimum code to solve isopsephical riddles in the Pseudo-Sibylline oracles. This
+requires `functions.py` script and `greek_words_corpora.csv` file reside in the
+same directory.
 
 .. code-block:: python
 
@@ -35,4 +37,7 @@ Minimum code to solve riddles.
 
   # search exact match(es) for the word
   from functions import search_words_from_corpora, perseus_dir, first1k_dir
-  search_words_from_corpora(["
+  search_words_from_corpora(["ΑΜΦΕΚΑΛΥΨ"], [perseus_dir, first1k_dir], None, True)
+
+  # search partial match(es) for the word
+  search_words_from_corpora(["ΑΜΦΕΚΑΛΥΨ"], [perseus_dir, first1k_dir], None, False)
