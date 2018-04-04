@@ -310,14 +310,16 @@ def nvowels(x, n):
 # search and original source texts should have same character indices for keywords
 # based on that assumption the location of the matches +- threshold (l)
 # is calculated and substring is returned with the original start and end location of the matches
-def find_original(s, t, u, l = 100):
+def find_original(s, t, u, l = 100, e = False):
     # length of the original text
     ll = len(t)
+    # get exact match or partial match points
+    rc = re.compile(" %s |^%s | %s$|^%s$" % (s, s, s, s)) if e else re.compile(s)
+    fi = re.finditer(rc, t)
     # calculate the start and end points
     return list((u[m.start() - l if m.start() > l else 0 : \
                    m.end() + l if m.end() + l < ll else -1], \
-                 m.start(), m.end())
-                for m in re.finditer(s, t))
+                 m.start(), m.end()) for m in fi)
 
 # search words from the source text
 def search_words(source, words, exact = False):
@@ -330,7 +332,7 @@ def search_words(source, words, exact = False):
     return result
 
 # helper function for search_words_from_corpora
-def print_if_match(f, words, maxwords = None, exact = False):
+def print_if_match(f, words, maxwords = None, exact = False, extract = 100):
     content = get_content(f)
     result = search_words(content, words, exact)
     if result:
@@ -341,22 +343,24 @@ def print_if_match(f, words, maxwords = None, exact = False):
             pathx = " (%s)" % pathx[:100].strip()
         except Exception as e:
             pathx = ""
-        xcontent, chunks, i = get_content(path), "", 1
+        xcontent, chunks = get_content(path), ""
         for k, v in result.items():
+            # author.text (hits)
             chunks += '\r\n\r\n   ----- %s (%s) -----\r\n' % (k, v)
-            chunks += '\r\n'.join(list("   " + ' '.join(filter(lambda x: len(x), grc.filter(match[0]).strip().split())) for match in find_original(k, content, xcontent)[:maxwords]))
-            i += 1
+            chunks += '\r\n'.join(list("   " + ' '.join(filter(lambda x: len(x), grc.filter(match[0]).strip().split())) \
+                                       for match in find_original(k, content, xcontent, extract, exact)[:maxwords]))
         c = ', '.join(f.replace("Search_", "").replace(".txt", "").split('\\')[1:])
         print(" + %s%s =>    %s\r\n" % (c, pathx, chunks))
 
 # search words in a given list from the original corpora
 # optional: define maximum results (default is one, 'None' if all should be returned)
 # optional: define exact match of the word or partial match. the latter is default
-def search_words_from_corpora(words, corpora, mx = 1, exact = False):
+# optional: define how many characters extract before and after the match. default is 100
+def search_words_from_corpora(words, corpora, maximum = 1, exact = False, extract = 100):
     # iterate all corpora and see if selected words occur in the text
     for corp in corpora:
         # author directories in corpora
         for b in filter(path.isdir, map(lambda x: path.join(corp, x), listdir(corp))):
             # author text files
             for c in filter(lambda x: path.isfile(x) and x.find("Search_") > 0, map(lambda x: path.join(b, x), listdir(b))):
-                print_if_match(c, words, mx, exact)
+                print_if_match(c, words, maximum, exact, extract)
