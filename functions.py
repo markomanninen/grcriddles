@@ -19,12 +19,6 @@ from requests import get as rget
 
 # SET UP VARIABLES
 
-# home dir
-home = path.expanduser("~")
-
-# greek abnum object for isopsephical value getter
-g = Abnum(greek)
-
 # file to collect all stripped greek text
 all_greek_text_file = "all_greek_text_files.txt"
 # file to collect all perseus greek text
@@ -79,7 +73,7 @@ def download_with_indicator(fs, fd, rl = False):
         except Exception as e:
             print(e)
 
-# unzip packed file to desctination dir
+# extract packed file to desctination dir
 def unzip(fs, fd):
     if not path.isdir(fd) and path.isfile(fs):
         zip_ref = ZipFile(fs, 'r')
@@ -126,6 +120,7 @@ def copy(src, dst):
         else:
             print('Directory not copied. Error: %s' % e)
 
+# copy files to new location
 def copy_corpora(src, dst):
     # copy all suitable greek text files from the source dir to the destination work dir
     if not path.isdir(dst):
@@ -160,7 +155,7 @@ def init_corpora(corpora):
         # length, file, content and simplified data
         for f in files:
             if 'grc' not in f:
-                print("Unindentified language tag found from the file.")
+                print("Unidentified language tag found from the file.")
                 print("Please check and possibly add to the ignore list: %s" % f)
             result.append({"corpus": corpus, "uwords": {}, "length": 0,
                            "file": f, "content": [], "simplified": ""})
@@ -198,10 +193,7 @@ def process_greek_corpora(greek_corpora):
     # collect corpora data to result
     result = []
     for corpus in greek_corpora:
-
-        corp = corpus["corpus"]
-        f = corpus["file"]
-
+        corp, f = corpus["corpus"], corpus["file"]
         try:
             s = get_content(f)
             xmldoc = minidom.parseString(s)
@@ -268,6 +260,7 @@ def process_greek_corpora(greek_corpora):
         result.append(corpus)
     return result
 
+# calculate, print and return words stats
 def get_stats(fl):
     content = get_content(fl)
     # remove space chars to get pure raw greek character string of the file
@@ -284,10 +277,10 @@ def get_stats(fl):
     print("Letters: %s" % str(chars))
     print("Words in total: %s" % str(lwords))
     print("Unique words: %s" % str(luwords))
-    print()
+    print() # newline
     return ccontent, chars, lwords
 
-# display tables side by side
+# display tables side by side, jupyter notebook helper
 def display_side_by_side(**kwargs):
     html = ''
     for caption, df in kwargs.items():
@@ -296,7 +289,7 @@ def display_side_by_side(**kwargs):
                   .replace("<thead>", "<caption style='text-align:center'>%s</caption><thead>" % caption)
     display_html(html.replace('table', 'table style="display:inline"'), raw=True)
 
-
+# is there roman letters in data?
 def has_roman_letters(data):
     a = {}
     for x in roman_letters:
@@ -304,6 +297,7 @@ def has_roman_letters(data):
             a[x] = data.count(x)
     return a
 
+# number of vowels in text
 def nvowels(x, n):
     word, tot = x[0], 0
     for c in vowels:
@@ -326,19 +320,19 @@ def find_original(s, t, u, l = 100):
                 for m in re.finditer(s, t))
 
 # search words from the source text
-def search_words(source, words):
+def search_words(source, words, exact = False):
     result = {}
+    # partial match or exact match
+    source = source.split() if exact else source
     for word in words:
-        # partial match is fine here. data should be split to words for exact match
-        # but it would take more processing time. for shorter words it might be more useful however
         if word in source:
             result[word] = source.count(word)
     return result
 
 # helper function for search_words_from_corpora
-def print_if_match(f, words, maxwords = -1):
+def print_if_match(f, words, maxwords = None, exact = False):
     content = get_content(f)
-    result = search_words(content, words)
+    result = search_words(content, words, exact)
     if result:
         g = f.replace("Search_", "Path_")
         try:
@@ -347,9 +341,7 @@ def print_if_match(f, words, maxwords = -1):
             pathx = " (%s)" % pathx[:100].strip()
         except Exception as e:
             pathx = ""
-        xcontent = get_content(path)
-        chunks = ""
-        i = 1
+        xcontent, chunks, i = get_content(path), "", 1
         for k, v in result.items():
             chunks += '\r\n\r\n   ----- %s (%s) -----\r\n' % (k, v)
             chunks += '\r\n'.join(list("   " + ' '.join(filter(lambda x: len(x), grc.filter(match[0]).strip().split())) for match in find_original(k, content, xcontent)[:maxwords]))
@@ -357,9 +349,14 @@ def print_if_match(f, words, maxwords = -1):
         c = ', '.join(f.replace("Search_", "").replace(".txt", "").split('\\')[1:])
         print(" + %s%s =>    %s\r\n" % (c, pathx, chunks))
 
-def search_words_from_corpora(words, corpora, mx = 1):
+# search words in a given list from the original corpora
+# optional: define maximum results (default is one, 'None' if all should be returned)
+# optional: define exact match of the word or partial match. the latter is default
+def search_words_from_corpora(words, corpora, mx = 1, exact = False):
     # iterate all corpora and see if selected words occur in the text
     for corp in corpora:
+        # author directories in corpora
         for b in filter(path.isdir, map(lambda x: path.join(corp, x), listdir(corp))):
+            # author text files
             for c in filter(lambda x: path.isfile(x) and x.find("Search_") > 0, map(lambda x: path.join(b, x), listdir(b))):
-                print_if_match(c, words, mx)
+                print_if_match(c, words, mx, exact)

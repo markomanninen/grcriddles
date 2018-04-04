@@ -6,8 +6,7 @@ Minimum code to solve riddles.
 .. code-block:: python
 
   # read csv file to dataframe
-  from functions import csv_file_name
-  from pandas import read_csv
+  from functions import csv_file_name, read_csv
   df = read_csv(csv_file_name, header = None)
   df[1] = df[1].apply(lambda x: int(x))
   df[2] = df[2].apply(lambda x: float(x))
@@ -18,13 +17,14 @@ Minimum code to solve riddles.
   df[7] = df[7].apply(lambda x: int(x))
   df[8] = df[8].apply(lambda x: int(x))
 
-  # get words with isopsephy of 1697 and length 9
+  # get words with length 9, isopsephy 1697, syllable count 4, consonants 5,
+  # and the first three syllables having 2 letters each
   a = df.copy()
   a = a[a[4] == 1697]
   a = a[a[3] == 9]
-
-  # how many results?
-  print("Total records: %s" % len(a))
+  a = a[a[6] == 4]
+  a = a[a[8] == 5]
+  a = a[a.apply(lambda x: len(x[5][0]) == 2 and len(x[5][1]) == 2 and len(x[5][2]) == 2, axis=1)]
 
   # output words ordered alphabetically
   words = a.sort_values(0)
@@ -32,3 +32,7 @@ Minimum code to solve riddles.
   words.columns = ['Word', 'Count', 'Letters', 'Isopsephy', 'Syllables', 'Vowels', 'Consonants']
   words.set_index('Word', inplace=True)
   words
+
+  # search exact match(es) for the word
+  from functions import search_words_from_corpora, perseus_dir, first1k_dir
+  search_words_from_corpora(["
