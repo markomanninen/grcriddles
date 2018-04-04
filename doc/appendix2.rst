@@ -7,21 +7,11 @@ same directory.
 
 .. code-block:: python
 
-  # read csv file to dataframe
-  from functions import csv_file_name, read_csv
-  df = read_csv(csv_file_name, header = None)
-  df[1] = df[1].apply(lambda x: int(x))
-  df[2] = df[2].apply(lambda x: float(x))
-  df[3] = df[3].apply(lambda x: int(x))
-  df[4] = df[4].apply(lambda x: int(x))
-  df[5] = df[5].apply(lambda x: str(x).replace("'", "").replace("[", "").replace("]", "").split(", "))
-  df[6] = df[6].apply(lambda x: int(x))
-  df[7] = df[7].apply(lambda x: int(x))
-  df[8] = df[8].apply(lambda x: int(x))
+  from functions import get_database
 
   # get words with length 9, isopsephy 1697, syllable count 4, consonants 5,
   # and the first three syllables having 2 letters each
-  a = df.copy()
+  a = get_database()
   a = a[a[4] == 1697]
   a = a[a[3] == 9]
   a = a[a[6] == 4]
