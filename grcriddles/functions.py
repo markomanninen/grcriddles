@@ -3,7 +3,7 @@
 # File: functions.py
 # License: MIT
 # Copyright: (c) 2018 Marko Manninen
-# Module requirements: greek_accentuation, abnum, requests, pathlib, pandas, tqdm
+# Module requirements: greek_accentuation, abnum, requests, pathlib, pandas, tqdm, IPython
 import re
 import shutil, errno, pkg_resources
 from xml.dom import minidom
@@ -206,7 +206,8 @@ def process_greek_corpora(greek_corpora):
     remove(first1k_greek_text_file)
     # collect corpora data to result
     result = []
-    for corpus in greek_corpora:
+    # show indicator of the process
+    for corpus in tqdm(greek_corpora):
         corp, f = corpus["corpus"], corpus["file"]
         try:
             s = get_content(f)
@@ -293,6 +294,67 @@ def get_stats(fl):
     print("Unique words: %s" % str(luwords))
     print() # newline
     return ccontent, chars, lwords
+
+def download_and_preprocess_corpora():
+    # download greek corpora
+    print("Downloading Greek corpora...")
+    fs = "https://github.com/PerseusDL/canonical-greekLit/archive/master.zip"
+    download_with_indicator(fs, perseus_zip_file)
+    fs = "https://github.com/OpenGreekAndLatin/First1KGreek/archive/master.zip"
+    download_with_indicator(fs, first1k_zip_file)
+
+    # extract zip files
+    print("Extracting zip files...")
+    unzip(perseus_zip_file, perseus_zip_dir)
+    unzip(first1k_zip_file, first1k_zip_dir)
+
+    # copy greek text files from repository
+    print("Copying Greek text files from repository...")
+    for item in [[joinpaths(perseus_zip_dir, ["canonical-greekLit-master", "data"]), perseus_tmp_dir],
+                 [joinpaths(first1k_zip_dir, ["First1KGreek-master", "data"]), first1k_tmp_dir]]:
+        copy_corpora(*item)
+
+    # process files
+    print("Initializing corpora...")
+    greek_corpora_x = init_corpora([[perseus_tmp_dir, perseus_dir], [first1k_tmp_dir, first1k_dir]])
+    print("Processing files...")
+    return process_greek_corpora(greek_corpora_x)
+
+# save words database
+def save_database(greek_corpora):
+    # get statistics
+    lwords = len(get_content(all_greek_text_file).split())
+    # greek abnum object for calculating isopsephical value of the words
+    gvalue = Abnum(greek).value
+    # count unique words statistic from the parsed greek corpora
+    # rather than the plain text file. it would be pretty hefty work to find
+    # out occurence of the all over 800000 unique words from the text file that
+    # is over 300 MB big!
+    unique_word_stats = {}
+    for item in greek_corpora:
+        for word, cnt in item['uwords'].items():
+            if word not in unique_word_stats:
+                unique_word_stats[word] = 0
+            unique_word_stats[word] += cnt
+    # init dataframe
+    df = DataFrame([[k, v] for k, v in unique_word_stats.items()])
+    # add column for the occurrence percentage of the word
+    # lwords3 variable is the length of the all words list
+    df[2] = df[1].apply(lambda x: round(x*100/lwords, 2))
+    # add column for the length of the individual word
+    df[3] = df[0].apply(lambda x: len(x))
+    # add isopsephical value column
+    df[4] = df[0].apply(lambda x: gvalue(x))
+    # add syllabified word column
+    df[5] = df[0].apply(lambda x: syllabify(x))
+    # add length of the syllables in word column
+    df[6] = df[5].apply(lambda x: len(x))
+    # count vowels in the word as a column
+    df[7] = df[0].apply(lambda x: sum(list(x.count(c) for c in vowels)))
+    # count consonants in the word as a column
+    df[8] = df[0].apply(lambda x: len(x)-sum(list(x.count(c) for c in vowels)))
+    # save dataframe to CSV file
+    df.to_csv(csv_file_name, header=False, index=False, encoding='utf-8')
 
 # get word database
 def get_database(cols = None):

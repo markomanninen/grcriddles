@@ -6,7 +6,7 @@ import os
 
 #python setup.py sdist upload
 
-version = 'v0.1.6'
+version = 'v0.1.7'
 
 name = 'grcriddles'
 
@@ -27,14 +27,14 @@ setup(
   include_package_data = True,
   install_requires = ["abnum", "IPython", "pandas", "greek_accentuation", "requests", "pathlib", "tqdm"],
   version = version,
-  description = 'GRCRiddle - Study and examination of alphabetical and isopsephical riddles of ancient Greeks',
+  description = 'GRCRiddle - Study and examination of alphabetical and isopsephical riddles of the Ancient Greeks',
   long_description = read('README'),
   author = 'Marko Manninen',
   author_email = 'elonmedia@gmail.com',
 
   url = 'https://github.com/markomanninen/%s' % name,
   download_url = 'https://github.com/markomanninen/%s/archive/%s.tar.gz' % (name, version),
-  keywords = ['python', 'jupyter notebook', 'ancient greek', 'isopsephy', 'text analysis'],
+  keywords = ['python', 'jupyter notebook', 'ancient greek', 'isopsephy', 'text analysis', 'natural language processing'],
   platforms = ['any'],
 
   classifiers = [

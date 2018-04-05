@@ -1,6 +1,6 @@
 # GRCRiddles
 
-Study of alpha-numeric riddles of ancient Greeks
+Study and examination of alphabetical and isopsephical riddles of the Ancient Greeks
 
 Install:
 
