@@ -1,7 +1,8 @@
 Appendix 2 - Solve riddles
 ==========================
 
-Minimum code to solve isopsephical riddles in the Pseudo-Sibylline oracles.
+Minimum code to solve isopsephical riddles in the Pseudo-Sibylline oracles. Get
+word database and filter by different columns.
 
 .. code-block:: bash
 
@@ -17,11 +18,11 @@ Minimum code to solve isopsephical riddles in the Pseudo-Sibylline oracles.
   a = words[words['Isopsephy'] == 1697]
   a = a[a['Chars'] == 9]
   a = a[a['Mutes'] == 5]
-  a = a[a.apply(lambda x: len(x['Syllables'][0]) == 2 and \
-                          len(x['Syllables'][1]) == 2 and \
-                          len(x['Syllables'][2]) == 2, axis=1)]
-  # output words ordered alphabetically
-  a.sort_index()
+  a[a.apply(lambda x: len(x['Syllables'][0]) == 2 and \
+                      len(x['Syllables'][1]) == 2 and \
+                      len(x['Syllables'][2]) == 2, axis=1)]
+
+Output:
 
 .. code-block:: text
 
@@ -35,8 +36,9 @@ Minimum code to solve isopsephical riddles in the Pseudo-Sibylline oracles.
 .. code-block:: python
 
   # get words containing ΑΜΦΕΚΑΛΥ stem word
-  b = words.filter(like="ΑΜΦΕΚΑΛΥ", axis=0)
-  b.sort_index()
+  words.filter(like="ΑΜΦΕΚΑΛΥ", axis=0)
+
+Output:
 
 .. code-block:: text
 
