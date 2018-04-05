@@ -1,8 +1,8 @@
-Appendix 1 - Process corpora
-============================
+Appendix 1 - Store database
+===========================
 
 Minimum code to create a unique word database for the riddle solver. Download,
-preprocess, and store Greek corpora.
+preprocess, and store Greek corpora, then same word database.
 
 .. code-block:: python
 

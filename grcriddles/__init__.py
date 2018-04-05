@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # file: __init__.py
 
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 from .functions import Abnum, greek, syllabify, Counter, HTML, display_html, \
                        display_side_by_side, remove, download_with_indicator, \
@@ -11,4 +11,4 @@ from .functions import Abnum, greek, syllabify, Counter, HTML, display_html, \
                        all_greek_text_file, perseus_greek_text_file, first1k_greek_text_file, \
                        csv_file_name, perseus_zip_file, perseus_zip_dir, perseus_tmp_dir, \
                        perseus_dir, first1k_zip_file, first1k_zip_dir, first1k_tmp_dir, \
-                       first1k_dir, download_and_preprocess_corpora
+                       first1k_dir, download_and_preprocess_corpora, save_database

@@ -1,9 +1,7 @@
-Appendix 2 - Riddle solver
+Appendix 2 - Solve riddles
 ==========================
 
-Minimum code to solve isopsephical riddles in the Pseudo-Sibylline oracles. This
-requires `functions.py` script and `greek_words_corpora.csv` file reside in the
-same directory.
+Minimum code to solve isopsephical riddles in the Pseudo-Sibylline oracles.
 
 .. code-block:: bash
 

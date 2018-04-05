@@ -1,6 +1,11 @@
 Appendix 3 - Search results
 ===========================
 
+Minimum code to search words from the Greek corpora. `download_and_preprocess_corpora`
+should be run at least once in the working directory to make search
+functionality to work because it will create necessary Greek text directories
+from the original `Perseus` and `First1K` repositories.
+
 .. code-block:: python
 
   # import download and preprocess function
