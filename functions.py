@@ -356,7 +356,7 @@ def save_database(greek_corpora):
 # get word database
 def get_database(cols = None):
     global database
-    if not database:
+    if database == None:
         # try to read from the current directory
         if path.exists(csv_file_name):
         	df = read_csv(csv_file_name, header = None)
