@@ -46,10 +46,6 @@ first1k_dir = 'greek_text_first1k'
 # ϒ not needed?
 vowels = "ΩΗΥΕΙΟΑ"
 
-# roman letters, big and small
-roman_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-roman_letters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".lower()
-
 # main database entry point
 database = None
 
@@ -302,21 +298,19 @@ def download_and_preprocess_corpora():
     download_with_indicator(fs, perseus_zip_file)
     fs = "https://github.com/OpenGreekAndLatin/First1KGreek/archive/master.zip"
     download_with_indicator(fs, first1k_zip_file)
-
     # extract zip files
     print("Extracting zip files...")
     unzip(perseus_zip_file, perseus_zip_dir)
     unzip(first1k_zip_file, first1k_zip_dir)
-
     # copy greek text files from repository
     print("Copying Greek text files from repository...")
     for item in [[joinpaths(perseus_zip_dir, ["canonical-greekLit-master", "data"]), perseus_tmp_dir],
                  [joinpaths(first1k_zip_dir, ["First1KGreek-master", "data"]), first1k_tmp_dir]]:
         copy_corpora(*item)
-
-    # process files
+    # init files
     print("Initializing corpora...")
     greek_corpora_x = init_corpora([[perseus_tmp_dir, perseus_dir], [first1k_tmp_dir, first1k_dir]])
+    # process files
     print("Processing files...")
     return process_greek_corpora(greek_corpora_x)
 
@@ -355,11 +349,14 @@ def save_database(greek_corpora):
     df[8] = df[0].apply(lambda x: len(x)-sum(list(x.count(c) for c in vowels)))
     # save dataframe to CSV file
     df.to_csv(csv_file_name, header=False, index=False, encoding='utf-8')
+    # set global database variable
+    database = df
+    return get_database()
 
 # get word database
 def get_database(cols = None):
     global database
-    if not database:
+    if  database == None:
         # try to read from the current directory
         if path.exists(csv_file_name):
         	df = read_csv(csv_file_name, header = None)
@@ -382,6 +379,7 @@ def get_database(cols = None):
         words.columns = list(cols.values())
         if 0 in cols:
             words.set_index(cols[0], inplace=True)
+            return words.sort_index()
         return words
     else:
         return database.copy()
@@ -394,23 +392,6 @@ def display_side_by_side(**kwargs):
         html += df.to_html(index=False)\
                   .replace("<thead>", "<caption style='text-align:center'>%s</caption><thead>" % caption)
     display_html(html.replace('table', 'table style="display:inline"'), raw=True)
-
-# is there roman letters in data?
-def has_roman_letters(data):
-    a = {}
-    for x in roman_letters:
-        if x in data:
-            a[x] = data.count(x)
-    return a
-
-# number of vowels in text
-def nvowels(x, n):
-    word, tot = x[0], 0
-    for c in vowels:
-        tot += word.count(c)
-        if tot > n:
-            return False
-    return tot == n
 
 # find the string (s) from the search source text (t) and match with the original source text (u)
 # search and original source texts should have same character indices for keywords
