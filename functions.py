@@ -165,8 +165,9 @@ def init_corpora(corpora):
             if 'grc' not in f:
                 print("Unidentified language tag found from the file.")
                 print("Please check and possibly add to the ignore list: %s" % f)
-            result.append({"corpus": corpus, "uwords": {}, "length": 0,
-                           "file": f, "content": [], "simplified": ""})
+            else:
+                result.append({"corpus": corpus, "uwords": {}, "length": 0,
+                               "file": f, "content": [], "simplified": ""})
     return result
 
 def get_title_and_author(xmldoc, corpus):
